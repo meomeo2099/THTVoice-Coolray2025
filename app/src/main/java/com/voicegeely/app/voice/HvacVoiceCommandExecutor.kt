@@ -158,6 +158,36 @@ class HvacVoiceCommandExecutor(
         if (on) "đang bật" else "đã tắt"
     )
 
+    // Coolray 2025: HVAC Eco has no VHAL mapping on this head unit.
+    @Suppress("UNUSED_PARAMETER")
+    private fun setHvacEco(on: Boolean): CommandExecutionResult = CommandExecutionResult.Rejected(NO_COOLRAY_MAPPING)
+
+    private fun setPeriodicAirflow(on: Boolean, minutes: Int): CommandExecutionResult {
+        if (!on) {
+            AirflowDirectionCycler.stop()
+            return confirmed("đã tắt")
+        }
+        val interval = (if (minutes > 0) minutes else AirflowDirectionCycler.defaultMinutes)
+        if (interval !in AirflowDirectionCycler.MIN_MINUTES..AirflowDirectionCycler.MAX_MINUTES) {
+            return CommandExecutionResult.Rejected("Thời gian đảo gió phải từ 1 đến 10 phút.")
+        }
+        if (!vehicle.isMock) {
+            val power = safeBool(CoolrayProperties.HVAC_POWER, CoolrayProperties.HVAC_POWER_AREA)
+            if (power == false) return CommandExecutionResult.Rejected("Điều hòa đang tắt, bật điều hòa trước rồi mới đảo gió.")
+        }
+        // First swing now (verified), then every interval.
+        val current = safeInt(CoolrayProperties.HVAC_FAN_DIRECTION, CoolrayProperties.HVAC_FAN_DIRECTION_AREA)
+        val first = writeAndVerifyInt(
+            CoolrayProperties.HVAC_FAN_DIRECTION,
+            CoolrayProperties.HVAC_FAN_DIRECTION_AREA,
+            AirflowDirectionCycler.nextDirection(current),
+            "Xe không chấp nhận lệnh hướng gió."
+        ) { "mỗi $interval phút" }
+        if (first is CommandExecutionResult.Rejected || first is CommandExecutionResult.Failed) return first
+        AirflowDirectionCycler.start(vehicle, interval)
+        return if (first is CommandExecutionResult.Confirmed) confirmed("mỗi $interval phút") else first
+    }
+
     private fun setFanDirection(directions: Set<FanDirectionTarget>): CommandExecutionResult {
         // A direction chosen by hand ends the periodic swing.
         AirflowDirectionCycler.stop()
