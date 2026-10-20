@@ -38,6 +38,8 @@ class LicenseManager(
         !LicenseConfig.signedLicenses || record.token.isBlank() || tokenPayload(record) != null
 
     fun gateState(now: Long = System.currentTimeMillis()): LicenseGateState {
+        // Activation temporarily disabled for car testing (BuildConfig.LICENSE_GATE_ENABLED = false).
+        if (!com.tht.voice.BuildConfig.LICENSE_GATE_ENABLED) return LicenseGateState.ACTIVE
         val record = store.load()
         val payload = record?.let { tokenPayload(it) }
         return LicenseGateEvaluator.evaluate(

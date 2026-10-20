@@ -16,6 +16,8 @@ val releaseSigningReady = listOf(
     releaseKeyPassword
 ).all { !it.isNullOrBlank() }
 
+val licenseGateEnabled = System.getenv("THTVOICE_LICENSE_GATE")?.trim()?.lowercase() == "true"
+
 val licenseServerProps = Properties().apply {
     val file = rootProject.file("config/license-server.properties")
     if (file.isFile) file.inputStream().use { load(it) }
@@ -50,6 +52,9 @@ android {
         versionCode = System.getenv("THTVOICE_VERSION_CODE")?.toIntOrNull() ?: 1
         versionName = System.getenv("THTVOICE_VERSION_NAME")?.takeIf { it.isNotBlank() } ?: "1.0"
         buildConfigField("String", "LICENSE_SERVER_URL", "\"$licenseServerUrl\"")
+        // Owner 20/10/2026: activation is OFF while the Coolray 2025 build is being tested on the car.
+        // Turn it back on (THTVOICE_LICENSE_GATE=true or the default below) once the key website is ready.
+        buildConfigField("boolean", "LICENSE_GATE_ENABLED", "$licenseGateEnabled")
         buildConfigField("String", "LICENSE_PUBLIC_KEYS", "\"$licensePublicKeys\"")
         // Empty = no runtime signing check (debug / hardware-test builds). Release sets it below.
         buildConfigField("String", "RELEASE_CERT_SHA256", "\"\"")
