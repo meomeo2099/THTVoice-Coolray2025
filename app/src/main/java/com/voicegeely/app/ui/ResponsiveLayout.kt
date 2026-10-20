@@ -22,6 +22,15 @@ object ResponsiveLayout {
     const val REFERENCE_HEIGHT_DP = 1080
     const val MIN_SCALE = 0.72f
 
+    /**
+     * Ultra-wide head units (aspect >= [WIDE_ASPECT], e.g. Coolray 2025: 1920×720 screen, ~1760×720
+     * app window next to the system dock) have plenty of width but little height. Scaling them to
+     * the 1080 dp reference height shrank text to the 0.72 floor; they use a lower reference height
+     * so text stays ~0.85× and the extra width is absorbed by the wide layout instead.
+     */
+    const val WIDE_ASPECT = 2.0f
+    const val WIDE_REFERENCE_HEIGHT_DP = 850
+
     enum class WidthClass { COMPACT, MEDIUM, EXPANDED }
 
     data class LayoutSpec(
@@ -56,7 +65,12 @@ object ResponsiveLayout {
         if (widthDp <= 0 || heightDp <= 0) return 1f
         val landscape = widthDp >= heightDp
         val refW = if (landscape) REFERENCE_WIDTH_DP else REFERENCE_HEIGHT_DP
-        val refH = if (landscape) REFERENCE_HEIGHT_DP else REFERENCE_WIDTH_DP
+        val ultraWide = landscape && widthDp.toFloat() / heightDp >= WIDE_ASPECT
+        val refH = when {
+            !landscape -> REFERENCE_WIDTH_DP
+            ultraWide -> WIDE_REFERENCE_HEIGHT_DP
+            else -> REFERENCE_HEIGHT_DP
+        }
         val raw = min(widthDp.toFloat() / refW, heightDp.toFloat() / refH)
         return raw.coerceIn(MIN_SCALE, 1f)
     }

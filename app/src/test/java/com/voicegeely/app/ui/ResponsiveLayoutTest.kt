@@ -54,6 +54,29 @@ class ResponsiveLayoutTest {
     }
 
     @Test
+    fun coolray2025AppWindowKeepsTextLargerAndUsesWideLayout() {
+        // 1920×720 @160 dpi minus the ~160 px system dock = ~1760×720 dp app window.
+        val scale = ResponsiveLayout.uiScale(1760, 720)
+        assertEquals(720f / ResponsiveLayout.WIDE_REFERENCE_HEIGHT_DP, scale, 0.001f)
+        assertTrue(scale > 0.84f)
+        val spec = ResponsiveLayout.spec(1760, 720)
+        assertEquals(ResponsiveLayout.WidthClass.EXPANDED, spec.widthClass)
+        assertEquals(3, spec.appColumns)
+        assertEquals(2, spec.settingsColumns)
+        assertEquals(false, spec.railIconsOnly)
+        assertEquals(56, spec.railButtonHeightDp)
+        assertTrue(spec.scrollScreens)
+        // Full-screen 1920×720 takes the same path.
+        assertEquals(scale, ResponsiveLayout.uiScale(1920, 720), 0.001f)
+    }
+
+    @Test
+    fun ordinary16by9IsUnchangedByTheWideRule() {
+        assertEquals(ResponsiveLayout.MIN_SCALE, ResponsiveLayout.uiScale(1280, 720))
+        assertEquals(1f, ResponsiveLayout.uiScale(1920, 1080))
+    }
+
+    @Test
     fun portraitIsCompactSingleColumnScrolling() {
         val spec = ResponsiveLayout.spec(1080, 1920)
         assertTrue(spec.portrait)
