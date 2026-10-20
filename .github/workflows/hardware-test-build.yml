@@ -1,0 +1,235 @@
+name: Coolray 2025 hardware test APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'hardware-test/**'
+    paths:
+      - '.hardware-test-trigger'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ihu689g-hardware-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-hardware-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android 32 SDK
+        shell: bash
+        run: |
+          SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-32" "build-tools;32.0.0"
+
+      - name: Set up Gradle 8.13
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Validate PowerShell test scripts
+        shell: pwsh
+        run: |
+          $failed = $false
+          Get-ChildItem -Path scripts -Filter *.ps1 | ForEach-Object {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) { $failed = $true; Write-Host "PowerShell parse errors: $($_.FullName)"; $errors | ForEach-Object { Write-Host "  $($_.Message)" } }
+          }
+          if ($failed) { throw "PowerShell script syntax validation failed" }
+
+      - name: Validate Phase 10 hardware matrix
+        shell: pwsh
+        run: .\scripts\validate-phase10-matrix.ps1
+
+      - name: Test Kokoro Vietnamese runtime packer
+        shell: bash
+        run: python3 scripts/test-prepare-kokoro-vi-runtime.py
+
+      - name: Test hardware package provenance metadata
+        shell: bash
+        run: bash scripts/test-create-hardware-build-info.sh
+
+      - name: Test hardware package preflight verifier
+        shell: pwsh
+        run: .\scripts\test-verify-hardware-package.ps1
+
+      - name: Fetch Sherpa Android runtime
+        shell: bash
+        run: bash scripts/fetch-sherpa-android.sh
+
+      - name: Stage Gipformer Vietnamese 65M INT8
+        shell: bash
+        run: bash scripts/fetch-gipformer65m-int8.sh
+
+      - name: Stage selectable offline KWS profiles
+        shell: bash
+        run: bash scripts/fetch-sherpa-kws-heytht.sh
+
+      - name: Stage Kokoro Vietnamese Ngoc Huyen and Diem Trinh
+        shell: bash
+        run: THTVOICE_KOKORO_TTS_DIR=build/kokoro-full/kokoro_vi bash scripts/fetch-kokoro-vi-tts.sh
+
+      - name: Test Kokoro voice pack splitter
+        shell: bash
+        run: python3 scripts/test-split-kokoro-pack.py
+
+      - name: Split Kokoro into APK part and downloadable voice pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Owner decision 29/09/2026: the ~330 MB voice is a separate download. Put
+          # "tts_delivery=bundled" in .hardware-test-trigger to build an all-in-one APK instead.
+          if grep -qx 'tts_delivery=bundled' .hardware-test-trigger 2>/dev/null; then
+            mkdir -p app/src/main/assets/models/tts
+            rm -rf app/src/main/assets/models/tts/kokoro_vi
+            cp -r build/kokoro-full/kokoro_vi app/src/main/assets/models/tts/kokoro_vi
+            echo "tts_delivery=bundled"
+          else
+            python3 scripts/split-kokoro-pack.py build/kokoro-full/kokoro_vi app/src/main/assets/models/tts/kokoro_vi kokoro-pack-output
+            echo "tts_delivery=download"
+          fi
+
+      - name: Verify hardware-test model assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASR_DIR="app/src/main/assets/models/sherpa-onnx-streaming-zipformer-vi-65M-int8"
+          KWS_DIR="app/src/main/assets/models/sherpa-onnx-kws-zipformer-zh-en-3M-2025-12-20"
+          TTS_DIR="build/kokoro-full/kokoro_vi"
+          for f in encoder-epoch-35-avg-6.int8.onnx decoder-epoch-35-avg-6.int8.onnx joiner-epoch-35-avg-6.int8.onnx tokens.txt bpe.model model-source.txt asr-backend.txt; do test -s "$ASR_DIR/$f"; done
+          grep -qx 'offline-transducer' "$ASR_DIR/asr-backend.txt"
+          for f in encoder-epoch-13-avg-2-chunk-8-left-64.int8.onnx decoder-epoch-13-avg-2-chunk-8-left-64.onnx joiner-epoch-13-avg-2-chunk-8-left-64.int8.onnx tokens.txt keywords.txt keywords-hello-geely.txt keywords-hey-geely.txt model-source.txt; do test -s "$KWS_DIR/$f"; done
+          grep -q '@HEY_THT' "$KWS_DIR/keywords.txt"
+          grep -q '@HELLO_GEELY' "$KWS_DIR/keywords-hello-geely.txt"
+          grep -q '@HEY_GEELY' "$KWS_DIR/keywords-hey-geely.txt"
+          for f in kokoro_vi.onnx voices.bin tokens.txt lexicon-vi.txt config.json voice-map.txt SOURCE.txt; do test -s "$TTS_DIR/$f"; done
+          test -d "$TTS_DIR/espeak-ng-data"
+          test "$(stat -c%s "$TTS_DIR/voices.bin")" -eq 1044480
+          grep -qx 'speaker_0=ngoc_huyen' "$TTS_DIR/SOURCE.txt"
+          grep -qx 'speaker_1=diem_trinh' "$TTS_DIR/SOURCE.txt"
+          grep -qx 'frontend=vig2p==0.1.2' "$TTS_DIR/SOURCE.txt"
+          echo "tts_ready_count=2" >> "$GITHUB_ENV"
+          echo "ASR assets:"; find "$ASR_DIR" -maxdepth 1 -type f -printf '  %f %s bytes\n' | sort
+          echo "KWS assets:"; find "$KWS_DIR" -maxdepth 1 -type f -printf '  %f %s bytes\n' | sort
+          echo "TTS assets:"; find "$TTS_DIR" -maxdepth 1 -type f -printf '  %f %s bytes\n' | sort
+          echo "TTS Ngoc Huyen: READY (sid=0)"
+          echo "TTS Diem Trinh: READY (sid=1)"
+
+      - name: Unit tests
+        run: gradle :app:testDebugUnitTest --stacktrace
+
+      # Owner decision 14/10/2026: sign the test APK with the official key and give it the latest
+      # release versionCode, so release -> test -> release installs over each other (no uninstall).
+      # Missing secrets: keep the debug key (the build still works, as before).
+      - name: Test version and official signing
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.THT_SIGN_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.THT_SIGN_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.THT_SIGN_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.THT_SIGN_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          read -r code name < <(bash scripts/release/test-build-version.sh)
+          { echo "THTVOICE_VERSION_CODE=$code"; echo "THTVOICE_VERSION_NAME=$name"; } >> "$GITHUB_ENV"
+          echo "test build: versionCode $code, versionName $name" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -n "$KEYSTORE_B64" && -n "$STORE_PASSWORD" && -n "$KEY_ALIAS" && -n "$KEY_PASSWORD" ]]; then
+            keystore="$RUNNER_TEMP/thtvoice-release.jks"
+            echo "$KEYSTORE_B64" | base64 -d > "$keystore"
+            chmod 600 "$keystore"
+            {
+              echo "THTVOICE_KEYSTORE_FILE=$keystore"
+              echo "THTVOICE_STORE_PASSWORD=$STORE_PASSWORD"
+              echo "THTVOICE_KEY_ALIAS=$KEY_ALIAS"
+              echo "THTVOICE_KEY_PASSWORD=$KEY_PASSWORD"
+            } >> "$GITHUB_ENV"
+            echo "signing=official" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "signing=debug (signing secrets missing)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Assemble hardware-test APK
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Remove keystore
+        if: ${{ always() }}
+        shell: bash
+        run: rm -f "$RUNNER_TEMP/thtvoice-release.jks"
+
+      - name: Create reproducible hardware-test package metadata
+        shell: bash
+        run: KOKORO_TTS_DIR=build/kokoro-full/kokoro_vi bash scripts/create-hardware-build-info.sh
+
+      - name: Verify hardware-test package before upload
+        shell: pwsh
+        run: .\scripts\verify-hardware-package.ps1 -PackagePath .\hardware-test-output -ExpectedGitSha "${{ github.sha }}"
+
+      # 13/10/2026: không còn tải bản test lên artifact Actions (mỗi lần ~110 MB, build nhiều lần
+      # trong ngày làm đầy lưu trữ). Bản test chỉ phát ở Release hardware-test-latest.
+
+      # Gói giọng không còn tải lên làm artifact Actions (~300 MB mỗi lần, làm đầy 2 GB lưu
+      # trữ miễn phí); gói giọng đã có ở Release voice-kokoro_vi-* và workflow publish-voice-pack.
+
+      # Always also publish to the rolling prerelease: GitHub Release downloads go through the CDN
+      # (fast, resumable), while Actions artifact downloads are often very slow.
+      - name: Package rolling prerelease
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd hardware-test-output && zip -9 -r ../THTVoice-IHU689G-hardware-test.zip \
+            THTVoice-IHU689G-hardware-test.apk \
+            SHA256.txt \
+            BUILD_INFO.txt \
+            ASSET_SHA256.txt \
+            IHU689G_TEST_MATRIX.csv \
+            probe-scene-contract.ps1)
+          test -s THTVoice-IHU689G-hardware-test.zip
+
+      - name: Publish rolling private prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="hardware-test-latest"
+          TITLE="THT Voice Coolray 2025 hardware test (rolling)"
+          NOTES="Bản test mới nhất (commit ${GITHUB_SHA}). Tải THTVoice-IHU689G-hardware-test.apk để cài trực tiếp, hoặc file .zip đầy đủ (APK + tài liệu test). Rolling prerelease: tin BUILD_INFO.txt, không chỉ tên tag."
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f "$TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/$TAG" --force
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TITLE" --notes "$NOTES" --prerelease
+          else
+            gh release create "$TAG" --title "$TITLE" --notes "$NOTES" --prerelease --target "$GITHUB_SHA"
+          fi
+          gh release upload "$TAG" THTVoice-IHU689G-hardware-test.zip \
+            hardware-test-output/THTVoice-IHU689G-hardware-test.apk \
+            hardware-test-output/BUILD_INFO.txt --clobber
+          echo "Hardware package published to rolling prerelease: $TAG" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Delivery summary
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          echo "delivery=rolling-prerelease hardware-test-latest" >> "$GITHUB_STEP_SUMMARY"

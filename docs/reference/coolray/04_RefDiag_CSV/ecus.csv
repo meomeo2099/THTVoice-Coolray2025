@@ -1,0 +1,13 @@
+﻿ecu_id_dec,ecu_id_hex,name,name_en,localized_name,keys
+1824,0x720,BCM,Body Control Module,Контроллер кузова,C1C2B9AA
+1825,0x721,IPK,Instrument Panel Cluster,Приборная панель,31235671
+1938,0x792,TCM,Steering Column Module,Модуль рулевой колонки,F1310407
+1939,0x793,FCS,Front Camera System,Фронтальная камера,76688783
+1959,0x7A7,GW,Gateway,Шлюз,7A56884B
+1990,0x7C6,AC,Air Conditioning,Кондиционер,00111122
+2002,0x7D2,EPS,Electronic Power Steering,Электроусилитель руля,C11C1281
+2016,0x7E0,EMS,Engine Management System,Управление двигателем,D3212301
+2017,0x7E1,TCU,Transmission Control Unit,Контроллер КПП,E1D5C303
+2020,0x7E4,ESC,Electronic Stability Control,Система стабилизации,F1312970
+2021,0x7E5,SRS,Supplemental Restraint System,Подушки безопасности,419274CC
+1985,0x7C1,MMI,Multimedia Interface,Мультимедиа,55565A66

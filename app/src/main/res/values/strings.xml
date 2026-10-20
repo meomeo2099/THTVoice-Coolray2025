@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">THT Voice</string>
+    <string name="screen_title">THT Voice</string>
+    <string name="screen_credit">Trợ lý giọng nói dành cho xe</string>
+    <string name="loading_assistant">Đang khởi động trợ lý giọng nói…</string>
+    <string name="assistant_ready">Trợ lý đã sẵn sàng</string>
+</resources>

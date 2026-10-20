@@ -1,0 +1,21 @@
+diff --git a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+--- a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
++++ b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+@@
+ import com.voicegeely.app.voice.VoiceCommandCoordinator
+ import com.voicegeely.app.voice.VoiceCommandParser
+ import com.voicegeely.app.voice.VoiceResponseMode
+ import com.voicegeely.app.voice.VoiceSpeechSink
++import com.voicegeely.app.voice.VehicleStatusQueryParser
+@@
+-        val typed = VoiceCommandParser.parse(parsedText)
++        // Read-only vehicle questions are parsed before actuator commands.
++        // Both paths still return the same typed VoiceCommand model.
++        val typed = VehicleStatusQueryParser.parse(parsedText)
++            ?: VoiceCommandParser.parse(parsedText)
+         if (typed != null) {
+             val coordinator = VoiceCommandCoordinator(
+                 executor = VoiceCommandRouter(
+                     vehicle = vehiclePropertyHelper,
+                     androidBackend = AndroidSystemActionBackend(this)
+                 ),

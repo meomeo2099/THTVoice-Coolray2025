@@ -1,0 +1,32 @@
+# THT Voice Coolray license server (separate from EX2). Deploy guide: worker/README.md
+# Secrets are set with `npx wrangler secret put <NAME>` and are never stored in this file:
+#   LICENSE_SIGNING_KEY  (from scripts/gen-license-key.mjs, private part)
+#   VIN_KEY              (from scripts/gen-license-key.mjs)
+#   ADMIN_PASSWORD       (at least 12 characters)
+#   GITHUB_TOKEN         (read access to release assets, for app updates)
+name = "tht-voice-coolray-license"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[vars]
+# Coolray uses its own key pair (kid c1) so EX2 licenses (k1) are never accepted.
+LICENSE_KEY_ID = "c1"
+# "off" once the separate management site (admin.wrangler.toml) is running.
+ADMIN_UI = "on"
+GITHUB_REPO = "meomeo2099/THTVoice-Coolray"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tht-voice-coolray-license"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+# The voice pack is served from the GitHub Releases the release workflow publishes (no R2
+# needed, works on the free plan). Optional R2 storage instead: enable R2, create the bucket,
+# then uncomment:
+# [[r2_buckets]]
+# binding = "MODELS"
+# bucket_name = "tht-voice-models"
+
+[triggers]
+crons = ["17 19 * * *"]

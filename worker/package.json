@@ -1,0 +1,11 @@
+{
+  "name": "tht-voice-license",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --no-warnings test/server.test.mjs",
+    "keys": "node scripts/gen-license-key.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "engines": { "node": ">=22" }
+}

@@ -1,0 +1,19 @@
+category,function,property_hex,property_dec,area,type,values,coolray_specific,confidence,notes
+HVAC,HVAC temperature target,0x15600503,358614275,1,Float,15.5..28.5 °C,No explicit branch,High,REF-VOICE direct CarPropertyManager mapping.
+HVAC,Blower level,0x15400500,356517120,5,Int,0..8 on Coolray,Coolray max=8,High,Coolray branch changes max fan speed.
+HVAC,Air distribution,0x15400501,356517121,1,Int bitmask,1 face; 2 feet; 4 windscreen; combinations 3/5/6/7,No explicit branch,High,
+HVAC,HVAC activation group A,0x15200505,354419973,117,Bool,0/1,No explicit branch,Medium,Used as part of grouped HVAC power sequence; exact semantic label needs vehicle log.
+HVAC,HVAC activation group B,0x1520050A,354419978,1,Bool,0/1,No explicit branch,Medium,Grouped HVAC power sequence.
+HVAC,HVAC activation group C,0x15200510,354419984,5,Bool,0/1,No explicit branch,Medium,Grouped HVAC power sequence.
+HVAC,Defrost/demist,0x15200514,354419988,2,Bool,0/1,No explicit branch,Medium,Confirm exact front/rear semantic on target vehicle.
+Window,Windows / sunroof position (Coolray),0x234020AB,591405227,"0x10,0x40,0x100,0x400,0x10000,0x20000",Int/position,0..100,YES,High,Coolray branch replaces default 0x13400BC0.
+Trunk,Trunk open (Coolray),0x21111900,554768640,0,Int,1=open; 0=inactive/close candidate,YES,High,Coolray branch replaces default trunk property.
+Seat,Seat heating,0x1540050B,356517131,1 driver; 4 passenger,Int,levels,No explicit branch,High,Cross-confirmed with REF-DIAG analysis.
+Seat,Seat ventilation,0x15400513,356517139,1 driver; 4 passenger,Int,0..3,No explicit branch,High,Cross-confirmed with REF-DIAG analysis.
+UI,Screen brightness (Coolray),0x29020400,687997952,2,Int,brightness level,YES,High,Coolray-specific branch.
+Lighting,Interior light (Coolray),0x15400F04,356519684,"1,2,4,16,64",Bool/Int,0/1,YES,High,Area-to-zone mapping still needs vehicle validation.
+Fuel,Fuel door state/control candidate,0x11200308,287310600,0,Bool,0/1,No explicit branch,Medium,Validate action semantics before control.
+Drive,Drive mode,0x2140710C,557871372,0,Int,enum,No explicit branch,Medium,Do not expose to voice until values validated on target vehicle.
+Lighting,Exterior light group candidate,0x21407016,557871126,,Int,enum,Unknown,Medium,Map enum before use.
+Lighting,Exterior/fog light candidate,0x11400E12,289410578,,Int,enum,Unknown,Medium,Map enum before use.
+Safety check,Motion/speed candidate,0x11600207,291504647,0,Float,compared with 5.0,Unknown,Candidate,Used in pre-action logic; identify exact physical meaning with live logs.

@@ -1,0 +1,18 @@
+Tôi là trợ lý của bạn, sẵn sàng nhận lệnh.
+Xin chào, tôi là trợ lý THT Voice.
+Đã bật điều hòa.
+Đã tắt điều hòa.
+Đã chỉnh quạt.
+Đã chỉnh nhiệt độ.
+Đã chuyển sang lấy gió trong.
+Đã bật đèn viền.
+Đã khóa cửa xe.
+Đã về màn hình chính. Ứng dụng khác vẫn có thể chạy nền.
+Đã mở cài đặt Wi-Fi.
+Đã gửi lệnh nhưng chưa xác nhận được trạng thái.
+Lệnh chưa được hỗ trợ.
+Không nghe rõ lệnh.
+Micrô đang bận, có thể do cuộc gọi. Thử lại sau.
+Mức quạt phải từ 0 đến 8.
+Chưa làm 2 lệnh còn lại.
+Đã quên tên gọi gió bão.

@@ -1,0 +1,84 @@
+diff --git a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+--- a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
++++ b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+@@
++import com.voicegeely.app.voice.CommandExecutionResult
++import com.voicegeely.app.voice.HvacVoiceCommandExecutor
++import com.voicegeely.app.voice.LegacyPredictionBridge
++import com.voicegeely.app.voice.VoiceCommand
++import com.voicegeely.app.voice.VoiceCommandCoordinator
++import com.voicegeely.app.voice.VoiceCommandParser
++import com.voicegeely.app.voice.VoiceResponseMode
++import com.voicegeely.app.voice.VoiceSpeechSink
++import kotlinx.coroutines.runBlocking
+@@
+-        val prediction = intentModel.predict(parsedText)
++        val typed = VoiceCommandParser.parse(parsedText)
++        if (typed != null && isTypedHvacCommand(typed.command)) {
++            return executeTypedHvacCommand(typed)
++        }
++
++        val prediction = if (typed != null) {
++            val bridged = LegacyPredictionBridge.toPayload(typed)
++            PredictionResult(
++                text = bridged.originalText,
++                normalizedText = bridged.normalizedText,
++                intent = bridged.intent,
++                confidence = 1f,
++                entities = bridged.entities
++            )
++        } else intentModel.predict(parsedText)
+@@
++    private fun isTypedHvacCommand(command: VoiceCommand): Boolean = when (command) {
++        is VoiceCommand.SetTemperature,
++        is VoiceCommand.AdjustTemperature,
++        VoiceCommand.TemperatureHigh,
++        VoiceCommand.TemperatureLow,
++        is VoiceCommand.AcPower,
++        is VoiceCommand.SetFanSpeed,
++        is VoiceCommand.AdjustFanSpeed,
++        is VoiceCommand.Recirculation,
++        is VoiceCommand.Defrost,
++        is VoiceCommand.FanDirection -> true
++        is VoiceCommand.Window -> false
++    }
++
++    private fun executeTypedHvacCommand(parsed: com.voicegeely.app.voice.ParsedVoiceCommand): Boolean {
++        val helper = vehiclePropertyHelper ?: run { lastCommandRequiresVehicle = true; return true }
++        val coordinator = VoiceCommandCoordinator(
++            HvacVoiceCommandExecutor(helper),
++            VoiceSpeechSink { text -> if (ttsReady && text.isNotBlank()) carAudioPlayer.playText(text) }
++        )
++        val result = runBlocking { coordinator.handle(parsed, VoiceResponseMode.FULL) }
++        return result is CommandExecutionResult.Confirmed || result is CommandExecutionResult.AcceptedUnverified
++    }
++
+diff --git a/app/src/main/java/com/voicegeely/app/car/VehiclePropertyHelper.kt b/app/src/main/java/com/voicegeely/app/car/VehiclePropertyHelper.kt
+--- a/app/src/main/java/com/voicegeely/app/car/VehiclePropertyHelper.kt
++++ b/app/src/main/java/com/voicegeely/app/car/VehiclePropertyHelper.kt
+@@
+-    override fun getBoolProperty(propertyId: Int, areaId: Int): Boolean {
++    override fun getBoolProperty(propertyId: Int, areaId: Int): Boolean =
++        getBoolPropertyOrNull(propertyId, areaId) ?: false
++
++    override fun getBoolPropertyOrNull(propertyId: Int, areaId: Int): Boolean? {
+         return readWithReconnect("GET_BOOL", propertyId, areaId) { pm ->
+             probeAvailability(pm, propertyId, areaId)
+             pm.getBooleanProperty(propertyId, areaId)
+-        } ?: false
++        }
+     }
+
+diff --git a/app/src/main/java/com/voicegeely/app/car/MockVehiclePropertyHelper.kt b/app/src/main/java/com/voicegeely/app/car/MockVehiclePropertyHelper.kt
+--- a/app/src/main/java/com/voicegeely/app/car/MockVehiclePropertyHelper.kt
++++ b/app/src/main/java/com/voicegeely/app/car/MockVehiclePropertyHelper.kt
+@@
+-    override fun getBoolProperty(propertyId: Int, areaId: Int): Boolean {
++    override fun getBoolProperty(propertyId: Int, areaId: Int): Boolean =
++        getBoolPropertyOrNull(propertyId, areaId) ?: false
++
++    override fun getBoolPropertyOrNull(propertyId: Int, areaId: Int): Boolean? {
+         val value = boolValues[key(propertyId, areaId)] ?: false
+         logRead("BOOL", propertyId, areaId, value.toString())
+         return value
+     }

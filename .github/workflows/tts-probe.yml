@@ -1,0 +1,43 @@
+name: TTS probe (đo âm thanh giọng đọc)
+on:
+  workflow_dispatch:
+    inputs:
+      audit:
+        description: "1 = đọc toàn bộ câu trả lời của app (cả 2 giọng) và báo chữ thiếu / tiếng dư còn sót / đoạn bị cắt"
+        default: "0"
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Dựng gói giọng đầy đủ giống bản build (model + lexicon + tokens)
+        run: THTVOICE_KOKORO_TTS_DIR=build/kokoro-full/kokoro_vi bash scripts/fetch-kokoro-vi-tts.sh
+      - name: Cài sherpa-onnx
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install numpy "sherpa-onnx==1.13.8" || pip install numpy sherpa-onnx
+          python -c "import sherpa_onnx; print(sherpa_onnx.__version__ if hasattr(sherpa_onnx,'__version__') else 'ok')"
+      - name: Đo
+        run: |
+          mkdir -p results
+          find build/kokoro-full -maxdepth 2 -printf '%p %s\n' > results/pack-files.txt
+          python -c "import sherpa_onnx,sys; print(getattr(sherpa_onnx,'__version__','?'))" > results/sherpa-version.txt 2>&1 || true
+          dir=build/kokoro-full/kokoro_vi
+          if [ "${{ inputs.audit }}" = "1" ]; then
+            python tools/tts-probe/collect_sentences.py app/src/main/java results/sentences-all.txt
+            SENTENCES=results/sentences-all.txt AUDIT=1 python tools/tts-probe/probe.py "$dir" results > results/log.txt 2>&1; echo "exit=$?" >> results/log.txt
+          else
+            python tools/tts-probe/probe.py "$dir" results > results/log.txt 2>&1; echo "exit=$?" >> results/log.txt
+          fi
+      - name: Đẩy kết quả lên nhánh tts-probe-results
+        if: always()
+        run: |
+          git config user.name "tts-probe"; git config user.email "tts-probe@users.noreply.github.com"
+          git checkout --orphan tts-probe-results
+          git rm -rq --cached . ; find . -mindepth 1 -maxdepth 1 ! -name results ! -name .git -exec rm -rf {} +
+          git add results && git commit -qm "Kết quả đo giọng đọc" && git push -f origin tts-probe-results

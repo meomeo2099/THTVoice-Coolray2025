@@ -1,0 +1,3231 @@
+intent,params,phrase,tht_status
+set_ambient_light,on=true,bật đèn,HAVE
+set_ambient_light,on=true,bật đèn viền,HAVE
+set_ambient_light,on=true,bật đèn nền,HAVE
+set_ambient_light,on=true,bật đèn nội thất,HAVE
+set_ambient_light,on=true,mở đèn viền,HAVE
+set_ambient_light,on=true,mở đèn nền,HAVE
+set_ambient_light,on=true,mở đèn nội thất,HAVE
+set_ambient_light,on=true,bật đèn viền nội thất,HAVE
+set_ambient_light,on=true,mở đèn led xe,HAVE
+set_ambient_light,on=true,bật đèn led nội thất,HAVE
+set_ambient_light,on=true,mở đèn trang trí xe,HAVE
+set_ambient_light,on=true,sáng đèn viền lên,HAVE
+set_ambient_light,on=true,bật đèn trong xe,HAVE
+set_ambient_light,on=true,mở đèn trong xe,HAVE
+set_ambient_light,on=true,bật đèn cabin,HAVE
+set_ambient_light,on=true,bật giúp tôi đèn nội thất nhé,HAVE
+set_ambient_light,on=true,bật đèn viền xe,HAVE
+set_ambient_light,on=true,mở đèn viền xe,HAVE
+set_ambient_light,on=true,bật đèn led viền,HAVE
+set_ambient_light,on=true,mở đèn led viền,HAVE
+set_ambient_light,on=true,bật đèn dải led,HAVE
+set_ambient_light,on=true,bật đèn trang trí,HAVE
+set_ambient_light,on=true,mở đèn trang trí,HAVE
+set_ambient_light,on=true,bật đèn màu,HAVE
+set_ambient_light,on=true,mở đèn màu,HAVE
+set_ambient_light,on=true,bật led nội thất,HAVE
+set_ambient_light,on=true,bật giúp tôi đèn viền,HAVE
+set_ambient_light,on=true,bật giúp tôi đèn viền nhé,HAVE
+set_ambient_light,on=true,bật giúp tôi đèn nội thất,HAVE
+set_ambient_light,on=true,bật giúp tôi đèn cabin,HAVE
+set_ambient_light,on=true,mở đèn viền chế độ hai màu,HAVE
+set_ambient_light,on=true,bật đèn viền chế độ hai màu,HAVE
+set_ambient_light,on=true,chế độ đèn viền hiệu ứng hai màu xen kẽ,HAVE
+set_ambient_light,on=true,đèn viền hiệu ứng hai màu xen kẽ,HAVE
+set_ambient_light,on=true,đèn viền hiệu ứng hai màu,HAVE
+set_ambient_light,on=true,mở đèn viền hai màu,HAVE
+set_ambient_light,on=true,bật đèn viền hai màu,HAVE
+set_ambient_light,on=true,mở giúp tôi đèn viền,HAVE
+set_ambient_light,on=true,mở giúp tôi đèn nội thất,HAVE
+set_ambient_light,on=true,bật đèn viền lên,HAVE
+set_ambient_light,on=true,mở đèn viền lên,HAVE
+set_ambient_light,on=false,tắt đèn,HAVE
+set_ambient_light,on=false,tắt đèn viền,HAVE
+set_ambient_light,on=false,tắt đèn nền,HAVE
+set_ambient_light,on=false,tắt đèn nội thất,HAVE
+set_ambient_light,on=false,đóng đèn viền,HAVE
+set_ambient_light,on=false,tắt đèn trong xe,HAVE
+set_ambient_light,on=false,tắt đèn cabin,HAVE
+set_ambient_light,on=false,tắt điền viên,HAVE
+set_ambient_light,on=false,tắt điền viền,HAVE
+set_ambient_light,on=false,tắt đèn viền nội thất,HAVE
+set_ambient_light,on=false,tắt đèn led xe,HAVE
+set_ambient_light,on=false,tắt đèn trang trí,HAVE
+set_ambient_light,on=false,tối đèn nội thất lại,HAVE
+set_ambient_light,on=false,tắt giúp tôi đèn nội thất nhé,HAVE
+set_ambient_light,on=false,tắt đèn viền xe,HAVE
+set_ambient_light,on=false,đóng đèn viền xe,HAVE
+set_ambient_light,on=false,tắt đèn led viền,HAVE
+set_ambient_light,on=false,tắt đèn dải led,HAVE
+set_ambient_light,on=false,tắt đèn màu,HAVE
+set_ambient_light,on=false,tắt led nội thất,HAVE
+set_ambient_light,on=false,tắt giúp tôi đèn viền,HAVE
+set_ambient_light,on=false,tắt giúp tôi đèn viền nhé,HAVE
+set_ambient_light,on=false,tắt giúp tôi đèn nội thất,HAVE
+set_ambient_light,on=false,tắt giúp tôi đèn cabin,HAVE
+set_ambient_light,on=false,tắt đèn viền đi,HAVE
+set_ambient_light,on=false,đóng đèn viền đi,HAVE
+set_ambient_light,on=false,dẹp đèn viền,HAVE
+set_wifi,on=true,bật mạng không dây,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,mở mạng không dây,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật Wi-Fi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật ngoài phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật oai phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật ngoại phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật quay phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật quai phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,mở wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,kết nối wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật mạng wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,mở mạng wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,kết nối mạng,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,mở ngoài phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,mở ngoại phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,mở quay phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật ngoài fai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật ngoại fai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật ngoài file,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật ngoại file,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,kết nối ngoài phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật giúp tôi wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,bật giúp tôi wifi nhé,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,mở giúp tôi wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=true,kết nối giúp tôi wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt mạng không dây,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,đóng mạng không dây,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt Wi-Fi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt ngoài phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt oai phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt ngoại phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt quay phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt quai phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,ngắt wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt mạng wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,ngắt kết nối wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt kết nối mạng,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,đóng ngoài phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,ngắt ngoài phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,ngắt ngoại phai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt ngoài fai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt ngoại fai,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt ngoài file,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt ngoại file,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt giúp tôi wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt giúp tôi wifi nhé,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,ngắt giúp tôi wifi,DEFERRED (THT mở Wi-Fi Settings)
+set_wifi,on=false,tắt mạng giúp tôi,DEFERRED (THT mở Wi-Fi Settings)
+set_hvac_ac,on=true,bật điều hòa,HAVE
+set_hvac_ac,on=true,bật máy lạnh,HAVE
+set_hvac_ac,on=true,bật điều hoà,HAVE
+set_hvac_ac,on=true,mở máy lạnh,HAVE
+set_hvac_ac,on=true,mở điều hòa,HAVE
+set_hvac_ac,on=true,mở điều hoà,HAVE
+set_hvac_ac,on=true,bật đều hoà,HAVE
+set_hvac_ac,on=true,bật đều hòa,HAVE
+set_hvac_ac,on=true,mở đều hoà,HAVE
+set_hvac_ac,on=true,mở đều hòa,HAVE
+set_hvac_ac,on=true,bật máy lạnh lên,HAVE
+set_hvac_ac,on=true,mở máy lạnh lên,HAVE
+set_hvac_ac,on=true,khởi động điều hòa,HAVE
+set_hvac_ac,on=true,khởi động máy lạnh,HAVE
+set_hvac_ac,on=true,bật lạnh,HAVE
+set_hvac_ac,on=true,bật mát,HAVE
+set_hvac_ac,on=true,mở lạnh,HAVE
+set_hvac_ac,on=true,mở mát,HAVE
+set_hvac_ac,on=true,làm mát xe,HAVE
+set_hvac_ac,on=true,làm lạnh xe,HAVE
+set_hvac_ac,on=true,bật chế độ ac,HAVE
+set_hvac_ac,on=true,bật điều hòa lên,HAVE
+set_hvac_ac,on=true,mở điều hòa lên,HAVE
+set_hvac_ac,on=true,bật lốc lạnh,HAVE
+set_hvac_ac,on=true,mở lốc lạnh,HAVE
+set_hvac_ac,on=true,bật a/c,HAVE
+set_hvac_ac,on=true,mở a/c,HAVE
+set_hvac_ac,on=true,mở a/c lên,HAVE
+set_hvac_ac,on=true,bật a/c lên,HAVE
+set_hvac_ac,on=true,kích hoạt điều hòa,HAVE
+set_hvac_ac,on=true,kích hoạt máy lạnh,HAVE
+set_hvac_ac,on=true,kích hoạt lốc lạnh,HAVE
+set_hvac_ac,on=true,bật giúp tôi điều hòa,HAVE
+set_hvac_ac,on=true,bật giúp tôi điều hòa nhé,HAVE
+set_hvac_ac,on=true,mở giúp tôi điều hòa,HAVE
+set_hvac_ac,on=true,mở giúp tôi điều hòa nhé,HAVE
+set_hvac_ac,on=true,bật giúp tôi máy lạnh,HAVE
+set_hvac_ac,on=true,bật giúp tôi máy lạnh nhé,HAVE
+set_hvac_ac,on=true,mở giúp tôi máy lạnh,HAVE
+set_hvac_ac,on=true,mở giúp tôi máy lạnh nhé,HAVE
+set_hvac_ac,on=true,làm mát xe giúp tôi,HAVE
+set_hvac_ac,on=true,bật điều hòa xe,HAVE
+set_hvac_ac,on=true,mở điều hòa xe,HAVE
+set_hvac_ac,on=true,khởi động máy lạnh xe,HAVE
+set_hvac_ac,on=true,nóng quá,HAVE
+set_hvac_ac,on=true,trời nóng quá,HAVE
+set_hvac_ac,on=true,trong xe nóng quá,HAVE
+set_hvac_ac,on=true,nực quá,HAVE
+set_hvac_ac,on=true,oi bức quá,HAVE
+set_hvac_ac,on=true,cho mát xe đi,HAVE
+set_hvac_ac,on=true,làm mát xe ngay,HAVE
+set_hvac_ac,on=true,bật lạnh sâu,HAVE
+set_hvac_ac,on=true,nóng chết đi được,HAVE
+set_hvac_ac,on=true,nóng thế,HAVE
+set_hvac_ac,on=true,sao nóng thế,HAVE
+set_hvac_ac,on=true,nóng quá bạn ơi,HAVE
+set_hvac_ac,on=false,tắt điều hòa,HAVE
+set_hvac_ac,on=false,tắt máy lạnh,HAVE
+set_hvac_ac,on=false,tắt điều hoà,HAVE
+set_hvac_ac,on=false,đóng điều hòa,HAVE
+set_hvac_ac,on=false,đóng máy lạnh,HAVE
+set_hvac_ac,on=false,tắt đều hoà,HAVE
+set_hvac_ac,on=false,tắt đều hòa,HAVE
+set_hvac_ac,on=false,đóng đều hoà,HAVE
+set_hvac_ac,on=false,đóng đều hòa,HAVE
+set_hvac_ac,on=false,ngắt điều hòa,HAVE
+set_hvac_ac,on=false,ngắt máy lạnh,HAVE
+set_hvac_ac,on=false,tắt điều hòa đi,HAVE
+set_hvac_ac,on=false,tắt máy lạnh đi,HAVE
+set_hvac_ac,on=false,tắt điều hòa li,HAVE
+set_hvac_ac,on=false,tắt lạnh,HAVE
+set_hvac_ac,on=false,tắt mát,HAVE
+set_hvac_ac,on=false,tắt chế độ ac,HAVE
+set_hvac_ac,on=false,ngừng điều hòa,HAVE
+set_hvac_ac,on=false,ngừng máy lạnh,HAVE
+set_hvac_ac,on=false,tắt lốc lạnh,HAVE
+set_hvac_ac,on=false,ngắt lốc lạnh,HAVE
+set_hvac_ac,on=false,tắt a/c,HAVE
+set_hvac_ac,on=false,ngắt a/c,HAVE
+set_hvac_ac,on=false,tắt giúp tôi điều hòa,HAVE
+set_hvac_ac,on=false,tắt giúp tôi điều hòa nhé,HAVE
+set_hvac_ac,on=false,tắt giúp tôi máy lạnh,HAVE
+set_hvac_ac,on=false,tắt giúp tôi máy lạnh nhé,HAVE
+set_hvac_ac,on=false,đóng giúp tôi điều hòa,HAVE
+set_hvac_ac,on=false,tắt điều hòa xe,HAVE
+set_hvac_ac,on=false,tắt máy lạnh xe,HAVE
+set_hvac_ac,on=false,ngừng máy lạnh xe,HAVE
+set_hvac_ac,on=false,lạnh quá,HAVE
+set_hvac_ac,on=false,lạnh cóng,HAVE
+set_hvac_ac,on=false,lạnh buốt,HAVE
+set_hvac_ac,on=false,lạnh run,HAVE
+set_hvac_ac,on=false,trong xe lạnh quá,HAVE
+set_hvac_ac,on=false,rét quá,HAVE
+set_hvac_ac,on=false,buốt quá,HAVE
+set_hvac_ac,on=false,ấm lên tí,HAVE
+set_hvac_ac,on=false,cho ấm xe lên,HAVE
+set_hvac_ac,on=false,tắt lạnh đi,HAVE
+set_hvac_ac,on=false,lạnh thế,HAVE
+set_hvac_ac,on=false,sao lạnh thế,HAVE
+set_hvac_ac,on=false,lạnh teo rồi,HAVE
+set_hvac_temp_step,mode=1,tăng nhiệt độ,HAVE
+set_hvac_temp_step,mode=1,tăng nhiệt độ điều hòa,HAVE
+set_hvac_temp_step,mode=1,tăng nhiệt độ điều hoà,HAVE
+set_hvac_temp_step,mode=1,tăng nhiệt,HAVE
+set_hvac_temp_step,mode=1,tăng thêm độ,HAVE
+set_hvac_temp_step,mode=1,chỉnh nhiệt độ cao hơn,HAVE
+set_hvac_temp_step,mode=1,tăng độ ấm,HAVE
+set_hvac_temp_step,mode=1,tăng nhiệt độ lên,HAVE
+set_hvac_temp_step,mode=1,chỉnh ấm lên,HAVE
+set_hvac_temp_step,mode=1,anh nhiệt độ,HAVE
+set_hvac_temp_step,mode=1,tăng nhiệt độ xe,HAVE
+set_hvac_temp_step,mode=1,cho ấm lên,HAVE
+set_hvac_temp_step,mode=1,tăng nhiệt lên,HAVE
+set_hvac_temp_step,mode=1,nâng nhiệt độ,HAVE
+set_hvac_temp_step,mode=1,nâng nhiệt độ lên,HAVE
+set_hvac_temp_step,mode=1,chỉnh nhiệt lên,HAVE
+set_hvac_temp_step,mode=1,lạnh quá tăng độ lên,HAVE
+set_hvac_temp_step,mode=1,tăng điều hòa,HAVE
+set_hvac_temp_step,mode=1,tăng điều hòa lên,HAVE
+set_hvac_temp_step,mode=1,tăng máy lạnh,HAVE
+set_hvac_temp_step,mode=1,tăng máy lạnh lên,HAVE
+set_hvac_temp_step,mode=1,cho nhiệt độ cao lên,HAVE
+set_hvac_temp_step,mode=1,tăng 1 độ,HAVE
+set_hvac_temp_step,mode=1,tăng một độ,HAVE
+set_hvac_temp_step,mode=1,lạnh quá cho ấm lên,HAVE
+set_hvac_temp_step,mode=1,tăng giúp tôi nhiệt độ,HAVE
+set_hvac_temp_step,mode=1,tăng giúp tôi nhiệt độ nhé,HAVE
+set_hvac_temp_step,mode=1,cho nhiệt độ tăng lên,HAVE
+set_hvac_temp_step,mode=1,cho ấm hơn,HAVE
+set_hvac_temp_step,mode=1,tăng thêm 1 độ,HAVE
+set_hvac_temp_step,mode=1,tăng thêm một độ,HAVE
+set_hvac_temp_step,mode=1,cho ấm hơn chút,HAVE
+set_hvac_temp_step,mode=1,cho ấm thêm,HAVE
+set_hvac_temp_step,mode=1,cho ấm thêm chút,HAVE
+set_hvac_temp_step,mode=1,cho nhiệt độ tăng,HAVE
+set_hvac_temp_step,mode=1,cho ấm hơn tí,HAVE
+set_hvac_temp_step,mode=1,nâng độ lên,HAVE
+set_hvac_temp_step,mode=1,nâng nhiệt lên tí,HAVE
+set_hvac_temp_step,mode=1,ấm hơn,HAVE
+set_hvac_temp_step,mode=1,ấm lên,HAVE
+set_hvac_temp_step,mode=1,ấm thêm,HAVE
+set_hvac_temp_step,mode=1,nóng hơn,HAVE
+set_hvac_temp_step,mode=1,nóng lên,HAVE
+set_hvac_temp_step,mode=-1,giảm nhiệt độ,HAVE
+set_hvac_temp_step,mode=-1,giảm nhiệt độ điều hòa,HAVE
+set_hvac_temp_step,mode=-1,giảm nhiệt độ điều hoà,HAVE
+set_hvac_temp_step,mode=-1,giảm nhiệt,HAVE
+set_hvac_temp_step,mode=-1,giảm bớt độ,HAVE
+set_hvac_temp_step,mode=-1,chỉnh nhiệt độ thấp hơn,HAVE
+set_hvac_temp_step,mode=-1,tăng độ mát,HAVE
+set_hvac_temp_step,mode=-1,giảm nhiệt độ xuống,HAVE
+set_hvac_temp_step,mode=-1,chỉnh mát lên,HAVE
+set_hvac_temp_step,mode=-1,hạ nhiệt độ,HAVE
+set_hvac_temp_step,mode=-1,hạ nhiệt,HAVE
+set_hvac_temp_step,mode=-1,cảm giác độ,HAVE
+set_hvac_temp_step,mode=-1,giảm nhiệt độ xe,HAVE
+set_hvac_temp_step,mode=-1,hạ nhiệt độ xe,HAVE
+set_hvac_temp_step,mode=-1,cho mát lên,HAVE
+set_hvac_temp_step,mode=-1,hạ nhiệt độ xuống,HAVE
+set_hvac_temp_step,mode=-1,giảm nhiệt xuống,HAVE
+set_hvac_temp_step,mode=-1,chỉnh mát hơn,HAVE
+set_hvac_temp_step,mode=-1,chỉnh nhiệt xuống,HAVE
+set_hvac_temp_step,mode=-1,cho lạnh hơn,HAVE
+set_hvac_temp_step,mode=-1,nóng quá giảm độ đi,HAVE
+set_hvac_temp_step,mode=-1,nóng quá giảm độ,HAVE
+set_hvac_temp_step,mode=-1,giảm điều hòa,HAVE
+set_hvac_temp_step,mode=-1,giảm điều hòa xuống,HAVE
+set_hvac_temp_step,mode=-1,giảm máy lạnh,HAVE
+set_hvac_temp_step,mode=-1,giảm máy lạnh xuống,HAVE
+set_hvac_temp_step,mode=-1,hạ điều hòa xuống,HAVE
+set_hvac_temp_step,mode=-1,hạ máy lạnh xuống,HAVE
+set_hvac_temp_step,mode=-1,giảm 1 độ,HAVE
+set_hvac_temp_step,mode=-1,giảm một độ,HAVE
+set_hvac_temp_step,mode=-1,giảm giúp tôi nhiệt độ,HAVE
+set_hvac_temp_step,mode=-1,hạ giúp tôi nhiệt độ,HAVE
+set_hvac_temp_step,mode=-1,giảm giúp tôi nhiệt độ nhé,HAVE
+set_hvac_temp_step,mode=-1,hạ giúp tôi nhiệt độ nhé,HAVE
+set_hvac_temp_step,mode=-1,cho mát hơn,HAVE
+set_hvac_temp_step,mode=-1,giảm thêm 1 độ,HAVE
+set_hvac_temp_step,mode=-1,giảm thêm một độ,HAVE
+set_hvac_temp_step,mode=-1,hạ thêm 1 độ,HAVE
+set_hvac_temp_step,mode=-1,hạ thêm một độ,HAVE
+set_hvac_temp_step,mode=-1,cho mát thêm,HAVE
+set_hvac_temp_step,mode=-1,cho mát thêm tí nữa,HAVE
+set_hvac_temp_step,mode=-1,cho mát thêm chút,HAVE
+set_hvac_temp_step,mode=-1,hạ độ xuống,HAVE
+set_hvac_temp_step,mode=-1,hạ nhiệt xuống,HAVE
+set_hvac_temp_step,mode=-1,cho mát hơn tí,HAVE
+set_hvac_temp_step,mode=-1,cho lạnh hơn chút,HAVE
+set_hvac_temp_step,mode=-1,cho mát xuống,HAVE
+set_hvac_temp_step,mode=-1,mát hơn,HAVE
+set_hvac_temp_step,mode=-1,lạnh hơn,HAVE
+set_hvac_temp_step,mode=-1,mát lên,HAVE
+set_hvac_temp_step,mode=-1,mát thêm,HAVE
+set_hvac_fan_step,mode=1,tăng quạt,HAVE
+set_hvac_fan_step,mode=1,tăng gió,HAVE
+set_hvac_fan_step,mode=1,quạt mạnh hơn,HAVE
+set_hvac_fan_step,mode=1,gió mạnh hơn,HAVE
+set_hvac_fan_step,mode=1,quạt to hơn,HAVE
+set_hvac_fan_step,mode=1,gió to hơn,HAVE
+set_hvac_fan_step,mode=1,cho gió to lên,HAVE
+set_hvac_fan_step,mode=1,tăng tốc độ quạt,HAVE
+set_hvac_fan_step,mode=1,mốt quạt,HAVE
+set_hvac_fan_step,mode=1,bật quạt,HAVE
+set_hvac_fan_step,mode=1,tăng quạt gió điều hòa,HAVE
+set_hvac_fan_step,mode=1,tăng gió điều hòa,HAVE
+set_hvac_fan_step,mode=1,tăng quạt gió,HAVE
+set_hvac_fan_step,mode=1,tăng quạt lên,HAVE
+set_hvac_fan_step,mode=1,tăng gió lên,HAVE
+set_hvac_fan_step,mode=1,cho gió mạnh lên,HAVE
+set_hvac_fan_step,mode=1,quạt gió to lên,HAVE
+set_hvac_fan_step,mode=1,gió to lên,HAVE
+set_hvac_fan_step,mode=1,thổi mạnh lên,HAVE
+set_hvac_fan_step,mode=1,tăng giúp tôi quạt gió,HAVE
+set_hvac_fan_step,mode=1,tăng giúp tôi quạt nhé,HAVE
+set_hvac_fan_step,mode=1,cho quạt mạnh hơn,HAVE
+set_hvac_fan_step,mode=1,thổi gió mạnh lên,HAVE
+set_hvac_fan_step,mode=1,tăng tốc độ gió,HAVE
+set_hvac_fan_step,mode=1,tăng tốc độ gió lên,HAVE
+set_hvac_fan_step,mode=1,cho tốc độ gió cao hơn,HAVE
+set_hvac_fan_step,mode=1,cho quạt mạnh thêm,HAVE
+set_hvac_fan_step,mode=1,quạt mạnh thêm,HAVE
+set_hvac_fan_step,mode=1,quạt to lên,HAVE
+set_hvac_fan_step,mode=1,cho quạt to lên,HAVE
+set_hvac_fan_step,mode=-1,giảm quạt,HAVE
+set_hvac_fan_step,mode=-1,giảm gió,HAVE
+set_hvac_fan_step,mode=-1,quạt nhẹ hơn,HAVE
+set_hvac_fan_step,mode=-1,gió nhẹ hơn,HAVE
+set_hvac_fan_step,mode=-1,quạt nhỏ hơn,HAVE
+set_hvac_fan_step,mode=-1,gió nhỏ hơn,HAVE
+set_hvac_fan_step,mode=-1,hạ quạt,HAVE
+set_hvac_fan_step,mode=-1,hạ gió,HAVE
+set_hvac_fan_step,mode=-1,cho gió nhỏ lại,HAVE
+set_hvac_fan_step,mode=-1,giảm tốc độ quạt,HAVE
+set_hvac_fan_step,mode=-1,giảm quạt gió điều hòa,HAVE
+set_hvac_fan_step,mode=-1,giảm gió điều hòa,HAVE
+set_hvac_fan_step,mode=-1,giảm quạt gió,HAVE
+set_hvac_fan_step,mode=-1,hạ quạt gió,HAVE
+set_hvac_fan_step,mode=-1,giảm quạt xuống,HAVE
+set_hvac_fan_step,mode=-1,giảm gió xuống,HAVE
+set_hvac_fan_step,mode=-1,cho gió nhẹ lại,HAVE
+set_hvac_fan_step,mode=-1,quạt gió nhỏ lại,HAVE
+set_hvac_fan_step,mode=-1,gió nhỏ lại,HAVE
+set_hvac_fan_step,mode=-1,thổi nhẹ lại,HAVE
+set_hvac_fan_step,mode=-1,hạ gió xuống,HAVE
+set_hvac_fan_step,mode=-1,hạ quạt xuống,HAVE
+set_hvac_fan_step,mode=-1,hạ tốc độ gió xuống,HAVE
+set_hvac_fan_step,mode=-1,giảm giúp tôi quạt gió,HAVE
+set_hvac_fan_step,mode=-1,giảm giúp tôi quạt nhé,HAVE
+set_hvac_fan_step,mode=-1,hạ giúp tôi quạt gió,HAVE
+set_hvac_fan_step,mode=-1,hạ giúp tôi quạt nhé,HAVE
+set_hvac_fan_step,mode=-1,cho quạt nhỏ lại,HAVE
+set_hvac_fan_step,mode=-1,giảm tốc độ gió,HAVE
+set_hvac_fan_step,mode=-1,giảm tốc độ gió xuống,HAVE
+set_hvac_fan_step,mode=-1,hạ tốc độ gió,HAVE
+set_hvac_fan_step,mode=-1,cho tốc độ gió thấp hơn,HAVE
+set_hvac_fan_step,mode=-1,quạt nhỏ lại,HAVE
+set_hvac_fan_step,mode=-1,cho quạt thổi nhẹ thôi,HAVE
+set_hvac_fan_step,mode=-1,quạt thổi nhẹ thôi,HAVE
+set_hvac_fan_step,mode=-1,cho quạt nhẹ thôi,HAVE
+set_hvac_recirc,on=true,bật lấy gió trong,HAVE
+set_hvac_recirc,on=true,gió trong,HAVE
+set_hvac_recirc,on=true,lấy gió trong,HAVE
+set_hvac_recirc,on=true,lấy gió trong xe,HAVE
+set_hvac_recirc,on=true,bật gió trong,HAVE
+set_hvac_recirc,on=true,chuyển gió trong,HAVE
+set_hvac_recirc,on=true,chế độ gió trong,HAVE
+set_hvac_recirc,on=true,hút gió trong,HAVE
+set_hvac_recirc,on=true,chuyển giúp tôi sang gió trong,HAVE
+set_hvac_recirc,on=true,chuyển sang lấy gió trong,HAVE
+set_hvac_recirc,on=true,chuyển sang gió trong,HAVE
+set_hvac_recirc,on=true,bật lấy gió trong xe,HAVE
+set_hvac_recirc,on=true,lấy gió trong giúp tôi,HAVE
+set_hvac_recirc,on=true,chế độ lấy gió trong,HAVE
+set_hvac_recirc,on=true,bật tuần hoàn gió trong,HAVE
+set_hvac_recirc,on=true,tuần hoàn gió trong xe,HAVE
+set_hvac_recirc,on=true,tuần hoàn gió trong,HAVE
+set_hvac_recirc,on=true,bật tuần hoàn gió,HAVE
+set_hvac_recirc,on=true,tuần hoàn gió,HAVE
+set_hvac_recirc,on=true,bật tuần hoàn,HAVE
+set_hvac_recirc,on=true,mở tuần hoàn,HAVE
+set_hvac_recirc,on=true,mở tuần hoàn gió,HAVE
+set_hvac_recirc,on=true,mở gió trong,HAVE
+set_hvac_recirc,on=true,tắt lấy gió ngoài,HAVE
+set_hvac_recirc,on=true,tắt lấy gió ngoài xe,HAVE
+set_hvac_recirc,on=true,tắt gió ngoài xe,HAVE
+set_hvac_recirc,on=true,tắt gió ngoài,HAVE
+set_hvac_recirc,on=true,ngoài đường bụi quá,HAVE
+set_hvac_recirc,on=true,khói bụi quá,HAVE
+set_hvac_recirc,on=true,đóng gió ngoài lại,HAVE
+set_hvac_recirc,on=true,khóa gió ngoài,HAVE
+set_hvac_recirc,on=true,bên ngoài hôi quá,HAVE
+set_hvac_recirc,on=true,đóng gió ngoài đi,HAVE
+set_hvac_recirc,on=true,đóng gió ngoài,HAVE
+set_hvac_recirc,on=false,bật lấy gió ngoài,HAVE
+set_hvac_recirc,on=false,gió ngoài,HAVE
+set_hvac_recirc,on=false,lấy gió ngoài,HAVE
+set_hvac_recirc,on=false,lấy gió ngoài xe,HAVE
+set_hvac_recirc,on=false,bật gió ngoài,HAVE
+set_hvac_recirc,on=false,chuyển gió ngoài,HAVE
+set_hvac_recirc,on=false,chế độ gió ngoài,HAVE
+set_hvac_recirc,on=false,mở gió ngoài,HAVE
+set_hvac_recirc,on=false,hút gió ngoài,HAVE
+set_hvac_recirc,on=false,hút gió ngoài xe,HAVE
+set_hvac_recirc,on=false,chuyển giúp tôi sang gió ngoài,HAVE
+set_hvac_recirc,on=false,chuyển sang lấy gió ngoài,HAVE
+set_hvac_recirc,on=false,chuyển sang gió ngoài,HAVE
+set_hvac_recirc,on=false,bật lấy gió ngoài xe,HAVE
+set_hvac_recirc,on=false,lấy gió ngoài giúp tôi,HAVE
+set_hvac_recirc,on=false,chế độ lấy gió ngoài,HAVE
+set_hvac_recirc,on=false,lấy gió từ bên ngoài,HAVE
+set_hvac_recirc,on=false,lấy không khí ngoài,HAVE
+set_hvac_recirc,on=false,lấy không khí bên ngoài,HAVE
+set_hvac_recirc,on=false,tắt tuần hoàn gió,HAVE
+set_hvac_recirc,on=false,tắt tuần hoàn,HAVE
+set_hvac_recirc,on=false,đóng tuần hoàn gió,HAVE
+set_hvac_recirc,on=false,đóng tuần hoàn,HAVE
+set_hvac_recirc,on=false,tắt lấy gió trong xe,HAVE
+set_hvac_recirc,on=false,tắt lấy gió trong,HAVE
+set_hvac_recirc,on=false,tắt gió trong xe,HAVE
+set_hvac_recirc,on=false,tắt gió trong,HAVE
+set_hvac_recirc,on=false,đóng gió trong,HAVE
+set_hvac_recirc,on=false,đóng gió trong lại,HAVE
+set_hvac_recirc,on=false,thông gió ngoài xe,HAVE
+set_hvac_recirc,on=false,thông gió ngoài,HAVE
+set_hvac_recirc,on=false,thông gió cho xe,HAVE
+set_hvac_recirc,on=false,tắt âm hơn,HAVE
+set_hvac_recirc,on=false,trong xe có mùi,HAVE
+set_hvac_recirc,on=false,xe bí quá,HAVE
+set_hvac_recirc,on=false,ngột ngạt quá,HAVE
+set_hvac_recirc,on=false,hút mùi ra,HAVE
+set_hvac_recirc,on=false,cho thoáng xe,HAVE
+set_hvac_recirc,on=false,bí bách quá,HAVE
+set_hvac_recirc,on=false,cho thoáng khí,HAVE
+set_hvac_defrost,on=true,bật sấy kính,HAVE
+set_hvac_defrost,on=true,sấy kính,HAVE
+set_hvac_defrost,on=true,sấy kính lái,HAVE
+set_hvac_defrost,on=true,sấy kính trước,HAVE
+set_hvac_defrost,on=true,sưởi kính,HAVE
+set_hvac_defrost,on=true,bật sưởi kính,HAVE
+set_hvac_defrost,on=true,sấy kính xe,HAVE
+set_hvac_defrost,on=true,bật sấy kính xe,HAVE
+set_hvac_defrost,on=true,bật sấy kính trước,HAVE
+set_hvac_defrost,on=true,bật sấy kính lái xe,HAVE
+set_hvac_defrost,on=true,sấy kính chắn gió,HAVE
+set_hvac_defrost,on=true,bật sấy kính chắn gió,HAVE
+set_hvac_defrost,on=true,bật giúp tôi sấy kính,HAVE
+set_hvac_defrost,on=true,bật giúp tôi sấy kính nhé,HAVE
+set_hvac_defrost,on=true,sấy giúp tôi kính lái,HAVE
+set_hvac_defrost,on=true,sấy kính giúp tôi,HAVE
+set_hvac_defrost,on=true,sấy kính sau,HAVE
+set_hvac_defrost,on=true,bật sấy kính sau,HAVE
+set_hvac_defrost,on=true,sấy kính hậu,HAVE
+set_hvac_defrost,on=true,mở sấy kính lái,HAVE
+set_hvac_defrost,on=true,khử sương kính sau,HAVE
+set_hvac_defrost,on=true,khử sương mù kính sau,HAVE
+set_hvac_defrost,on=true,khử sương kính hậu,HAVE
+set_hvac_defrost,on=true,khử sương phía sau,HAVE
+set_hvac_defrost,on=true,khử sương kính phía sau,HAVE
+set_hvac_defrost,on=true,khử sương mù kính hậu,HAVE
+set_hvac_defrost,on=true,kính bị mờ,HAVE
+set_hvac_defrost,on=true,sương mù bám kính,HAVE
+set_hvac_defrost,on=true,kính đọng nước,HAVE
+set_hvac_defrost,on=true,kính đọng sương,HAVE
+set_hvac_defrost,on=true,làm tan sương kính trước,HAVE
+set_hvac_defrost,on=true,làm mờ sương kính sau,HAVE
+set_hvac_defrost,on=true,sấy kính ngay,HAVE
+set_hvac_defrost,on=true,kính chắn gió bị mờ,HAVE
+set_hvac_defrost,on=false,tắt sấy kính,HAVE
+set_hvac_defrost,on=false,tắt sưởi kính,HAVE
+set_hvac_defrost,on=false,tắt sấy kính xe,HAVE
+set_hvac_defrost,on=false,tắt sưởi kính xe,HAVE
+set_hvac_defrost,on=false,tắt sấy kính trước,HAVE
+set_hvac_defrost,on=false,tắt sấy kính lái,HAVE
+set_hvac_defrost,on=false,tắt giúp tôi sấy kính,HAVE
+set_hvac_defrost,on=false,tắt giúp tôi sấy kính nhé,HAVE
+set_hvac_defrost,on=false,tắt sấy kính giúp tôi,HAVE
+set_hvac_defrost,on=false,tắt sấy kính sau,HAVE
+set_hvac_defrost,on=false,tắt sấy kính hậu,HAVE
+set_hvac_rear_defrost,on=true,bật sấy gương,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,sấy gương,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,sấy gương chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,bật sấy gương chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,sấy gương xe,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,bật sưởi gương,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,sưởi gương,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,sưởi gương chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,sấy kính chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,bật sấy kính chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,mở sấy gương,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,bật sấy gương giúp tôi,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,gương bị mờ,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=true,gương chiếu hậu bị mờ,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=false,tắt sấy gương,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=false,tắt sấy gương chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=false,tắt sưởi gương,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=false,tắt sưởi gương chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=false,tắt sấy kính chiếu hậu,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=false,tắt sấy gương xe,HAVE (alias sấy kính sau + fallback)
+set_hvac_rear_defrost,on=false,tắt sấy gương giúp tôi,HAVE (alias sấy kính sau + fallback)
+set_hvac_eco,on=true,chế độ tiết kiệm điều hòa,HAVE
+set_hvac_eco,on=true,điều hòa tiết kiệm,HAVE
+set_hvac_eco,on=true,bật điều hòa tiết kiệm,HAVE
+set_hvac_eco,on=true,điều hòa eco,HAVE
+set_hvac_eco,on=true,bật eco điều hòa,HAVE
+set_hvac_eco,on=true,chế độ điều hòa tiết kiệm,HAVE
+set_hvac_eco,on=true,bật máy lạnh tiết kiệm,HAVE
+set_hvac_eco,on=true,máy lạnh tiết kiệm,HAVE
+set_hvac_eco,on=false,tắt chế độ tiết kiệm điều hòa,HAVE
+set_hvac_eco,on=false,tắt điều hòa tiết kiệm,HAVE
+set_hvac_eco,on=false,tắt điều hòa eco,HAVE
+set_hvac_eco,on=false,tắt eco điều hòa,HAVE
+set_hvac_eco,on=false,tắt máy lạnh tiết kiệm,HAVE
+set_hvac_eco,on=false,tắt chế độ điều hòa tiết kiệm,HAVE
+set_hvac_fan_direction,direction=FACE,thổi gió vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,chỉnh gió vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,hướng gió vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,chỉnh hướng gió vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,thổi gió lên mặt,HAVE
+set_hvac_fan_direction,direction=FACE,thổi vào người,HAVE
+set_hvac_fan_direction,direction=FACE,thổi gió vào người,HAVE
+set_hvac_fan_direction,direction=FACE,chỉnh gió vào người,HAVE
+set_hvac_fan_direction,direction=FACE,hướng gió vào người,HAVE
+set_hvac_fan_direction,direction=FACE,chỉnh hướng gió vào người,HAVE
+set_hvac_fan_direction,direction=FACE,thổi vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,bật hướng gió vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,bật hướng gió thổi vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,hướng gió thổi vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,bật hướng gió vào thổi vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,bật gió vào mặt,HAVE
+set_hvac_fan_direction,direction=FACE,bật thổi vào mặt,HAVE
+set_hvac_fan_direction,direction=FLOOR,thổi gió xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,chỉnh gió xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,hướng gió xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,chỉnh hướng gió xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,thổi xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,cho gió xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,chỉnh gió thổi xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,hướng gió thổi xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,thổi vào chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,bật hướng gió xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,bật hướng gió thổi xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,bật thổi xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,bật gió xuống chân,HAVE
+set_hvac_fan_direction,direction=FLOOR,hướng gió thổi vào chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,thổi gió mặt và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,thổi gió cả người và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,hướng gió mặt và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,chỉnh gió mặt và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,thổi gió người và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,chỉnh hướng gió mặt và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,bật hướng gió mặt và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,hướng gió thổi mặt và chân,HAVE
+set_hvac_fan_direction,direction=FACE_FLOOR,thổi mặt và chân,HAVE
+set_hvac_fan_direction,direction=DEFROST_FLOOR,thổi gió kính và chân,HAVE
+set_hvac_fan_direction,direction=DEFROST_FLOOR,hướng gió kính và chân,HAVE
+set_hvac_fan_direction,direction=DEFROST_FLOOR,chỉnh gió kính và chân,HAVE
+set_hvac_fan_direction,direction=DEFROST_FLOOR,chỉnh hướng gió kính và chân,HAVE
+set_hvac_fan_direction_auto_cycle,on=true,bật đảo gió tự động,HAVE
+set_hvac_fan_direction_auto_cycle,on=true,bật đảo gió,HAVE
+set_hvac_fan_direction_auto_cycle,on=true,bật tự động đảo gió,HAVE
+set_hvac_fan_direction_auto_cycle,on=true,đảo gió tự động,HAVE
+set_hvac_fan_direction_auto_cycle,on=false,tắt đảo gió tự động,HAVE
+set_hvac_fan_direction_auto_cycle,on=false,tắt đảo gió,HAVE
+set_hvac_fan_direction_auto_cycle,on=false,tắt tự động đảo gió,HAVE
+set_driving_mode,level=ECO,chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,chạy tiết kiệm,HAVE
+set_driving_mode,level=ECO,xe tiết kiệm,HAVE
+set_driving_mode,level=ECO,lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển sang chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển sang lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển sang chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,đổi chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,thay đổi chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,đổi chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,thay đổi chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,đổi sang chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,thay đổi sang chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,đổi sang lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,thay đổi sang lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,đổi sang chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,thay đổi sang chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,bật chế độ lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,bật chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,bật lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,chế độ eco,HAVE
+set_driving_mode,level=ECO,xe eco,HAVE
+set_driving_mode,level=ECO,chế độ lái eco,HAVE
+set_driving_mode,level=ECO,chuyển sang eco,HAVE
+set_driving_mode,level=ECO,chuyển chế độ eco,HAVE
+set_driving_mode,level=ECO,đổi chế độ eco,HAVE
+set_driving_mode,level=ECO,thay đổi chế độ eco,HAVE
+set_driving_mode,level=ECO,đổi sang chế độ eco,HAVE
+set_driving_mode,level=ECO,thay đổi sang chế độ eco,HAVE
+set_driving_mode,level=ECO,chuyển sang chế độ eco,HAVE
+set_driving_mode,level=ECO,chạy eco,HAVE
+set_driving_mode,level=ECO,bật eco,HAVE
+set_driving_mode,level=ECO,chuyển lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,đổi lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,thay đổi lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,chạy tiết kiệm xăng,HAVE
+set_driving_mode,level=ECO,mở chế độ eco,HAVE
+set_driving_mode,level=ECO,bật chế độ lái eco,HAVE
+set_driving_mode,level=ECO,mở chế độ lái eco,HAVE
+set_driving_mode,level=ECO,vào chế độ eco,HAVE
+set_driving_mode,level=ECO,dùng chế độ eco,HAVE
+set_driving_mode,level=ECO,để chế độ eco,HAVE
+set_driving_mode,level=ECO,đặt chế độ eco,HAVE
+set_driving_mode,level=ECO,chạy chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chạy chế độ eco,HAVE
+set_driving_mode,level=ECO,chuyển xe sang chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chế độ tiết kiệm chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,tiết kiệm chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chọn chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chọn chế độ eco,HAVE
+set_driving_mode,level=ECO,chọn lái tiết kiệm,HAVE
+set_driving_mode,level=ECO,lái xe tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển xe sang tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển xe sang eco,HAVE
+set_driving_mode,level=ECO,chạy kiểu tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển giúp tôi sang chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,chuyển giúp tôi sang chế độ tiết kiệm nhé,HAVE
+set_driving_mode,level=ECO,chuyển giúp tôi sang eco,HAVE
+set_driving_mode,level=ECO,chuyển giúp tôi sang eco nhé,HAVE
+set_driving_mode,level=ECO,chọn giúp tôi chế độ tiết kiệm,HAVE
+set_driving_mode,level=ECO,sắp hết pin rồi,HAVE
+set_driving_mode,level=ECO,sắp hết điện,HAVE
+set_driving_mode,level=ECO,tiết kiệm điện thôi,HAVE
+set_driving_mode,level=ECO,chạy tiết kiệm pin,HAVE
+set_driving_mode,level=ECO,đỡ tốn điện,HAVE
+set_driving_mode,level=ECO,chạy giữ pin,HAVE
+set_driving_mode,level=ECO,chuyển cho đồ lái tiếp,HAVE
+set_driving_mode,level=ECO,chuyển chế độ lái tiếp,HAVE
+set_driving_mode,level=ECO,chế độ lái tiếp kiệm,HAVE
+set_driving_mode,level=ECO,đổi sang eco,HAVE
+set_driving_mode,level=ECO,thay đổi sang eco,HAVE
+set_driving_mode,level=COMFORT,chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,chạy thoải mái,HAVE
+set_driving_mode,level=COMFORT,lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,chế độ êm,HAVE
+set_driving_mode,level=COMFORT,chế độ êm ái,HAVE
+set_driving_mode,level=COMFORT,chế độ lái êm ái,HAVE
+set_driving_mode,level=COMFORT,chuyển chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,chuyển chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,chuyển sang chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,chuyển sang lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,chuyển sang chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,đổi chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,thay đổi chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,đổi chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,thay đổi chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,đổi sang chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,thay đổi sang chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,đổi sang lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,thay đổi sang lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,đổi sang chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,thay đổi sang chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,bật chế độ lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,bật chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,bật lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,chế độ lái comfort,HAVE
+set_driving_mode,level=COMFORT,chuyển sang comfort,HAVE
+set_driving_mode,level=COMFORT,chuyển chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,đổi chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,thay đổi chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,đổi sang chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,thay đổi sang chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,chuyển sang chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,chạy comfort,HAVE
+set_driving_mode,level=COMFORT,bật comfort,HAVE
+set_driving_mode,level=COMFORT,chạy êm,HAVE
+set_driving_mode,level=COMFORT,chạy êm ái,HAVE
+set_driving_mode,level=COMFORT,chuyển lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,đổi lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,thay đổi lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,bật chế độ comfort,HAVE
+set_driving_mode,level=COMFORT,bật chế độ êm,HAVE
+set_driving_mode,level=COMFORT,bật chế độ êm ái,HAVE
+set_driving_mode,level=COMFORT,chuyển xe sang chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,chọn chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,chọn chế độ êm ái,HAVE
+set_driving_mode,level=COMFORT,chọn lái thoải mái,HAVE
+set_driving_mode,level=COMFORT,chuyển xe sang thoải mái,HAVE
+set_driving_mode,level=COMFORT,chạy kiểu êm ái,HAVE
+set_driving_mode,level=COMFORT,lái xe êm ái,HAVE
+set_driving_mode,level=COMFORT,chuyển giúp tôi sang chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,chuyển giúp tôi sang chế độ thoải mái nhé,HAVE
+set_driving_mode,level=COMFORT,chuyển giúp tôi sang comfort,HAVE
+set_driving_mode,level=COMFORT,chuyển giúp tôi sang comfort nhé,HAVE
+set_driving_mode,level=COMFORT,chọn giúp tôi chế độ thoải mái,HAVE
+set_driving_mode,level=COMFORT,chạy êm thôi,HAVE
+set_driving_mode,level=COMFORT,êm ái thôi,HAVE
+set_driving_mode,level=COMFORT,điềm đạm thôi,HAVE
+set_driving_mode,level=COMFORT,chạy nhẹ nhàng,HAVE
+set_driving_mode,level=COMFORT,chạy êm ru,HAVE
+set_driving_mode,level=COMFORT,cho xe êm ái,HAVE
+set_driving_mode,level=COMFORT,chế độ lái bình thường,HAVE
+set_driving_mode,level=COMFORT,chế độ bình thường,HAVE
+set_driving_mode,level=COMFORT,lái bình thường,HAVE
+set_driving_mode,level=COMFORT,chuyển chế độ lái bình thường,HAVE
+set_driving_mode,level=COMFORT,chuyển sang chế độ bình thường,HAVE
+set_driving_mode,level=COMFORT,đổi chế độ lái bình thường,HAVE
+set_driving_mode,level=COMFORT,thay đổi chế độ lái bình thường,HAVE
+set_driving_mode,level=COMFORT,chế độ lái normal,HAVE
+set_driving_mode,level=COMFORT,chế độ normal,HAVE
+set_driving_mode,level=COMFORT,chuyển sang normal,HAVE
+set_driving_mode,level=COMFORT,lái normal,HAVE
+set_driving_mode,level=COMFORT,chế độ thường,HAVE
+set_driving_mode,level=COMFORT,chế độ lái thường,HAVE
+set_driving_mode,level=COMFORT,chuyển sang chế độ lái normal,HAVE
+set_driving_mode,level=COMFORT,chuyển chế độ lái normal,HAVE
+set_driving_mode,level=COMFORT,đổi sang chế độ lái normal,HAVE
+set_driving_mode,level=COMFORT,thay đổi sang chế độ lái normal,HAVE
+set_driving_mode,level=COMFORT,đổi chế độ lái normal,HAVE
+set_driving_mode,level=COMFORT,thay đổi chế độ lái normal,HAVE
+set_driving_mode,level=SPORT,chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,chạy thể thao,HAVE
+set_driving_mode,level=SPORT,xe thể thao,HAVE
+set_driving_mode,level=SPORT,lái thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển xe sang sport,HAVE
+set_driving_mode,level=SPORT,đổi xe sang sport,HAVE
+set_driving_mode,level=SPORT,thay đổi xe sang sport,HAVE
+set_driving_mode,level=SPORT,đổi xe sang thể thao,HAVE
+set_driving_mode,level=SPORT,thay đổi xe sang thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển sang chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển sang lái thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển sang chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,đổi chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,thay đổi chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,đổi chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,thay đổi chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,đổi sang chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,thay đổi sang chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,đổi sang lái thể thao,HAVE
+set_driving_mode,level=SPORT,thay đổi sang lái thể thao,HAVE
+set_driving_mode,level=SPORT,đổi sang chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,thay đổi sang chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,bật chế độ lái thể thao,HAVE
+set_driving_mode,level=SPORT,bật chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,bật lái thể thao,HAVE
+set_driving_mode,level=SPORT,chế độ sport,HAVE
+set_driving_mode,level=SPORT,xe sport,HAVE
+set_driving_mode,level=SPORT,chế độ lái sport,HAVE
+set_driving_mode,level=SPORT,chuyển sang sport,HAVE
+set_driving_mode,level=SPORT,chuyển chế độ sport,HAVE
+set_driving_mode,level=SPORT,đổi chế độ sport,HAVE
+set_driving_mode,level=SPORT,thay đổi chế độ sport,HAVE
+set_driving_mode,level=SPORT,đổi sang chế độ sport,HAVE
+set_driving_mode,level=SPORT,thay đổi sang chế độ sport,HAVE
+set_driving_mode,level=SPORT,chuyển sang chế độ sport,HAVE
+set_driving_mode,level=SPORT,chạy sport,HAVE
+set_driving_mode,level=SPORT,bật sport,HAVE
+set_driving_mode,level=SPORT,chạy bốc,HAVE
+set_driving_mode,level=SPORT,chế độ bốc,HAVE
+set_driving_mode,level=SPORT,chuyển lái thể thao,HAVE
+set_driving_mode,level=SPORT,đổi lái thể thao,HAVE
+set_driving_mode,level=SPORT,thay đổi lái thể thao,HAVE
+set_driving_mode,level=SPORT,cho xe chạy thể thao,HAVE
+set_driving_mode,level=SPORT,chạy chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển xe sang chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chọn chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chọn chế độ sport,HAVE
+set_driving_mode,level=SPORT,chọn lái thể thao,HAVE
+set_driving_mode,level=SPORT,lái xe thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển xe sang thể thao,HAVE
+set_driving_mode,level=SPORT,chạy kiểu thể thao,HAVE
+set_driving_mode,level=SPORT,lái bốc,HAVE
+set_driving_mode,level=SPORT,tăng tốc thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển giúp tôi sang chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chuyển giúp tôi sang chế độ thể thao nhé,HAVE
+set_driving_mode,level=SPORT,chuyển giúp tôi sang sport,HAVE
+set_driving_mode,level=SPORT,chuyển giúp tôi sang sport nhé,HAVE
+set_driving_mode,level=SPORT,chọn giúp tôi chế độ thể thao,HAVE
+set_driving_mode,level=SPORT,chọn giúp tôi chế độ bốc,HAVE
+set_driving_mode,level=SPORT,lái bốc giúp tôi,HAVE
+set_driving_mode,level=SPORT,cho xe chạy bốc,HAVE
+set_driving_mode,level=SPORT,xe chạy yếu quá,HAVE
+set_driving_mode,level=SPORT,vọt lên nào,HAVE
+set_driving_mode,level=SPORT,tăng tốc nào,HAVE
+set_driving_mode,level=SPORT,đạp bốc lên,HAVE
+set_driving_mode,level=SPORT,chạy bốc lên,HAVE
+set_driving_mode,level=SPORT,chạy thể thao nào,HAVE
+set_driving_mode,level=SPORT,tăng lực kéo,HAVE
+set_driving_mode,level=SPORT,chạy nhanh lên,HAVE
+set_driving_mode,level=SPORT,bốc lên em,HAVE
+set_driving_mode,level=SPORT,vọt lên em,HAVE
+set_driving_mode,level=SPORT,cho xe bốc lên,HAVE
+set_regen_level,level=LOW,hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,hồi năng thấp,HAVE
+set_regen_level,level=LOW,tái sinh thấp,HAVE
+set_regen_level,level=LOW,phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,tái sinh năng lượng thấp,HAVE
+set_regen_level,level=LOW,tái tạo năng lượng thấp,HAVE
+set_regen_level,level=LOW,tái tạo năng lượng yếu,HAVE
+set_regen_level,level=LOW,bàn đạp phanh thấp,HAVE
+set_regen_level,level=LOW,chế độ phanh thấp,HAVE
+set_regen_level,level=LOW,cảm giác phanh thấp,HAVE
+set_regen_level,level=LOW,phanh thấp,HAVE
+set_regen_level,level=LOW,mức phanh thấp,HAVE
+set_regen_level,level=LOW,chuyển phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,chuyển sang phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,đổi phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,thay đổi phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,đổi sang phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,thay đổi sang phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,bật phanh tái sinh thấp,HAVE
+set_regen_level,level=LOW,chuyển hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,chuyển sang hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,đổi hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,thay đổi hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,đổi sang hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,thay đổi sang hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,chuyển bàn đạp phanh thấp,HAVE
+set_regen_level,level=LOW,chuyển sang bàn đạp phanh thấp,HAVE
+set_regen_level,level=LOW,đổi bàn đạp phanh thấp,HAVE
+set_regen_level,level=LOW,thay đổi bàn đạp phanh thấp,HAVE
+set_regen_level,level=LOW,đổi sang bàn đạp phanh thấp,HAVE
+set_regen_level,level=LOW,thay đổi sang bàn đạp phanh thấp,HAVE
+set_regen_level,level=LOW,chuyển tái sinh thấp,HAVE
+set_regen_level,level=LOW,đổi tái sinh thấp,HAVE
+set_regen_level,level=LOW,thay đổi tái sinh thấp,HAVE
+set_regen_level,level=LOW,tái sinh nhẹ,HAVE
+set_regen_level,level=LOW,bật tái tạo năng lượng thấp,HAVE
+set_regen_level,level=LOW,bật tái tạo năng lượng yếu,HAVE
+set_regen_level,level=LOW,bật hồi năng lượng thấp,HAVE
+set_regen_level,level=LOW,bật hồi năng lượng yếu,HAVE
+set_regen_level,level=LOW,bật tái sinh thấp,HAVE
+set_regen_level,level=LOW,bật tái sinh năng lượng thấp,HAVE
+set_regen_level,level=LOW,hồi năng lượng nhẹ,HAVE
+set_regen_level,level=LOW,phanh tái sinh nhẹ,HAVE
+set_regen_level,level=LOW,hồi năng lượng yếu,HAVE
+set_regen_level,level=LOW,phanh tái sinh yếu,HAVE
+set_regen_level,level=LOW,hồi năng lượng nhỏ nhất,HAVE
+set_regen_level,level=LOW,phanh tái sinh nhỏ nhất,HAVE
+set_regen_level,level=LOW,đặt hồi năng lượng mức một,HAVE
+set_regen_level,level=LOW,hồi năng lượng mức một,HAVE
+set_regen_level,level=LOW,hồi năng lượng số một,HAVE
+set_regen_level,level=LOW,phanh tái sinh mức một,HAVE
+set_regen_level,level=LOW,phanh tái sinh số một,HAVE
+set_regen_level,level=LOW,đặt tái sinh mức một,HAVE
+set_regen_level,level=LOW,chỉnh hồi năng lượng mức một,HAVE
+set_regen_level,level=LOW,đặt giúp tôi hồi năng lượng mức một,HAVE
+set_regen_level,level=LOW,chuyển giúp tôi hồi năng lượng mức một,HAVE
+set_regen_level,level=LOW,chế độ tái sinh mức thấp,HAVE
+set_regen_level,level=LOW,chế độ tái sinh thấp,HAVE
+set_regen_level,level=LOW,tái sinh mức thấp,HAVE
+set_regen_level,level=LOW,năng lượng thấp,HAVE
+set_regen_level,level=LOW,phân mức thấp,HAVE
+set_regen_level,level=LOW,phanh mức thấp,HAVE
+set_regen_level,level=MEDIUM,hồi năng lượng trung bình,HAVE
+set_regen_level,level=MEDIUM,hồi năng lượng vừa,HAVE
+set_regen_level,level=MEDIUM,hồi năng vừa,HAVE
+set_regen_level,level=MEDIUM,tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,phanh tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,phanh tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,tái tạo năng lượng vừa,HAVE
+set_regen_level,level=MEDIUM,bàn đạp phanh vừa,HAVE
+set_regen_level,level=MEDIUM,bàn đạp phanh trung bình,HAVE
+set_regen_level,level=MEDIUM,chế độ phanh vừa,HAVE
+set_regen_level,level=MEDIUM,chế độ phanh trung bình,HAVE
+set_regen_level,level=MEDIUM,cảm giác phanh vừa,HAVE
+set_regen_level,level=MEDIUM,cảm giác phanh trung bình,HAVE
+set_regen_level,level=MEDIUM,phanh vừa,HAVE
+set_regen_level,level=MEDIUM,phanh trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển phanh tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển phanh tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,chuyển sang phanh tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển sang phanh tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,đổi phanh tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,thay đổi phanh tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,đổi phanh tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,thay đổi phanh tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,bật phanh tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,bật phanh tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,bật tái tạo năng lượng vừa,HAVE
+set_regen_level,level=MEDIUM,bật tái tạo năng lượng trung bình,HAVE
+set_regen_level,level=MEDIUM,bật hồi năng lượng vừa,HAVE
+set_regen_level,level=MEDIUM,bật hồi năng lượng trung bình,HAVE
+set_regen_level,level=MEDIUM,bật tái sinh vừa,HAVE
+set_regen_level,level=MEDIUM,bật tái sinh trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển hồi năng lượng trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển hồi năng lượng vừa,HAVE
+set_regen_level,level=MEDIUM,chuyển sang hồi năng lượng trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển sang hồi năng lượng vừa,HAVE
+set_regen_level,level=MEDIUM,chuyển bàn đạp phanh trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển bàn đạp phanh vừa,HAVE
+set_regen_level,level=MEDIUM,chuyển sang bàn đạp phanh trung bình,HAVE
+set_regen_level,level=MEDIUM,chuyển sang bàn đạp phanh vừa,HAVE
+set_regen_level,level=MEDIUM,đặt hồi năng lượng mức hai,HAVE
+set_regen_level,level=MEDIUM,hồi năng lượng mức hai,HAVE
+set_regen_level,level=MEDIUM,hồi năng lượng số hai,HAVE
+set_regen_level,level=MEDIUM,phanh tái sinh mức hai,HAVE
+set_regen_level,level=MEDIUM,phanh tái sinh số hai,HAVE
+set_regen_level,level=MEDIUM,đặt tái sinh mức hai,HAVE
+set_regen_level,level=MEDIUM,chỉnh hồi năng lượng mức hai,HAVE
+set_regen_level,level=MEDIUM,đặt giúp tôi hồi năng lượng mức hai,HAVE
+set_regen_level,level=MEDIUM,chuyển giúp tôi hồi năng lượng mức hai,HAVE
+set_regen_level,level=HIGH,hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,hồi năng cao,HAVE
+set_regen_level,level=HIGH,tái sinh cao,HAVE
+set_regen_level,level=HIGH,phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,hồi năng lượng mạnh nhất,HAVE
+set_regen_level,level=HIGH,tái sinh năng lượng cao,HAVE
+set_regen_level,level=HIGH,tái tạo năng lượng cao,HAVE
+set_regen_level,level=HIGH,bàn đạp phanh cao,HAVE
+set_regen_level,level=HIGH,bàn đạp phanh mạnh,HAVE
+set_regen_level,level=HIGH,chế độ phanh cao,HAVE
+set_regen_level,level=HIGH,cảm giác phanh cao,HAVE
+set_regen_level,level=HIGH,phanh cao,HAVE
+set_regen_level,level=HIGH,mức phanh cao,HAVE
+set_regen_level,level=HIGH,chuyển phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,chuyển sang phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,đổi phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,thay đổi phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,đổi sang phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,thay đổi sang phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,bật phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,bật tái tạo năng lượng cao,HAVE
+set_regen_level,level=HIGH,bật hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,bật tái sinh cao,HAVE
+set_regen_level,level=HIGH,bật tái sinh năng lượng cao,HAVE
+set_regen_level,level=HIGH,chuyển hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,chuyển sang hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,đổi hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,thay đổi hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,đổi sang hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,thay đổi sang hồi năng lượng cao,HAVE
+set_regen_level,level=HIGH,chuyển bàn đạp phanh cao,HAVE
+set_regen_level,level=HIGH,chuyển sang bàn đạp phanh cao,HAVE
+set_regen_level,level=HIGH,đổi bàn đạp phanh cao,HAVE
+set_regen_level,level=HIGH,thay đổi bàn đạp phanh cao,HAVE
+set_regen_level,level=HIGH,đổi sang bàn đạp phanh cao,HAVE
+set_regen_level,level=HIGH,thay đổi sang bàn đạp phanh cao,HAVE
+set_regen_level,level=HIGH,hồi năng lượng mạnh,HAVE
+set_regen_level,level=HIGH,phanh tái sinh mạnh,HAVE
+set_regen_level,level=HIGH,hồi năng lượng lớn nhất,HAVE
+set_regen_level,level=HIGH,phanh tái sinh mạnh nhất,HAVE
+set_regen_level,level=HIGH,đặt hồi năng lượng mức ba,HAVE
+set_regen_level,level=HIGH,hồi năng lượng mức ba,HAVE
+set_regen_level,level=HIGH,hồi năng lượng số ba,HAVE
+set_regen_level,level=HIGH,phanh tái sinh mức ba,HAVE
+set_regen_level,level=HIGH,phanh tái sinh số ba,HAVE
+set_regen_level,level=HIGH,đặt tái sinh mức ba,HAVE
+set_regen_level,level=HIGH,chỉnh hồi năng lượng mức ba,HAVE
+set_regen_level,level=HIGH,đặt giúp tôi hồi năng lượng mức ba,HAVE
+set_regen_level,level=HIGH,chuyển giúp tôi hồi năng lượng mức ba,HAVE
+set_regen_level,level=HIGH,phanh tái sinh mức cao,HAVE
+set_regen_level,level=HIGH,hồi năng lượng mức cao,HAVE
+set_regen_level,level=HIGH,mức độ phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,chỉnh mức độ phanh tái sinh mức cao,HAVE
+set_regen_level,level=HIGH,chỉnh phanh tái sinh mức cao,HAVE
+set_regen_level,level=HIGH,đặt phanh tái sinh mức cao,HAVE
+set_regen_level,level=HIGH,chỉnh mức độ phanh tái sinh cao,HAVE
+set_regen_level,level=HIGH,chỉnh hồi năng lượng mức cao,HAVE
+set_avas_mute,on=true,tắt avas,DEFERRED
+set_avas_mute,on=true,tắt tiếng cảnh báo xe,DEFERRED
+set_avas_mute,on=true,tắt tiếng cảnh báo,DEFERRED
+set_avas_mute,on=true,tắt tiếng avas,DEFERRED
+set_avas_mute,on=true,tắt âm cảnh báo người đi bộ,DEFERRED
+set_avas_mute,on=true,tắt chuông avas,DEFERRED
+set_avas_mute,on=true,tắt âm thanh cảnh báo đi bộ,DEFERRED
+set_avas_mute,on=true,tắt a vát,DEFERRED
+set_avas_mute,on=true,tắt a vát s,DEFERRED
+set_avas_mute,on=true,tắt a va s,DEFERRED
+set_avas_mute,on=true,tắt âm thanh người đi bộ,DEFERRED
+set_avas_mute,on=true,tắt còi cảnh báo người đi bộ,DEFERRED
+set_avas_mute,on=true,im lặng avas,DEFERRED
+set_avas_mute,on=true,tắt giúp tôi tiếng cảnh báo,DEFERRED
+set_avas_mute,on=true,tắt còi cảnh báo,DEFERRED
+set_avas_mute,on=true,tắt âm cảnh báo,DEFERRED
+set_avas_mute,on=true,tắt loa cảnh báo,DEFERRED
+set_avas_mute,on=true,tắt âm thanh cảnh báo,DEFERRED
+set_avas_mute,on=true,tắt loa cảnh báo người đi bộ,DEFERRED
+set_avas_mute,on=false,bật avas,DEFERRED
+set_avas_mute,on=false,mở avas,DEFERRED
+set_avas_mute,on=false,mở âm cảnh báo người đi bộ,DEFERRED
+set_avas_mute,on=false,mở tiếng cảnh báo xe,DEFERRED
+set_avas_mute,on=false,bật tiếng cảnh báo xe,DEFERRED
+set_avas_mute,on=false,bật lại tiếng avas,DEFERRED
+set_avas_mute,on=false,bật chuông cảnh báo người đi bộ,DEFERRED
+set_avas_mute,on=false,bật a vát,DEFERRED
+set_avas_mute,on=false,bật a vát s,DEFERRED
+set_avas_mute,on=false,bật a va s,DEFERRED
+set_avas_mute,on=false,bật tiếng cảnh báo,DEFERRED
+set_avas_mute,on=false,bật tiếng avas,DEFERRED
+set_avas_mute,on=false,bật âm thanh người đi bộ,DEFERRED
+set_avas_mute,on=false,mở tiếng cảnh báo,DEFERRED
+set_avas_mute,on=false,bật lại tiếng cảnh báo,DEFERRED
+set_avas_mute,on=false,bật còi cảnh báo,DEFERRED
+set_avas_mute,on=false,bật âm cảnh báo,DEFERRED
+set_avas_mute,on=false,bật loa cảnh báo,DEFERRED
+set_avas_mute,on=false,bật âm thanh cảnh báo,DEFERRED
+set_avas_mute,on=false,mở loa cảnh báo người đi bộ,DEFERRED
+navigate,target=cây xăng gần đây,tìm cây xăng gần nhất,HAVE
+navigate,target=cây xăng gần đây,cây xăng gần nhất,HAVE
+navigate,target=cây xăng gần đây,cây xăng gần đây,HAVE
+navigate,target=cây xăng gần đây,tìm cây xăng gần đây,HAVE
+navigate,target=cây xăng gần đây,tìm trạm xăng gần nhất,HAVE
+navigate,target=cây xăng gần đây,trạm xăng gần nhất,HAVE
+navigate,target=cây xăng gần đây,trạm xăng gần đây,HAVE
+navigate,target=cây xăng gần đây,tìm chỗ đổ xăng,HAVE
+navigate,target=cây xăng gần đây,chỗ đổ xăng gần nhất,HAVE
+navigate,target=cây xăng gần đây,tìm chỗ đổ xăng gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,tìm trạm sạc gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,trạm sạc gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,trạm sạc gần đây,HAVE
+navigate,target=trạm sạc xe điện gần đây,tìm trạm sạc gần đây,HAVE
+navigate,target=trạm sạc xe điện gần đây,tìm chỗ sạc gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,chỗ sạc gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,trạm sạc xe điện gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,tìm trụ sạc gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,trụ sạc gần nhất,HAVE
+navigate,target=trạm sạc xe điện gần đây,tìm chỗ sạc điện gần nhất,HAVE
+navigate,target=lại,dẫn đường lại,HAVE
+navigate,target=lại,chỉ đường lại,HAVE
+navigate,target=lại,tìm đường lại,HAVE
+navigate,target=lại,điều hướng lại,HAVE
+navigate,target=lại,bật dẫn đường lại,HAVE
+navigate,target=lại,mở dẫn đường lại,HAVE
+navigate,target=lại,tiếp tục dẫn đường,HAVE
+navigate,target=lại,dẫn đường tiếp,HAVE
+navigate,target=lại,tiếp tục chỉ đường,HAVE
+set_hvac_defog,,khử sương,TODO (alias sấy kính trước)
+set_hvac_defog,,khử sương kính lái,TODO (alias sấy kính trước)
+set_hvac_defog,,khử sương kính,TODO (alias sấy kính trước)
+set_hvac_defog,,khử sương mù,TODO (alias sấy kính trước)
+set_hvac_defog,,khử sương kính trước,TODO (alias sấy kính trước)
+set_hvac_defog,,khử sương mù kính trước,TODO (alias sấy kính trước)
+set_hvac_defog,,khử sương mù kính lái,TODO (alias sấy kính trước)
+set_hvac_defog,,khử sương mù kính chắn gió,TODO (alias sấy kính trước)
+set_hvac_defog,,chế độ khử sương,TODO (alias sấy kính trước)
+set_hvac_defog,,bật khử sương,TODO (alias sấy kính trước)
+set_hvac_defog,,hút ẩm kính,TODO (alias sấy kính trước)
+set_hvac_defog,,làm khô kính,TODO (alias sấy kính trước)
+set_scene,scene=REST,chế độ nghỉ ngơi,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,nghỉ ngơi,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,bật chế độ nghỉ ngơi,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,chế độ thư giãn,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,nghỉ ngơi trong xe,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,chế độ nghỉ trưa,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,nghỉ trưa,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,ngủ trưa,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,chợp mắt,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,bật chế độ nghỉ trưa,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=REST,chế độ nap,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=CAMPING,chế độ cắm trại,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=CAMPING,cắm trại,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=CAMPING,bật chế độ cắm trại,HAVE (mở màn hình; chưa ghi trạng thái scene)
+set_scene,scene=CAMPING,đi cắm trại,HAVE (mở màn hình; chưa ghi trạng thái scene)
+find_car,pattern=1;seconds=5.0,tìm xe của tôi,NO_MAPPING
+find_car,pattern=1;seconds=5.0,bấm còi tìm xe,NO_MAPPING
+find_car,pattern=1;seconds=5.0,nháy đèn tìm xe,NO_MAPPING
+find_car,pattern=1;seconds=5.0,phát tín hiệu tìm xe,NO_MAPPING
+find_car,pattern=1;seconds=5.0,bấm còi báo vị trí,NO_MAPPING
+find_car,pattern=1;seconds=5.0,tìm xe trong bãi,NO_MAPPING
+find_car,pattern=1;seconds=5.0,tìm vị trí xe,NO_MAPPING
+find_car,pattern=1;seconds=5.0,bấm còi định vị xe,NO_MAPPING
+set_door_lock,on=true,khóa cửa,HAVE
+set_door_lock,on=true,khóa xe,HAVE
+set_door_lock,on=true,chốt cửa,HAVE
+set_door_lock,on=true,chốt cửa xe,HAVE
+set_door_lock,on=true,khóa toàn bộ cửa,HAVE
+set_door_lock,on=true,khóa hết cửa,HAVE
+set_door_lock,on=true,khóa tất cả cửa,HAVE
+set_door_lock,on=true,chốt toàn bộ cửa,HAVE
+set_door_lock,on=true,chốt hết cửa,HAVE
+set_door_lock,on=true,khóa cửa xe,HAVE
+set_door_lock,on=true,khóa toàn bộ cửa xe,HAVE
+set_door_lock,on=true,khóa các cửa,HAVE
+set_door_lock,on=true,khóa hết các cửa,HAVE
+set_door_lock,on=true,khóa chốt cửa,HAVE
+set_door_lock,on=true,khóa chốt cửa xe,HAVE
+set_door_lock,on=true,chốt toàn bộ cửa xe,HAVE
+set_door_lock,on=true,khóa bốn cửa,HAVE
+set_door_lock,on=true,chốt bốn cửa,HAVE
+set_door_lock,on=true,khóa 4 cửa,HAVE
+set_door_lock,on=true,chốt an toàn các cửa,HAVE
+set_door_lock,on=true,khóa giúp tôi cửa xe,HAVE
+set_door_lock,on=true,khóa giúp tôi cửa xe nhé,HAVE
+set_door_lock,on=true,khóa giúp tôi xe,HAVE
+set_door_lock,on=true,khóa giúp tôi xe nhé,HAVE
+set_door_lock,on=true,khóa tất cả các cửa,HAVE
+set_door_lock,on=true,khóa tất cả các cửa lại,HAVE
+set_door_lock,on=true,khóa hết các cửa lại,HAVE
+set_door_lock,on=true,khóa toàn bộ các cửa lại,HAVE
+set_door_lock,on=true,khóa toàn bộ cửa lại,HAVE
+set_door_lock,on=true,khóa tất cả cửa lại,HAVE
+set_door_lock,on=true,khóa hết cửa lại,HAVE
+set_door_lock,on=true,khóa 4 cửa lại,HAVE
+set_door_lock,on=true,khóa bốn cửa lại,HAVE
+set_door_lock,on=true,khóa các cửa lại,HAVE
+set_door_lock,on=true,khóa cửa lại,HAVE
+set_door_lock,on=true,khóa cửa xe lại,HAVE
+set_door_lock,on=true,đóng chốt cửa,HAVE
+set_door_lock,on=true,đóng chốt cửa xe,HAVE
+set_door_lock,on=true,đóng chốt xe,HAVE
+set_door_lock,on=false,mở cửa,HAVE
+set_door_lock,on=false,mở cửa xe,HAVE
+set_door_lock,on=false,mở hết cửa,HAVE
+set_door_lock,on=false,mở chốt,HAVE
+set_door_lock,on=false,mở toàn bộ cửa xe,HAVE
+set_door_lock,on=false,mở các cửa,HAVE
+set_door_lock,on=false,mở hết các cửa,HAVE
+set_door_lock,on=false,mở tất cả các cửa,HAVE
+set_door_lock,on=false,mở tất cả cửa,HAVE
+set_door_lock,on=false,mở hết tất cả các cửa,HAVE
+set_door_lock,on=false,mở hết tất cả cửa,HAVE
+set_door_lock,on=false,mở hết toàn bộ các cửa,HAVE
+set_door_lock,on=false,mở khóa cửa,HAVE
+set_door_lock,on=false,mở khóa xe,HAVE
+set_door_lock,on=false,mở chốt cửa,HAVE
+set_door_lock,on=false,mở toàn bộ cửa,HAVE
+set_door_lock,on=false,mở hết khóa cửa,HAVE
+set_door_lock,on=false,mở tất cả khóa cửa,HAVE
+set_door_lock,on=false,mở chốt toàn bộ cửa,HAVE
+set_door_lock,on=false,mở khóa cửa xe,HAVE
+set_door_lock,on=false,mở chốt xe,HAVE
+set_door_lock,on=false,mở chốt cửa xe,HAVE
+set_door_lock,on=false,mở chốt toàn bộ cửa xe,HAVE
+set_door_lock,on=false,mở khóa bốn cửa,HAVE
+set_door_lock,on=false,mở chốt bốn cửa,HAVE
+set_door_lock,on=false,mở khóa 4 cửa,HAVE
+set_door_lock,on=false,mở giúp tôi cửa xe,HAVE
+set_door_lock,on=false,mở giúp tôi cửa xe nhé,HAVE
+set_door_lock,on=false,mở giúp tôi xe,HAVE
+set_door_lock,on=false,mở giúp tôi xe nhé,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở hai kính phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kính hàng ghế trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kính phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ hai kính phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ kính hàng ghế trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,xuống kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,xuống hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,kéo hai kính trước xuống,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở hai cửa kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ hai cửa kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở 2 kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ 2 kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở hai cánh trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ hai cánh trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở 2 cánh trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ 2 cánh trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kính trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kính phía trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kính trái và phải phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kính trước trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ kính trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ kính trái và phải phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở cả hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ cả hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kênh phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kênh trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ kênh phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở hai kiếng phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kiếng hàng ghế trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở kiếng phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ hai kiếng phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ kiếng hàng ghế trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,xuống kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,xuống hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,kéo hai kiếng trước xuống,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở hai cửa kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ hai cửa kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở 2 kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ 2 kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,mở cả hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=100,hạ cả hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng hai kính phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kính hàng ghế trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kính phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai kính phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng cả hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng 2 kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng cả 2 kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai kính trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng 2 kính trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai cánh trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng 2 cánh trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai cánh trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng 2 cánh trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên hai kính phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên cả hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên cả 2 kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên kính hàng ghế trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên 2 kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,kéo hai kính trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,kéo 2 kính trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,kéo cả hai kính trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kín kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng hai cửa kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng 2 kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kính trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kính phía trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kính trái và phải phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kính trước trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng kính trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng kính trái và phải phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên kính trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên kính phía trước bên trái và phải,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng cả hai kính trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kênh phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kênh trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng kênh phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên kênh phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên kênh trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng hai kiếng phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kiếng hàng ghế trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kiếng phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai kiếng phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng cả hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng 2 kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng cả 2 kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng hai kiếng trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,nâng 2 kiếng trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên hai kiếng phía trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên cả hai kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên cả 2 kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,lên 2 kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,kéo hai kiếng trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,kéo 2 kiếng trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,kéo cả hai kiếng trước lên,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng kín kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng hai cửa kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng 2 kiếng trước,HAVE
+set_window,target=FRONT_PAIR;percent=0,đóng cả hai kiếng trước,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở hai kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kính hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở các kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ hai kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ kính hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống kính hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=100,kéo hai kính sau xuống,HAVE
+set_window,target=REAR_PAIR;percent=100,mở hai cửa kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ hai cửa kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở 2 kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở hai kính sau lại,HAVE
+set_window,target=REAR_PAIR;percent=100,mở 2 kính sau lại,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kênh phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kênh sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ kênh phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kính phía sau bên trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kính trái và phải phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kính sau bên trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kính sau trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ kính phía sau bên trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ kính trái và phải phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở cả hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ cả hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở hai kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở kiếng hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở các kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ hai kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ kiếng hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống kiếng hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=100,kéo hai kiếng sau xuống,HAVE
+set_window,target=REAR_PAIR;percent=100,mở hai cửa kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ hai cửa kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,xuống 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở 2 kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=100,mở cả hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=100,hạ cả hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng hai kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng các kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng hai kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng cả hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng cả 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên hai kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên cả hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên cả 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên các kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên 2 kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên kính hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,kéo hai kính sau lên,HAVE
+set_window,target=REAR_PAIR;percent=0,kéo 2 kính sau lên,HAVE
+set_window,target=REAR_PAIR;percent=0,kéo cả hai kính sau lên,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kín kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng hai cửa kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng 2 kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng 2 kính phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng hai kính sau lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng 2 kính sau lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kênh phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kênh sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng kênh phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên kênh phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên kênh sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính phía sau bên trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính trái và phải phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính sau bên trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính sau trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng kính phía sau bên trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng kính trái và phải phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên kính phía sau bên trái và phải,HAVE
+set_window,target=REAR_PAIR;percent=0,lên kính trái và phải phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng cả hai kính sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng cửa bên dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng cửa kính bên dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính bên dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng cửa kính dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng luôn kính sau còn lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng luôn kính còn lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính sau còn lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kính còn lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng hai kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kiếng hàng ghế sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng các kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng hai kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng cả hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,nâng cả 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên hai kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên cả hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên cả 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên các kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên 2 kiếng phía sau,HAVE
+set_window,target=REAR_PAIR;percent=0,lên 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,kéo hai kiếng sau lên,HAVE
+set_window,target=REAR_PAIR;percent=0,kéo 2 kiếng sau lên,HAVE
+set_window,target=REAR_PAIR;percent=0,kéo cả hai kiếng sau lên,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kín kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng hai cửa kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng 2 kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng cả hai kiếng sau,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng cửa kiếng bên dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kiếng bên dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng cửa kiếng dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kiếng dưới,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng luôn kiếng sau còn lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng luôn kiếng còn lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kiếng sau còn lại,HAVE
+set_window,target=REAR_PAIR;percent=0,đóng kiếng còn lại,HAVE
+voice_query,target=battery,pin còn bao nhiêu,HAVE
+voice_query,target=battery,pin còn bao nhiêu phần trăm,HAVE
+voice_query,target=battery,pin bao nhiêu,HAVE
+voice_query,target=battery,xe còn bao nhiêu phần trăm pin,HAVE
+voice_query,target=battery,kiểm tra pin,HAVE
+voice_query,target=battery,mức pin hiện tại,HAVE
+voice_query,target=battery,pin xe còn bao nhiêu,HAVE
+voice_query,target=battery,dung lượng pin hiện tại,HAVE
+voice_query,target=battery,xe còn bao nhiêu điện,HAVE
+voice_query,target=battery,mức pin xe,HAVE
+voice_query,target=battery,kiểm tra pin xe,HAVE
+voice_query,target=battery,kiểm tra giúp tôi pin xe,HAVE
+voice_query,target=battery,cho tôi biết pin còn bao nhiêu,HAVE
+voice_query,target=battery,cho tôi hỏi pin còn bao nhiêu,HAVE
+voice_query,target=battery,báo cáo mức pin,HAVE
+voice_query,target=battery,báo cáo pin,HAVE
+voice_query,target=battery,báo mức pin,HAVE
+voice_query,target=battery,cho biết mức pin,HAVE
+voice_query,target=battery,kiểm tra phần trăm pin,HAVE
+voice_query,target=battery,kiểm tra phần trăm pin xe,HAVE
+voice_query,target=battery,kiểm tra dung lượng pin,HAVE
+voice_query,target=battery,kiểm tra mức pin,HAVE
+voice_query,target=battery,phần trăm pin,HAVE
+voice_query,target=battery,phần trăm pin xe,HAVE
+voice_query,target=battery,mức phần trăm pin,HAVE
+voice_query,target=battery,tình trạng pin,HAVE
+voice_query,target=battery,tình trạng pin hiện tại,HAVE
+voice_query,target=battery,tình trạng pin hiện tại của xe,HAVE
+voice_query,target=speed,tốc độ bao nhiêu,HAVE
+voice_query,target=speed,đang chạy bao nhiêu,HAVE
+voice_query,target=speed,xe đang chạy bao nhiêu,HAVE
+voice_query,target=speed,vận tốc bao nhiêu,HAVE
+voice_query,target=speed,xe đang chạy tốc độ bao nhiêu,HAVE
+voice_query,target=speed,xe chạy tốc độ bao nhiêu,HAVE
+voice_query,target=speed,vận tốc hiện tại,HAVE
+voice_query,target=speed,tốc độ hiện tại của xe,HAVE
+voice_query,target=speed,cho tôi biết tốc độ xe,HAVE
+voice_query,target=speed,cho tôi hỏi tốc độ xe,HAVE
+voice_query,target=range,còn đi được bao nhiêu,HAVE
+voice_query,target=range,quãng đường còn lại,HAVE
+voice_query,target=range,đi tiếp được bao nhiêu,HAVE
+voice_query,target=range,quãng đường ước tính,HAVE
+voice_query,target=range,còn đi được bao xa,HAVE
+voice_query,target=range,xe đi được bao xa nữa,HAVE
+voice_query,target=range,tầm hoạt động còn lại,HAVE
+voice_query,target=odometer,tổng số km,HAVE
+voice_query,target=odometer,xe đã đi bao nhiêu km,HAVE
+voice_query,target=odometer,odometer bao nhiêu,HAVE
+voice_query,target=odometer,công tơ mét bao nhiêu,HAVE
+voice_query,target=odometer,tổng số kilomet,HAVE
+voice_query,target=odometer,xe chạy được bao nhiêu km rồi,HAVE
+voice_query,target=odometer,tổng quãng đường xe đã đi,HAVE
+voice_query,target=odometer,tổng số km đã đi,HAVE
+voice_query,target=odometer,số km đã đi,HAVE
+voice_query,target=odometer,tổng km đã đi,HAVE
+voice_query,target=outside_temp,nhiệt độ ngoài trời bao nhiêu,HAVE
+voice_query,target=outside_temp,trời đang bao nhiêu độ,HAVE
+voice_query,target=outside_temp,nhiệt độ bên ngoài,HAVE
+voice_query,target=outside_temp,bên ngoài bao nhiêu độ,HAVE
+voice_query,target=outside_temp,thời tiết bên ngoài,HAVE
+voice_query,target=outside_temp,nhiệt độ ngoài trời thế nào,HAVE
+voice_query,target=outside_temp,thời tiết ngoài xe,HAVE
+voice_query,target=outside_temp,bên ngoài trời bao nhiêu độ,HAVE
+voice_query,target=outside_temp,ngoài trời mấy độ,HAVE
+voice_query,target=outside_temp,ngoài trời bao nhiêu độ,HAVE
+voice_query,target=outside_temp,bên ngoài mấy độ,HAVE
+voice_query,target=outside_temp,trời mấy độ,HAVE
+voice_query,target=time,mấy giờ rồi,HAVE
+voice_query,target=time,bây giờ là mấy giờ,HAVE
+voice_query,target=time,mấy giờ,HAVE
+voice_query,target=time,xem giờ,HAVE
+voice_query,target=time,mấy giờ rồi xe,HAVE
+voice_query,target=time,bây giờ mấy giờ,HAVE
+voice_query,target=time,giờ là bao nhiêu,HAVE
+voice_query,target=driving_mode,chế độ lái,HAVE
+voice_query,target=driving_mode,chế độ lái đang là gì,HAVE
+voice_query,target=driving_mode,xe đang ở chế độ nào,HAVE
+voice_query,target=driving_mode,chế độ lái hiện tại,HAVE
+voice_query,target=driving_mode,đang chạy chế độ gì,HAVE
+voice_query,target=driving_mode,xe đang chạy chế độ gì,HAVE
+voice_query,target=driving_mode,đang ở chế độ lái nào,HAVE
+voice_query,target=driving_mode,chế độ lái là gì,HAVE
+voice_query,target=driving_mode,đang ở chế độ lái gì,HAVE
+voice_query,target=driving_mode,chế độ lái thế nào,HAVE
+voice_query,target=driving_mode,chế độ lái nào,HAVE
+voice_query,target=driving_mode,hiện chế độ lái là gì,HAVE
+voice_query,target=driving_mode,xe đang ở chế độ lái gì,HAVE
+voice_query,target=driving_mode,đang chạy chế độ lái gì,HAVE
+voice_query,target=hvac,điều hòa đang thế nào,HAVE
+voice_query,target=hvac,điều hòa có bật không,HAVE
+voice_query,target=hvac,quạt đang cấp mấy,HAVE
+voice_query,target=hvac,trạng thái điều hòa,HAVE
+voice_query,target=hvac,máy lạnh đang bật hay tắt,HAVE
+voice_query,target=hvac,nhiệt độ điều hòa đang để bao nhiêu,HAVE
+voice_query,target=ambient,đèn viền có bật không,HAVE
+voice_query,target=ambient,đèn nội thất đang thế nào,HAVE
+voice_query,target=ambient,đèn viền đang bật hay tắt,HAVE
+voice_query,target=ambient,trạng thái đèn viền,HAVE
+voice_query,target=ambient,đèn trong xe đang bật hay tắt,HAVE
+voice_query,target=doors,cửa có khóa không,HAVE
+voice_query,target=doors,cửa xe đang thế nào,HAVE
+voice_query,target=doors,cửa nào đang mở,HAVE
+voice_query,target=doors,kính đang mở không,HAVE
+voice_query,target=doors,kiểm tra cửa xe,HAVE
+voice_query,target=doors,trạng thái cửa xe,HAVE
+voice_query,target=doors,các cửa xe đã khóa chưa,HAVE
+voice_query,target=tire,áp suất lốp bao nhiêu,NO_MAPPING
+voice_query,target=tire,lốp đang bao nhiêu,NO_MAPPING
+voice_query,target=tire,áp suất lốp thế nào,NO_MAPPING
+voice_query,target=tire,kiểm tra lốp,NO_MAPPING
+voice_query,target=tire,tình trạng lốp,NO_MAPPING
+voice_query,target=tire,kiểm tra áp suất lốp,NO_MAPPING
+voice_query,target=tire,tình trạng áp suất lốp xe,NO_MAPPING
+voice_query,target=tire,áp suất lốp xe thế nào,NO_MAPPING
+voice_query,target=tire,kiểm tra giúp tôi áp suất lốp,NO_MAPPING
+voice_query,target=tire,cho tôi biết áp suất lốp,NO_MAPPING
+voice_query,target=tire,cho tôi hỏi áp suất lốp,NO_MAPPING
+voice_query,target=gear,xe đang ở số nào,HAVE
+voice_query,target=gear,số đang là gì,HAVE
+voice_query,target=gear,hộp số đang ở đâu,HAVE
+voice_query,target=gear,đang vào số mấy,HAVE
+voice_query,target=gear,xe đang cài số mấy,HAVE
+voice_query,target=consump,tốn bao nhiêu điện,NO_MAPPING
+voice_query,target=consump,năng lượng trung bình bao nhiêu,NO_MAPPING
+voice_query,target=consump,tiêu thụ điện bao nhiêu,NO_MAPPING
+voice_query,target=consump,bao nhiêu kw một trăm km,NO_MAPPING
+voice_query,target=consump,mức tiêu hao điện,NO_MAPPING
+voice_query,target=consump,mức tiêu thụ năng lượng,NO_MAPPING
+voice_query,target=cabin_temp,nhiệt độ trong xe bao nhiêu,HAVE
+voice_query,target=cabin_temp,trong xe bao nhiêu độ,HAVE
+voice_query,target=cabin_temp,nhiệt độ cabin bao nhiêu,HAVE
+voice_query,target=cabin_temp,trong cabin bao nhiêu độ,HAVE
+voice_query,target=cabin_temp,nhiệt độ trong cabin thế nào,HAVE
+voice_query,target=cabin_temp,trong xe đang bao nhiêu độ,HAVE
+voice_query,target=cabin_temp,kiểm tra giúp tôi nhiệt độ trong xe,HAVE
+voice_query,target=cabin_temp,cho tôi biết nhiệt độ trong xe,HAVE
+voice_query,target=cabin_temp,cho tôi hỏi nhiệt độ trong xe,HAVE
+voice_query,target=regen,hồi năng lượng đang mức nào,HAVE
+voice_query,target=regen,mức hồi năng lượng hiện tại,HAVE
+voice_query,target=regen,xe đang hồi năng lượng mức mấy,HAVE
+voice_query,target=regen,phanh tái sinh đang mức nào,HAVE
+voice_query,target=regen,chế độ hồi năng lượng hiện tại,HAVE
+voice_query,target=regen,phanh tái sinh là gì,HAVE
+voice_query,target=regen,hiện phanh tái sinh là gì,HAVE
+voice_query,target=regen,phanh tái sinh hiện tại là gì,HAVE
+voice_query,target=regen,hồi năng lượng là gì,HAVE
+voice_query,target=regen,mức phanh tái sinh là gì,HAVE
+voice_query,target=avas,tiếng cảnh báo đang bật không,DEFERRED
+voice_query,target=avas,avas đang bật không,DEFERRED
+voice_query,target=avas,âm thanh người đi bộ đang thế nào,DEFERRED
+voice_query,target=avas,âm thanh cảnh báo đang bật hay tắt,DEFERRED
+voice_query,target=avas,tiếng cảnh báo người đi bộ đang bật hay tắt,DEFERRED
+voice_query,target=scene,xe đang ở chế độ nghỉ nào,HAVE (probe)
+voice_query,target=scene,chế độ nghỉ hiện tại,HAVE (probe)
+voice_query,target=scene,đang cắm trại hay nghỉ ngơi,HAVE (probe)
+voice_query,target=assistant_status,được không em,HAVE
+voice_query,target=assistant_status,được không xe,HAVE
+voice_query,target=assistant_status,ổn không em,HAVE
+voice_query,target=assistant_status,sẵn sàng chưa em,HAVE
+voice_query,target=assistant_status,trợ lý có khỏe không,HAVE
+voice_query,target=assistant_status,trợ lý sẵn sàng chưa,HAVE
+voice_query,target=assistant_status,trợ lý nghe rõ không,HAVE
+voice_query,target=assistant_status,bạn có khỏe không,HAVE
+voice_query,target=assistant_status,bạn nghe rõ không,HAVE
+voice_query,target=assistant_status,bạn có nghe rõ không,HAVE
+voice_query,target=location,vị trí xe đang ở đâu,NO_MAPPING
+voice_query,target=location,xe đang ở đâu,NO_MAPPING
+voice_query,target=location,vị trí của xe,NO_MAPPING
+voice_query,target=location,vị trí xe hiện tại,NO_MAPPING
+voice_query,target=location,tọa độ xe hiện tại,NO_MAPPING
+voice_query,target=location,tọa độ của xe,NO_MAPPING
+voice_query,target=location,xe đang đỗ ở đâu,NO_MAPPING
+voice_query,target=location,xe đang ở chỗ nào,NO_MAPPING
+voice_query,target=turn_signal,bật xi nhan,NO_MAPPING
+voice_query,target=turn_signal,tắt xi nhan,NO_MAPPING
+voice_query,target=turn_signal,bật xi nhan trái,NO_MAPPING
+voice_query,target=turn_signal,bật xi nhan phải,NO_MAPPING
+voice_query,target=turn_signal,tắt xi nhan trái,NO_MAPPING
+voice_query,target=turn_signal,tắt xi nhan phải,NO_MAPPING
+voice_query,target=turn_signal,xi nhan trái,NO_MAPPING
+voice_query,target=turn_signal,xi nhan phải,NO_MAPPING
+voice_query,target=turn_signal,bật đèn xi nhan,NO_MAPPING
+voice_query,target=turn_signal,tắt đèn xi nhan,NO_MAPPING
+voice_query,target=turn_signal,đèn xi nhan,NO_MAPPING
+voice_query,target=turn_signal,xi nhan xe,NO_MAPPING
+voice_query,target=turn_signal,kiểm tra xi nhan,NO_MAPPING
+voice_query,target=turn_signal,xi nhan đang bật hay tắt,NO_MAPPING
+voice_query,target=turn_signal,trạng thái xi nhan,NO_MAPPING
+open_front_trunk,,mở cốp trước,HAVE
+open_front_trunk,,mở cốp xe trước,HAVE
+open_front_trunk,,mở cốp phía trước,HAVE
+open_front_trunk,,cốp trước,HAVE
+open_front_trunk,,mở nắp capo,HAVE
+open_front_trunk,,mở nắp ca pô,HAVE
+open_front_trunk,,mở nắp capô,HAVE
+open_front_trunk,,mở nắp máy,HAVE
+open_front_trunk,,bật nắp capo,HAVE
+open_front_trunk,,bật nắp ca pô,HAVE
+open_front_trunk,,bật nắp capô,HAVE
+open_front_trunk,,giật nắp capo,HAVE
+open_front_trunk,,giật nắp ca pô,HAVE
+open_front_trunk,,giật nắp capô,HAVE
+open_front_trunk,,mở nắp capo trước,HAVE
+open_front_trunk,,mở nắp ca pô trước,HAVE
+open_front_trunk,,mở nắp capô trước,HAVE
+unlock_rear_trunk,,mở cốp,HAVE
+unlock_rear_trunk,,mở cốp sau,HAVE
+unlock_rear_trunk,,mở cốp xe,HAVE
+unlock_rear_trunk,,mở cốp xe sau,HAVE
+unlock_rear_trunk,,mở cốp phía sau,HAVE
+unlock_rear_trunk,,cốp sau,HAVE
+unlock_rear_trunk,,cốp xe,HAVE
+unlock_rear_trunk,,mở khóa cốp,HAVE
+unlock_rear_trunk,,mở khóa cốp sau,HAVE
+unlock_rear_trunk,,mở khóa cốp xe,HAVE
+unlock_rear_trunk,,mở khoá cốp,HAVE
+unlock_rear_trunk,,mở khoá cốp sau,HAVE
+unlock_rear_trunk,,mở khoá cốp xe,HAVE
+unlock_rear_trunk,,mở chốt cốp,HAVE
+unlock_rear_trunk,,mở chốt cốp sau,HAVE
+unlock_rear_trunk,,mở cốp điện,HAVE
+voice_query,target=trunk_unsupported,đóng cốp xe,N/A
+voice_query,target=trunk_unsupported,đóng cốp,N/A
+voice_query,target=trunk_unsupported,đóng cốp sau,N/A
+voice_query,target=trunk_unsupported,đóng cốp trước,N/A
+voice_query,target=trunk_unsupported,đóng nắp capo,N/A
+voice_query,target=trunk_unsupported,đóng nắp ca pô,N/A
+voice_query,target=trunk_unsupported,đóng nắp máy,N/A
+voice_query,target=trunk_unsupported,đóng nắp capô,N/A
+voice_query,target=trunk_unsupported,cốp điện,N/A
+voice_query,target=trunk_unsupported,đóng cốp điện,N/A
+voice_query,target=trunk_unsupported,đóng cốp xe sau,N/A
+voice_query,target=trunk_unsupported,đóng cốp xe trước,N/A
+voice_query,target=trunk_unsupported,đóng cốp phía sau,N/A
+voice_query,target=trunk_unsupported,đóng cốp phía trước,N/A
+voice_query,target=wiper_unsupported,bật gạt mưa,N/A
+voice_query,target=wiper_unsupported,bọc gạt mưa,N/A
+voice_query,target=wiper_unsupported,bật cần gạt mưa,N/A
+voice_query,target=wiper_unsupported,gạt mưa,N/A
+voice_query,target=wiper_unsupported,bật gạt nước,N/A
+voice_query,target=wiper_unsupported,tắt gạt mưa,N/A
+voice_query,target=wiper_unsupported,tắt cần gạt mưa,N/A
+voice_query,target=wiper_unsupported,dừng gạt mưa,N/A
+media_control,target=play,tiếp tục phát,HAVE
+media_control,target=play,tiếp tục nhạc,HAVE
+media_control,target=play,tiếp tục video,HAVE
+media_control,target=play,chơi nhạc tiếp,HAVE
+media_control,target=play,phát tiếp,HAVE
+media_control,target=play,tiếp tục phát nhạc,HAVE
+media_control,target=play,phát tiếp nhạc,HAVE
+media_control,target=play,play tiếp,HAVE
+media_control,target=play,mở cho tôi một bài nhạc,HAVE
+media_control,target=play,mở cho tôi bài nhạc,HAVE
+media_control,target=play,mở cho tôi một bài nhạc hay,HAVE
+media_control,target=play,mở cho tôi bài nhạc hay,HAVE
+media_control,target=play,mở radio,HAVE
+media_control,target=play,bật radio,HAVE
+media_control,target=play,nghe radio,HAVE
+media_control,target=pause,dừng bài hát,HAVE
+media_control,target=pause,tạm dừng nhạc,HAVE
+media_control,target=pause,tạm dừng video,HAVE
+media_control,target=pause,tắt radio,HAVE
+media_control,target=pause,dừng radio,HAVE
+media_control,target=pause,tắt nhạc xe,HAVE
+media_control,target=pause,dừng nhạc xe,HAVE
+media_control,target=pause,dừng nhạc,HAVE
+media_control,target=pause,ngừng nhạc,HAVE
+media_control,target=pause,ngưng nhạc,HAVE
+media_control,target=pause,pause nhạc,HAVE
+media_control,target=pause,pause bài hát,HAVE
+media_control,target=pause,pause video,HAVE
+media_control,target=pause,tắt nhạc,HAVE
+media_control,target=pause,dừng video,HAVE
+media_control,target=pause,tạm dừng bài hát,HAVE
+media_control,target=pause,dừng phát nhạc,HAVE
+media_control,target=pause,ngừng phát nhạc,HAVE
+media_control,target=pause,ngưng phát nhạc,HAVE
+media_control,target=pause,tạm dừng phát nhạc,HAVE
+media_control,target=pause,dừng phát,HAVE
+media_control,target=pause,ngừng phát,HAVE
+media_control,target=pause,ngưng phát,HAVE
+media_control,target=pause,tạm dừng phát,HAVE
+media_control,target=pause,tạm dừng lại,HAVE
+media_control,target=next,bài tiếp theo,HAVE
+media_control,target=next,bài kế tiếp,HAVE
+media_control,target=next,chuyển bài khác,HAVE
+media_control,target=next,qua bài khác,HAVE
+media_control,target=next,đổi bài khác,HAVE
+media_control,target=next,chuyển bài hát khác,HAVE
+media_control,target=next,chuyển sang bài khác,HAVE
+media_control,target=next,chuyển bài tiếp theo,HAVE
+media_control,target=next,chuyển bài hát tiếp theo,HAVE
+media_control,target=next,play bài tiếp theo,HAVE
+media_control,target=next,play bài nhạc tiếp theo,HAVE
+media_control,target=next,play bài kế tiếp,HAVE
+media_control,target=next,play bài tiếp,HAVE
+media_control,target=next,play bài nhạc kế tiếp,HAVE
+media_control,target=prev,quay lại bài trước,HAVE
+media_control,target=prev,bài vừa rồi,HAVE
+media_control,target=prev,lùi lại bài,HAVE
+media_control,target=volume_up,tăng âm lượng,HAVE
+media_control,target=volume_up,tăng âm lượng lên,HAVE
+media_control,target=volume_up,tăng âm thanh,HAVE
+media_control,target=volume_up,tăng âm thanh lên,HAVE
+media_control,target=volume_up,tăng tiếng loa,HAVE
+media_control,target=volume_up,tăng tiếng lên,HAVE
+media_control,target=volume_up,bật to loa lên,HAVE
+media_control,target=volume_up,bật to âm lượng,HAVE
+media_control,target=volume_up,cho to tiếng lên,HAVE
+media_control,target=volume_up,tăng mức âm lượng,HAVE
+media_control,target=volume_up,vặn to lên,HAVE
+media_control,target=volume_up,vặn to loa lên,HAVE
+media_control,target=volume_up,vặn to âm thanh,HAVE
+media_control,target=volume_up,vặn to âm lượng,HAVE
+media_control,target=volume_up,cho to lên,HAVE
+media_control,target=volume_up,cho âm lượng to lên,HAVE
+media_control,target=volume_down,giảm âm lượng,HAVE
+media_control,target=volume_down,giảm âm lượng xuống,HAVE
+media_control,target=volume_down,giảm âm thanh,HAVE
+media_control,target=volume_down,giảm âm thanh xuống,HAVE
+media_control,target=volume_down,giảm tiếng loa,HAVE
+media_control,target=volume_down,giảm tiếng xuống,HAVE
+media_control,target=volume_down,bật nhỏ loa lại,HAVE
+media_control,target=volume_down,bật nhỏ âm lượng,HAVE
+media_control,target=volume_down,cho nhỏ tiếng lại,HAVE
+media_control,target=volume_down,giảm mức âm lượng,HAVE
+media_control,target=volume_down,vặn nhỏ lại,HAVE
+media_control,target=volume_down,vặn nhỏ loa lại,HAVE
+media_control,target=volume_down,vặn nhỏ âm thanh,HAVE
+media_control,target=volume_down,vặn nhỏ âm lượng,HAVE
+media_control,target=volume_down,cho nhỏ lại,HAVE
+media_control,target=volume_down,cho âm lượng nhỏ lại,HAVE
+media_control,target=mute,tắt âm thanh,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=mute,tắt tiếng loa,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=mute,tắt âm lượng,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=mute,tắt loa xe,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=mute,tắt tiếng xe,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=mute,tắt hết tiếng,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,bật âm thanh,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,bật tiếng loa,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,bật lại âm thanh,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,bật lại tiếng,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,mở lại âm thanh,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,bật âm lượng,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,mở âm lượng,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+media_control,target=unmute,mở tiếng loa,HAVE (tắt tiếng nhạc; giọng trợ lý vẫn nói)
+launch_app,target=com.waze,mở Waze,HAVE
+launch_app,target=com.waze,mở Waze điều hướng,HAVE
+launch_app,target=com.waze,mở quê dơ,HAVE
+launch_app,target=com.waze,chạy quê dơ,HAVE
+launch_app,target=com.waze,mở vê dơ,HAVE
+launch_app,target=com.waze,mở waze,HAVE
+launch_app,target=com.waze,bản đồ waze,HAVE
+launch_app,target=com.waze,mở bản đồ waze,HAVE
+launch_app,target=com.waze,bật waze,HAVE
+launch_app,target=com.waze,chạy waze,HAVE
+launch_app,target=com.waze,vào waze,HAVE
+launch_app,target=com.waze,vào app waze,HAVE
+launch_app,target=com.waze,dẫn đường waze,HAVE
+launch_app,target=com.waze,dẫn đường bằng waze,HAVE
+launch_app,target=com.waze,dẫn đường từ waze,HAVE
+launch_app,target=com.waze,chỉ đường waze,HAVE
+launch_app,target=com.waze,chỉ đường bằng waze,HAVE
+launch_app,target=com.waze,chỉ đường từ waze,HAVE
+launch_app,target=com.waze,tìm đường waze,HAVE
+launch_app,target=com.waze,tìm đường bằng waze,HAVE
+launch_app,target=com.waze,tìm đường từ waze,HAVE
+launch_app,target=com.waze,mở quây dơ,HAVE
+launch_app,target=com.waze,mở uây dơ,HAVE
+launch_app,target=com.waze,bật quây dơ,HAVE
+launch_app,target=com.waze,bật uây dơ,HAVE
+launch_app,target=com.waze,chạy quây dơ,HAVE
+launch_app,target=com.waze,chạy uây dơ,HAVE
+launch_app,target=com.waze,bật quê dơ,HAVE
+launch_app,target=com.waze,bật vê dơ,HAVE
+launch_app,target=com.waze,chạy vê dơ,HAVE
+launch_app,target=com.waze,dẫn đường quây,HAVE
+launch_app,target=com.waze,bản đồ quây,HAVE
+launch_app,target=com.waze,bản đồ quê dơ,HAVE
+launch_app,target=com.waze,bản đồ vê dơ,HAVE
+launch_app,target=com.waze,dẫn đường quê dơ,HAVE
+launch_app,target=com.waze,dẫn đường vê dơ,HAVE
+launch_app,target=com.waze,chỉ đường quê dơ,HAVE
+launch_app,target=com.waze,chỉ đường vê dơ,HAVE
+launch_app,target=com.waze,waze,HAVE
+launch_app,target=anddea.youtube.music,mở YouTube Music,HAVE
+launch_app,target=anddea.youtube.music,mở youtube music,HAVE
+launch_app,target=anddea.youtube.music,bật youtube music,HAVE
+launch_app,target=anddea.youtube.music,chạy youtube music,HAVE
+launch_app,target=anddea.youtube.music,youtube music,HAVE
+launch_app,target=anddea.youtube.music,nghe nhạc youtube,HAVE
+launch_app,target=anddea.youtube.music,mở ứng dụng youtube music,HAVE
+launch_app,target=anddea.youtube.music,mở app youtube music,HAVE
+launch_app,target=anddea.youtube.music,mở du túp miu díc,HAVE
+launch_app,target=anddea.youtube.music,bật du túp miu díc,HAVE
+launch_app,target=anddea.youtube.music,mở iu túp miu díc,HAVE
+launch_app,target=anddea.youtube.music,bật iu túp miu díc,HAVE
+launch_app,target=anddea.youtube,mở YouTube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở video YouTube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở du túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở you túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở video du túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở youtube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,nghe youtube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,nghe du túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,nghe you túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,xem youtube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,bật youtube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,chạy youtube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,xem video youtube,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở video,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,xem video,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở du tu be,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở iu túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở iu tu be,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở tu be,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,xem tu be,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở youty,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,chạy youty,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,bật youty,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở dút tuýp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở dút túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở ru túp,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở youtube morphe,HAVE (mở theo tên app đã cài)
+launch_app,target=anddea.youtube,mở morphe,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zing.zalo,mở Zalo,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zing.zalo,mở tin nhắn Zalo,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zing.zalo,mở da lô,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zing.zalo,mở tin nhắn da lô,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zing.zalo,mở gia lô,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zing.zalo,mở zalo,HAVE (mở theo tên app đã cài)
+launch_app,target=MAP_DEFAULT,mở bản đồ,HAVE
+launch_app,target=MAP_DEFAULT,bật bản đồ,HAVE
+launch_app,target=MAP_DEFAULT,chạy bản đồ,HAVE
+launch_app,target=MAP_DEFAULT,xem bản đồ,HAVE
+launch_app,target=MAP_DEFAULT,mở bản đồ xe,HAVE
+launch_app,target=MAP_DEFAULT,bật bản đồ xe,HAVE
+launch_app,target=MAP_DEFAULT,mở app bản đồ,HAVE
+launch_app,target=MAP_DEFAULT,mở app dẫn đường,HAVE
+launch_app,target=MAP_DEFAULT,mở ứng dụng dẫn đường,HAVE
+launch_app,target=MAP_DEFAULT,mở dẫn đường,HAVE
+launch_app,target=MAP_DEFAULT,bật dẫn đường,HAVE
+launch_app,target=MAP_DEFAULT,dẫn đường,HAVE
+launch_app,target=MAP_DEFAULT,bắt đầu hành trình,HAVE
+launch_app,target=MAP_DEFAULT,bắt đầu đi,HAVE
+launch_app,target=MAP_DEFAULT,bắt đầu di chuyển,HAVE
+launch_app,target=MAP_DEFAULT,khởi hành,HAVE
+launch_app,target=app.morphe.android.apps.maps,mở Google Maps,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,mở gu gồ mát,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,mở gu gờ mát,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,mở bản đồ gu gồ,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,mở google maps,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,bật google maps,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,chạy google maps,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,dẫn đường google,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,bản đồ google,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,mở google map,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,mở bản đồ google,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,bật bản đồ google,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,chạy bản đồ google,HAVE (mở theo tên app đã cài)
+launch_app,target=app.morphe.android.apps.maps,dẫn đường maps,HAVE (mở theo tên app đã cài)
+launch_app,target=org.smarttube.stable,mở SmartTube,HAVE
+launch_app,target=org.smarttube.stable,mở video nổi,HAVE
+launch_app,target=org.smarttube.stable,mở sờ mát tuýp,HAVE
+launch_app,target=org.smarttube.stable,mở mát tuýp,HAVE
+launch_app,target=org.smarttube.stable,mở sờ ma túp,HAVE
+launch_app,target=org.smarttube.stable,mở smarttube,HAVE
+launch_app,target=org.smarttube.stable,bật smarttube,HAVE
+launch_app,target=org.smarttube.stable,chạy smarttube,HAVE
+launch_app,target=org.smarttube.stable,bật video nổi,HAVE
+launch_app,target=org.smarttube.stable,mở sờ mát túp,HAVE
+launch_app,target=org.smarttube.stable,mở sờ mát tu be,HAVE
+launch_app,target=org.smarttube.stable,mở xì mát túp,HAVE
+launch_app,target=org.smarttube.stable,mở xì mát tuýp,HAVE
+launch_app,target=org.smarttube.stable,bật sờ mát túp,HAVE
+launch_app,target=org.smarttube.stable,chạy sờ mát túp,HAVE
+launch_app,target=org.smarttube.stable,mở túp nổi,HAVE
+launch_app,target=com.netflix.mediaclient,mở Netflix,HAVE
+launch_app,target=com.netflix.mediaclient,mở nét phích,HAVE
+launch_app,target=com.netflix.mediaclient,mở nét lít,HAVE
+launch_app,target=com.netflix.mediaclient,mở netflix,HAVE
+launch_app,target=com.netflix.mediaclient,xem netflix,HAVE
+launch_app,target=MEDIA_DEFAULT,mở nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,bật nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,nghe nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,phát nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,bật nghe,HAVE
+launch_app,target=MEDIA_DEFAULT,nghe nhạc đi,HAVE
+launch_app,target=MEDIA_DEFAULT,bật nhạc lên,HAVE
+launch_app,target=MEDIA_DEFAULT,play nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,play nhạc lên,HAVE
+launch_app,target=MEDIA_DEFAULT,mở nhạc lên,HAVE
+launch_app,target=MEDIA_DEFAULT,chạy nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,nhạc xe,HAVE
+launch_app,target=MEDIA_DEFAULT,bật nhạc xe,HAVE
+launch_app,target=MEDIA_DEFAULT,mở nhạc xe,HAVE
+launch_app,target=MEDIA_DEFAULT,nghe nhạc xe,HAVE
+launch_app,target=MEDIA_DEFAULT,bật bài hát lên,HAVE
+launch_app,target=MEDIA_DEFAULT,phát bài hát lên,HAVE
+launch_app,target=MEDIA_DEFAULT,mở bài hát lên,HAVE
+launch_app,target=MEDIA_DEFAULT,mở bài nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,bật bài nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,nghe bài nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,phát bài nhạc,HAVE
+launch_app,target=MEDIA_DEFAULT,chơi bài nhạc,HAVE
+launch_app,target=com.spotify.music,mở Spotify,HAVE
+launch_app,target=com.spotify.music,mở nhạc Spotify,HAVE
+launch_app,target=com.spotify.music,mở sờ ti phai,HAVE
+launch_app,target=com.spotify.music,mở nhạc sờ ti phai,HAVE
+launch_app,target=com.spotify.music,mở sốt ti phai,HAVE
+launch_app,target=com.spotify.music,mở spotify,HAVE
+launch_app,target=com.spotify.music,nghe nhạc spotify,HAVE
+launch_app,target=com.spotify.music,mở sờ po ti phai,HAVE
+launch_app,target=com.spotify.music,mở sờ po ti,HAVE
+launch_app,target=com.spotify.music,mở bosofty,HAVE
+launch_app,target=com.spotify.music,bật bosofty,HAVE
+launch_app,target=vn.vietmap.live,mở VietMap,HAVE
+launch_app,target=vn.vietmap.live,mở bản đồ VietMap,HAVE
+launch_app,target=vn.vietmap.live,mở việt mắp,HAVE
+launch_app,target=vn.vietmap.live,mở việt map,HAVE
+launch_app,target=vn.vietmap.live,mở vietmap live,HAVE
+launch_app,target=vn.vietmap.live,mở vietmap,HAVE
+launch_app,target=vn.vietmap.live,mở việt mát,HAVE
+launch_app,target=vn.vietmap.live,mở việt mấp,HAVE
+launch_app,target=vn.vietmap.live,mở bản đồ việt,HAVE
+launch_app,target=vn.vietmap.live,mở việc map,HAVE
+launch_app,target=vn.vietmap.live,mở việc mát,HAVE
+launch_app,target=vn.vietmap.live,mở việc mác,HAVE
+launch_app,target=vn.vietmap.live,mở việt mát lai,HAVE
+launch_app,target=vn.vietmap.live,mở việt map lai,HAVE
+launch_app,target=vn.vietmap.live,mở việc mát lai,HAVE
+launch_app,target=vn.vietmap.live,mở vietmap lai,HAVE
+launch_app,target=vn.vietmap.live,mở việt nam,HAVE
+launch_app,target=vn.vietmap.live,mở việt nam lai,HAVE
+launch_app,target=vn.vietmap.live,mở việc nam,HAVE
+launch_app,target=vn.vietmap.live,mở app việc map,HAVE
+launch_app,target=vn.vietmap.live,mở app việc mát,HAVE
+launch_app,target=vn.vietmap.live,mở app việt map,HAVE
+launch_app,target=vn.vietmap.live,mở app vietmap,HAVE
+launch_app,target=vn.vietmap.live,bật vietmap,HAVE
+launch_app,target=vn.vietmap.live,chạy vietmap,HAVE
+launch_app,target=vn.vietmap.live,dẫn đường vietmap,HAVE
+launch_app,target=vn.vietmap.live,bật bản đồ vietmap,HAVE
+launch_app,target=vn.vietmap.live,bật việt mát,HAVE
+launch_app,target=vn.vietmap.live,bật việc map,HAVE
+launch_app,target=vn.vietmap.live,bật việc mát,HAVE
+launch_app,target=vn.vietmap.live,bật việt map,HAVE
+launch_app,target=vn.vietmap.live,chạy việt mát,HAVE
+launch_app,target=vn.vietmap.live,chạy việc map,HAVE
+launch_app,target=vn.vietmap.live,chạy việc mát,HAVE
+launch_app,target=vn.vietmap.live,dẫn đường việt mát,HAVE
+launch_app,target=vn.vietmap.live,dẫn đường việt mắt,HAVE
+launch_app,target=vn.vietmap.live,dẫn đường việc map,HAVE
+launch_app,target=vn.vietmap.live,mở việt,HAVE
+launch_app,target=vn.vietmap.live,mở viet like,HAVE
+launch_app,target=vn.vietmap.live,bật viet like,HAVE
+launch_app,target=vn.vietmap.live,chạy viet like,HAVE
+launch_app,target=vn.vietmap.live,mở viett like,HAVE
+launch_app,target=vn.vietmap.live,bật viett like,HAVE
+launch_app,target=vn.vietmap.live,chạy viett like,HAVE
+launch_app,target=vn.vietmap.live,mở ứng dụng viett like,HAVE
+launch_app,target=vn.vietmap.live,mở ứng dụng viet like,HAVE
+launch_app,target=vn.vietmap.live,mở việt like,HAVE
+launch_app,target=vn.vietmap.live,bật việt like,HAVE
+launch_app,target=vn.vietmap.live,chạy việt like,HAVE
+launch_app,target=vn.vietmap.live,mở viết like,HAVE
+launch_app,target=vn.vietmap.live,mở việt lai,HAVE
+launch_app,target=vn.vietmap.live,mở việt lích,HAVE
+launch_app,target=vn.vietmap.live,mở viết lai,HAVE
+launch_app,target=vn.vietmap.live,mở việt mắt,HAVE
+launch_app,target=vn.vietmap.live,mở viet live,HAVE
+launch_app,target=vn.vietmap.live,mở viett live,HAVE
+launch_app,target=vn.vtv.vtvgo,mở VTV Go,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,mở vtv go,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,mở vtv,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,mở vê tê vê go,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,mở vê tê vê gô,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,mở vê tê vê,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,mở tivi,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,xem tivi,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,mở truyền hình,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,xem truyền hình,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,xem vtv,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,bật vtv,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,tv go,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,tvgo,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,vtv go,HAVE (mở theo tên app đã cài)
+launch_app,target=vn.vtv.vtvgo,vtvgo,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,mở Apple CarPlay,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,mở apple carplay,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,mở carplay,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,mở car play,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,kết nối carplay,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,bật carplay,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,mở carlink,HAVE (mở theo tên app đã cài)
+launch_app,target=cn.manstep.phonemirrorbox,mở autokit,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zhiliaoapp.musically,mở TikTok,HAVE
+launch_app,target=com.zhiliaoapp.musically,mở tik tok,HAVE
+launch_app,target=com.zhiliaoapp.musically,mở tiktok,HAVE
+launch_app,target=com.zhiliaoapp.musically,mở tíc tốc,HAVE
+launch_app,target=com.zhiliaoapp.musically,mở tích tốc,HAVE
+launch_app,target=com.zhiliaoapp.musically,lướt tiktok,HAVE
+launch_app,target=com.zhiliaoapp.musically,lướt tíc tốc,HAVE
+launch_app,target=com.zhiliaoapp.musically,xem tiktok,HAVE
+launch_app,target=com.zhiliaoapp.musically,xem tíc tốc,HAVE
+launch_app,target=com.gofa.mobile,mở GOFA,HAVE (mở theo tên app đã cài)
+launch_app,target=com.gofa.mobile,mở gofa,HAVE (mở theo tên app đã cài)
+launch_app,target=com.gofa.mobile,mở gô fa,HAVE (mở theo tên app đã cài)
+launch_app,target=com.gofa.mobile,mở gô pha,HAVE (mở theo tên app đã cài)
+launch_app,target=com.gofa.mobile,mở bản đồ gofa,HAVE (mở theo tên app đã cài)
+launch_app,target=com.gofa.mobile,bật gofa,HAVE (mở theo tên app đã cài)
+launch_app,target=com.gofa.mobile,dẫn đường gofa,HAVE (mở theo tên app đã cài)
+launch_app,target=com.gofa.mobile,chạy gofa,HAVE (mở theo tên app đã cài)
+launch_app,target=org.videolan.vlc,mở VLC,HAVE
+launch_app,target=org.videolan.vlc,mở vlc,HAVE
+launch_app,target=org.videolan.vlc,mở vê lờ xê,HAVE
+launch_app,target=org.videolan.vlc,mở vê eo xê,HAVE
+launch_app,target=org.videolan.vlc,mở video vlc,HAVE
+launch_app,target=org.videolan.vlc,mở trình phát video,HAVE
+launch_app,target=com.estrongs.android.pop,mở ES Explorer,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,mở File Manager,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,mở file manager,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,mở quản lý file,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,mở quản lý tệp,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,mở quản lý tệp tin,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,mở duyệt file,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,mở es explorer,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,quản lý file,HAVE (mở theo tên app đã cài)
+launch_app,target=com.estrongs.android.pop,duyệt file,HAVE (mở theo tên app đã cài)
+launch_app,target=ai.zalo.kiki.car,mở Kiki,HAVE
+launch_app,target=ai.zalo.kiki.car,mở kiki,HAVE
+launch_app,target=ai.zalo.kiki.car,mở kiki car,HAVE
+launch_app,target=ai.zalo.kiki.car,mở ki ki,HAVE
+launch_app,target=ai.zalo.kiki.car,mở trợ lý kiki,HAVE
+launch_app,target=ai.zalo.kiki.car,bật kiki,HAVE
+launch_app,target=ai.zalo.kiki.car,chạy kiki,HAVE
+launch_app,target=ai.zalo.kiki.car,mở zalo kiki,HAVE
+launch_app,target=ai.zalo.kiki.car,trợ lý kiki,HAVE
+launch_app,target=HOME,về trang chủ,HAVE (về màn hình chính)
+launch_app,target=HOME,về màn hình chính,HAVE (về màn hình chính)
+launch_app,target=HOME,mở màn hình chính,HAVE (về màn hình chính)
+launch_app,target=HOME,mở trang chủ,HAVE (về màn hình chính)
+launch_app,target=HOME,về home,HAVE (về màn hình chính)
+launch_app,target=HOME,mở home,HAVE (về màn hình chính)
+launch_app,target=HOME,thoát ra màn hình chính,HAVE (về màn hình chính)
+launch_app,target=HOME,thoát ra trang chủ,HAVE (về màn hình chính)
+launch_app,target=HOME,về màn hình xe,HAVE (về màn hình chính)
+launch_app,target=HOME,màn hình chính,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng tất cả ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng hết ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng toàn bộ ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng tất cả app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng hết app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng toàn bộ app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt tất cả ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt hết ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt toàn bộ ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt các ứng dụng đang chạy,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt các app đang chạy,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt tất cả app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt hết app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt toàn bộ app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,thoát tất cả ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,thoát hết ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,dọn dẹp ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,dọn dẹp app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng các ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt các ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắc ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt ứng dụng đang chạy,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,đóng ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,thoát ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,dừng ứng dụng,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,kill app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,kill all app,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,kill all apps,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,xóa ứng dụng chạy ngầm,HAVE (về màn hình chính)
+close_app,target=ALL_APPS,tắt ứng dụng chạy ngầm,HAVE (về màn hình chính)
+launch_app,target=com.bilang042.aureseyes,mở AuresEyes,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở aures eyes,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở aures,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở âu rét,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở ao rét,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở camera aures,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở mắt thần,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở camera 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật cam 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,xem camera lùi,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở cam 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật camera 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,camera 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,xem camera 360 toàn cảnh,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,camera 360 toàn cảnh,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,xem cam 360 toàn cảnh,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,xem toàn cảnh 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở camera,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật camera,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,xem camera,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,xem cam 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật cam quanh xe,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở cam quanh xe,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở camera quanh xe,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật camera quanh xe,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở cam lùi,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật cam lùi,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở camera lùi,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật camera lùi,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,cam ba sáu không,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở cam ba sáu không,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,bật cam ba sáu không,HAVE (mở theo tên app đã cài)
+launch_app,target=com.bilang042.aureseyes,mở camera ba sáu không,HAVE (mở theo tên app đã cài)
+launch_app,target=com.kay.speeddisplay,mở Speed Display,HAVE (mở theo tên app đã cài)
+launch_app,target=com.kay.speeddisplay,mở speed display,HAVE (mở theo tên app đã cài)
+launch_app,target=com.kay.speeddisplay,mở đồng hồ tốc độ,HAVE (mở theo tên app đã cài)
+launch_app,target=com.kay.speeddisplay,mở hiển thị tốc độ,HAVE (mở theo tên app đã cài)
+launch_app,target=com.kay.speeddisplay,bật đồng hồ tốc độ,HAVE (mở theo tên app đã cài)
+launch_app,target=com.kay.speeddisplay,bật hiển thị tốc độ,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở CentralEXAuto,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở central ex auto,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở central auto,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở cài đặt geely,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở cài đặt xe,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,bật central auto,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở cài đặt,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,vào phần cài đặt,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở setting xe,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,mở setting,HAVE (mở theo tên app đã cài)
+launch_app,target=com.ex.auto,cài đặt,HAVE (mở theo tên app đã cài)
+launch_app,target=com.zing.mp3,mở Zing MP3,HAVE
+launch_app,target=com.zing.mp3,mở zing mp3,HAVE
+launch_app,target=com.zing.mp3,mở dinh mp3,HAVE
+launch_app,target=com.zing.mp3,mở nhạc zing,HAVE
+launch_app,target=com.zing.mp3,bật zing mp3,HAVE
+launch_app,target=com.zing.mp3,nghe nhạc zing,HAVE
+launch_app,target=com.zing.mp3,chạy zing mp3,HAVE
+launch_app,target=ht.nhaccuatui,mở NhacCuaTui,HAVE (mở theo tên app đã cài)
+launch_app,target=ht.nhaccuatui,mở nhaccuatui,HAVE (mở theo tên app đã cài)
+launch_app,target=ht.nhaccuatui,mở nhạc của tui,HAVE (mở theo tên app đã cài)
+launch_app,target=ht.nhaccuatui,mở nct,HAVE (mở theo tên app đã cài)
+launch_app,target=ht.nhaccuatui,bật nhaccuatui,HAVE (mở theo tên app đã cài)
+launch_app,target=ht.nhaccuatui,nghe nhạc của tui,HAVE (mở theo tên app đã cài)
+launch_app,target=com.fptplay.activity,mở FPT Play,HAVE (mở theo tên app đã cài)
+launch_app,target=com.fptplay.activity,mở fpt play,HAVE (mở theo tên app đã cài)
+launch_app,target=com.fptplay.activity,mở fpt,HAVE (mở theo tên app đã cài)
+launch_app,target=com.fptplay.activity,mở ép phê tê,HAVE (mở theo tên app đã cài)
+launch_app,target=com.fptplay.activity,mở ép pê tê,HAVE (mở theo tên app đã cài)
+launch_app,target=com.fptplay.activity,bật fpt play,HAVE (mở theo tên app đã cài)
+launch_app,target=com.fptplay.activity,xem fpt play,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viva.vieon,mở vi on,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viva.vieon,bật vieon,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viva.vieon,xem vi on,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viettel.tv360,mở TV360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viettel.tv360,mở tv360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viettel.tv360,mở ti vi 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viettel.tv360,mở tê vê 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viettel.tv360,mở tv 360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viettel.tv360,bật tv360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.viettel.tv360,xem tv360,HAVE (mở theo tên app đã cài)
+launch_app,target=com.navitel,mở Navitel,HAVE (mở theo tên app đã cài)
+launch_app,target=com.navitel,mở navitel,HAVE (mở theo tên app đã cài)
+launch_app,target=com.navitel,mở na vi ten,HAVE (mở theo tên app đã cài)
+launch_app,target=com.navitel,mở na vi teo,HAVE (mở theo tên app đã cài)
+launch_app,target=com.navitel,mở bản đồ navitel,HAVE (mở theo tên app đã cài)
+launch_app,target=com.navitel,dẫn đường navitel,HAVE (mở theo tên app đã cài)
+launch_app,target=com.navitel,bật navitel,HAVE (mở theo tên app đã cài)
+launch_app,target=com.android.chrome,mở Chrome,HAVE
+launch_app,target=com.android.chrome,mở chrome,HAVE
+launch_app,target=com.android.chrome,mở cờ rôm,HAVE
+launch_app,target=com.android.chrome,mở trình duyệt,HAVE
+launch_app,target=com.android.chrome,mở gúc gồ cờ rôm,HAVE
+launch_app,target=com.android.chrome,lướt web,HAVE
+launch_app,target=com.android.chrome,bật trình duyệt,HAVE
+launch_app,target=com.mxtech.videoplayer.ad,mở MX Player,HAVE (mở theo tên app đã cài)
+launch_app,target=com.mxtech.videoplayer.ad,mở mx player,HAVE (mở theo tên app đã cài)
+launch_app,target=com.mxtech.videoplayer.ad,mở mờ ích,HAVE (mở theo tên app đã cài)
+launch_app,target=com.mxtech.videoplayer.ad,mở em ích play ơ,HAVE (mở theo tên app đã cài)
+launch_app,target=com.mxtech.videoplayer.ad,bật mx player,HAVE (mở theo tên app đã cài)
+set_split_screen,target=,thoát chia màn hình,HAVE (qua THT Split)
+set_split_screen,target=,thoát chia đôi,HAVE (qua THT Split)
+set_split_screen,target=,thoát chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=,tắt chia màn hình,HAVE (qua THT Split)
+set_split_screen,target=,hủy chia màn hình,HAVE (qua THT Split)
+set_split_screen,target=,tắt chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=,tắt chia đôi,HAVE (qua THT Split)
+set_split_screen,target=,dừng chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=,dừng chia đôi,HAVE (qua THT Split)
+set_split_screen,target=,dừng chia màn hình,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,chia màn hình,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,mở chế độ chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,bật chế độ chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,bật chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,mở chia đôi màn hình,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,chia đôi màn hình lại,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,chia đôi lại,HAVE (qua THT Split)
+set_split_screen,target=LAST_PAIR,mở lại chia đôi màn hình,HAVE (qua THT Split)
+set_window,target=FRONT_LEFT;percent=100,mở kính trái trước,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa sổ trái trước,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kính lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa lái bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kính tài xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kính tài lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,cho kính lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,cho kính tài xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính phía trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính phía trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính phía trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính phía trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính xe trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính xe trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kính trên trái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kính bên trái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa sổ ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa sổ ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ giúp tôi kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ giúp tôi kính lái nhé,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở giúp tôi kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở giúp tôi kính lái nhé,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo giúp tôi kính lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kênh lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kênh lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kênh lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kênh bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kênh bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kênh tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kênh tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kênh lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kênh tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng trái trước,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kiếng lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kiếng tài xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kiếng tài lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kiếng lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,xuống kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,cho kiếng lái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,cho kiếng tài xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kiếng bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kiếng trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kiếng trên trái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,kéo kiếng bên trái xuống,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở cửa kiếng ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,mở kiếng ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ cửa kiếng ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=100,hạ kiếng ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính trái trước,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kính lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa lái bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kính tài lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kính tài lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,cho kính lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,cho kính tài lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên cửa bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên cửa lái bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên cửa bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo cửa bên tài lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo cửa lái bên tài lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo cửa bên lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kín kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kín kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính phía trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính phía trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính xe trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng cửa kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kính trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kính trên trái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kính bên trái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng cửa kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kính ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa sổ ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kín lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kín lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kín lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kín tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kín tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kín tài lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kín lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng giúp tôi kính lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng giúp tôi kính lái nhé,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo giúp tôi kính lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kênh lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kênh lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kênh lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kín kênh lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kênh bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kênh bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kênh tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kênh tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kênh lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kênh tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng trái trước,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kiếng lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kiếng tài lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng ghế tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng tài lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kiếng tài lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,cho kiếng lái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,cho kiếng tài lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng bên tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng bên lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng tài,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng trước bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng cửa kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng trên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng bên trái trên,HAVE
+set_window,target=FRONT_LEFT;percent=0,lên kiếng trên bên trái,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kiếng trên trái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,kéo kiếng bên trái lên,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng cửa kiếng ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,đóng kiếng ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng cửa kiếng ghế lái,HAVE
+set_window,target=FRONT_LEFT;percent=0,nâng kiếng ghế lái,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính phải trước,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa sổ phải trước,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kính phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa bên ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa bên ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kính ghế phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kính ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính bên tài phụ đi,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kính bên tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kính tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kính tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kính bên tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở giúp tôi kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở giúp tôi kính tài phụ nhé,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ giúp tôi kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ giúp tôi kính tài phụ nhé,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kênh tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kênh tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kênh bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kênh bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kính phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kính ghế phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính phía trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính phía trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính phía trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính phía trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính xe trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính xe trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kính trên phải xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kính bên phải xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ giúp tôi kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ giúp tôi kính phụ nhé,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở giúp tôi kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở giúp tôi kính phụ nhé,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo giúp tôi kính phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kênh phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kênh phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kênh phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kênh bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kênh bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kênh ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kênh ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kênh phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng phải trước,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kiếng phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kiếng ghế phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kiếng phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kiếng ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kiếng bên tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kiếng tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kiếng tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kiếng bên tài phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,xuống kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kiếng phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,cho kiếng ghế phụ xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,mở cửa kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=100,hạ cửa kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kiếng trên phải xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=100,kéo kiếng bên phải xuống,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính phải trước,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kính phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kính ghế phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng cửa kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng cửa kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kính bên tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kính tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kính tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kính bên tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kín kính bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kín kính tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kênh tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kênh tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kênh tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kênh bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kênh bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kính phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kính ghế phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kín kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên cửa bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên cửa bên ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên cửa ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo cửa bên phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo cửa bên ghế phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa bên ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính phía trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính phía trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính xe trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng cửa kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kính trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kính trên phải lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kính bên phải lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kín phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kín phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kín phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kín ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kín ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kín phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng giúp tôi kính phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng giúp tôi kính phụ nhé,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo giúp tôi kính phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kênh phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kênh phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kênh phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kín kênh phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kênh bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kênh bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kênh ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kênh ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kênh phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng phải trước,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kiếng phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kiếng ghế phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng ghế phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng cửa kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng cửa kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng bên tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng tài phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kiếng bên tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kiếng tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kiếng tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kiếng bên tài phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kiếng phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,cho kiếng ghế phụ lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng bên phụ,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng trước bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,đóng cửa kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng cửa kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng trên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,nâng kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng bên phải trên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,lên kiếng trên bên phải,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kiếng trên phải lên,HAVE
+set_window,target=FRONT_RIGHT;percent=0,kéo kiếng bên phải lên,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kính trái sau xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kính sau bên trái xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính sau trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính sau trái,HAVE
+set_window,target=REAR_LEFT;percent=100,xuống kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,mở cửa kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kính sau bên tài xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính sau bên tài,HAVE
+set_window,target=REAR_LEFT;percent=100,mở cửa kính phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ cửa kính phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính xe sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính xe sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở cửa kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ cửa kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở cửa kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở cửa kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=100,mở cửa kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ cửa kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ cửa kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ cửa kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kính dưới trái xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kênh trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kênh trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kênh trái sau xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kênh sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kênh sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kênh sau trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kênh sau trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kiếng trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kiếng trái sau xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,xuống kiếng trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kiếng sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kiếng sau bên trái xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kiếng sau trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng sau trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở cửa kiếng trái sau,HAVE
+set_window,target=REAR_LEFT;percent=100,kéo kiếng sau bên tài xuống,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng sau bên tài,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kiếng phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kiếng xe sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng xe sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kiếng dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=100,mở kiếng bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=100,hạ kiếng bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kính trái sau lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kính sau bên trái lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kính sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng cửa kính trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kính sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kính sau bên tài lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính sau bên tài,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kính sau bên tài,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng cửa kính phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính xe sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng cửa kính sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng cửa kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng cửa kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng cửa kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng cửa kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kính dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kính bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kính dưới bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kính dưới trái lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kín trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kín trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kín trái sau lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kín sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kênh trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kênh trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kênh trái sau lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kênh sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kênh sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kênh sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kênh sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kiếng trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kiếng trái sau lên,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kiếng trái sau,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kiếng sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kiếng sau bên trái lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kiếng sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kiếng sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kiếng sau trái,HAVE
+set_window,target=REAR_LEFT;percent=0,kéo kiếng sau bên tài lên,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng sau bên tài,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kiếng sau bên tài,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng phía sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng xe sau bên trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kiếng dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kiếng dưới trái,HAVE
+set_window,target=REAR_LEFT;percent=0,đóng kiếng bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=0,nâng kiếng bên trái dưới,HAVE
+set_window,target=REAR_LEFT;percent=0,lên kiếng bên trái dưới,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kính phải sau xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kính sau bên phải xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,xuống kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở cửa kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kính sau bên phụ xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính sau bên phụ,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở cửa kính phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ cửa kính phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính xe sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính xe sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở cửa kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ cửa kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở cửa kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở cửa kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở cửa kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ cửa kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ cửa kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ cửa kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kính dưới phải xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kênh phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kênh phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kênh phải sau xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kênh sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kênh sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kênh sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kênh sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kiếng phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kiếng phải sau xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,xuống kiếng phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kiếng sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kiếng sau bên phải xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kiếng sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở cửa kiếng phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=100,kéo kiếng sau bên phụ xuống,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng sau bên phụ,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kiếng phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kiếng xe sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng xe sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kiếng dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=100,mở kiếng bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=100,hạ kiếng bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kính phải sau lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kính sau bên phải lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kính sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng cửa kính phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kính sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kính sau bên phụ lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính sau bên phụ,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kính sau bên phụ,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng cửa kính phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính xe sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng cửa kính sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng cửa kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng cửa kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng cửa kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng cửa kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kính dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kính bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kính dưới bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kính dưới phải lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kín phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kín phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kín phải sau lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kín sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kênh phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kênh phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kênh phải sau lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kênh sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kênh sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kênh sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kênh sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kiếng phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kiếng phải sau lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kiếng phải sau,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kiếng sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kiếng sau bên phải lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kiếng sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kiếng sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kiếng sau phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,kéo kiếng sau bên phụ lên,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng sau bên phụ,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kiếng sau bên phụ,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng phía sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng xe sau bên phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kiếng dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kiếng dưới phải,HAVE
+set_window,target=REAR_RIGHT;percent=0,đóng kiếng bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=0,nâng kiếng bên phải dưới,HAVE
+set_window,target=REAR_RIGHT;percent=0,lên kiếng bên phải dưới,HAVE
+set_hvac_temp,value=17.0,lạnh nhất,HAVE
+set_hvac_temp,value=17.0,mát nhất,HAVE
+set_hvac_temp,value=17.0,lạnh hết cỡ,HAVE
+set_hvac_temp,value=17.0,mát hết cỡ,HAVE
+set_hvac_temp,value=17.0,bật max lạnh,HAVE
+set_hvac_temp,value=17.0,làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,làm lạnh nhanh,HAVE
+set_hvac_temp,value=17.0,bật điều hòa làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,điều hòa làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,bật máy lạnh làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,máy lạnh làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,điều hòa mát nhất,HAVE
+set_hvac_temp,value=17.0,máy lạnh mát nhất,HAVE
+set_hvac_temp,value=17.0,điều hòa lạnh nhất,HAVE
+set_hvac_temp,value=17.0,máy lạnh lạnh nhất,HAVE
+set_hvac_temp,value=17.0,bật chế độ làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,chế độ làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,bật làm mát nhanh,HAVE
+set_hvac_temp,value=17.0,nhiệt độ thấp nhất,HAVE
+set_hvac_temp,value=17.0,nhiệt độ nhỏ nhất,HAVE
+set_hvac_temp,value=17.0,điều hòa thấp nhất,HAVE
+set_hvac_temp,value=17.0,điều hòa nhỏ nhất,HAVE
+set_hvac_temp,value=17.0,máy lạnh thấp nhất,HAVE
+set_hvac_temp,value=17.0,máy lạnh nhỏ nhất,HAVE
+set_hvac_temp,value=17.0,nhiệt độ mát nhất,HAVE
+set_hvac_temp,value=17.0,nhiệt độ lạnh nhất,HAVE
+set_hvac_temp,value=17.0,đặt nhiệt độ thấp nhất,HAVE
+set_hvac_temp,value=17.0,chỉnh nhiệt độ thấp nhất,HAVE
+set_hvac_temp,value=17.0,chỉnh điều hòa thấp nhất,HAVE
+set_hvac_temp,value=17.0,chỉnh máy lạnh thấp nhất,HAVE
+set_hvac_temp,value=17.0,cho nhiệt độ thấp nhất,HAVE
+set_hvac_temp,value=17.0,hạ nhiệt độ hết cỡ,HAVE
+set_hvac_temp,value=17.0,giảm nhiệt độ hết cỡ,HAVE
+set_hvac_temp,value=17.0,hạ nhiệt độ thấp nhất,HAVE
+set_hvac_temp,value=17.0,giảm nhiệt độ thấp nhất,HAVE
+set_hvac_temp,value=17.0,bật nhiệt độ thấp nhất,HAVE
+set_hvac_temp,value=17.0,bật nhiệt độ lạnh nhất,HAVE
+set_hvac_temp,value=32.0,nóng nhất,HAVE
+set_hvac_temp,value=32.0,nóng hết cỡ,HAVE
+set_hvac_temp,value=32.0,ấm nhất,HAVE
+set_hvac_temp,value=32.0,sưởi ấm nhanh,HAVE
+set_hvac_temp,value=32.0,làm ấm nhanh,HAVE
+set_hvac_temp,value=32.0,làm nóng nhanh,HAVE
+set_hvac_temp,value=32.0,nhiệt độ cao nhất,HAVE
+set_hvac_temp,value=32.0,nhiệt độ lớn nhất,HAVE
+set_hvac_temp,value=32.0,điều hòa cao nhất,HAVE
+set_hvac_temp,value=32.0,điều hòa lớn nhất,HAVE
+set_hvac_temp,value=32.0,máy lạnh cao nhất,HAVE
+set_hvac_temp,value=32.0,máy lạnh lớn nhất,HAVE
+set_hvac_temp,value=32.0,nhiệt độ nóng nhất,HAVE
+set_hvac_temp,value=32.0,nhiệt độ ấm nhất,HAVE
+set_hvac_temp,value=32.0,đặt nhiệt độ cao nhất,HAVE
+set_hvac_temp,value=32.0,chỉnh nhiệt độ cao nhất,HAVE
+set_hvac_temp,value=32.0,chỉnh điều hòa cao nhất,HAVE
+set_hvac_temp,value=32.0,chỉnh máy lạnh cao nhất,HAVE
+set_hvac_temp,value=32.0,cho nhiệt độ cao nhất,HAVE
+set_hvac_temp,value=32.0,tăng nhiệt độ hết cỡ,HAVE
+set_hvac_temp,value=32.0,tăng nhiệt độ cao nhất,HAVE
+set_hvac_fan,fan_level=7,quạt cao nhất,HAVE
+set_hvac_fan,fan_level=7,quạt mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,gió to nhất,HAVE
+set_hvac_fan,fan_level=7,quạt to nhất,HAVE
+set_hvac_fan,fan_level=7,quạt gió cao nhất,HAVE
+set_hvac_fan,fan_level=7,quạt gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,mức gió cao nhất,HAVE
+set_hvac_fan,fan_level=7,gió cao nhất,HAVE
+set_hvac_fan,fan_level=7,quạt mức cao nhất,HAVE
+set_hvac_fan,fan_level=7,mức quạt cao nhất,HAVE
+set_hvac_fan,fan_level=7,mở mức gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,điều hòa mở mức gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,mở điều hòa mức lớn nhất,HAVE
+set_hvac_fan,fan_level=7,mở điều hòa mức gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,tăng quạt gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,tăng quạt mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,tăng gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,tăng quạt gió cao nhất,HAVE
+set_hvac_fan,fan_level=7,tăng quạt cao nhất,HAVE
+set_hvac_fan,fan_level=7,mức gió mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,max gió,HAVE
+set_hvac_fan,fan_level=7,gió hết cỡ,HAVE
+set_hvac_fan,fan_level=7,quạt hết cỡ,HAVE
+set_hvac_fan,fan_level=7,tăng quạt hết cỡ,HAVE
+set_hvac_fan,fan_level=7,chỉnh quạt cao nhất,HAVE
+set_hvac_fan,fan_level=7,đặt quạt cao nhất,HAVE
+set_hvac_fan,fan_level=7,cho quạt cao nhất,HAVE
+set_hvac_fan,fan_level=7,tốc độ gió cực đại,HAVE
+set_hvac_fan,fan_level=7,chỉnh tốc độ gió cực đại,HAVE
+set_hvac_fan,fan_level=7,đặt tốc độ gió cực đại,HAVE
+set_hvac_fan,fan_level=7,tốc độ gió cao nhất,HAVE
+set_hvac_fan,fan_level=7,quạt số cực đại,HAVE
+set_hvac_fan,fan_level=7,để quạt số cực đại,HAVE
+set_hvac_fan,fan_level=7,gió số cực đại,HAVE
+set_hvac_fan,fan_level=7,quạt cực đại,HAVE
+set_hvac_fan,fan_level=7,gió cực đại,HAVE
+set_hvac_fan,fan_level=7,set quạt cực đại,HAVE
+set_hvac_fan,fan_level=7,chỉnh quạt cực đại,HAVE
+set_hvac_fan,fan_level=7,bật quạt mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,quạt mức to nhất,HAVE
+set_hvac_fan,fan_level=7,quạt mức mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,quạt mức lớn nhất,HAVE
+set_hvac_fan,fan_level=7,quạt mức cực đại,HAVE
+set_hvac_fan,fan_level=7,mức quạt to nhất,HAVE
+set_hvac_fan,fan_level=7,mức quạt mạnh nhất,HAVE
+set_hvac_fan,fan_level=7,mức gió to nhất,HAVE
+set_hvac_fan,fan_level=7,mức gió cực đại,HAVE
+set_hvac_fan,fan_level=1,quạt nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,quạt nhẹ nhất,HAVE
+set_hvac_fan,fan_level=1,gió nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,gió nhẹ nhất,HAVE
+set_hvac_fan,fan_level=1,gió thấp nhất,HAVE
+set_hvac_fan,fan_level=1,quạt thấp nhất,HAVE
+set_hvac_fan,fan_level=1,quạt số nhẹ nhất,HAVE
+set_hvac_fan,fan_level=1,quạt số nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,để quạt số nhẹ nhất,HAVE
+set_hvac_fan,fan_level=1,tốc độ gió nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,tốc độ gió nhẹ nhất,HAVE
+set_hvac_fan,fan_level=1,tốc độ gió thấp nhất,HAVE
+set_hvac_fan,fan_level=1,chỉnh tốc độ gió nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,quạt gió thấp nhất,HAVE
+set_hvac_fan,fan_level=1,mức gió thấp nhất,HAVE
+set_hvac_fan,fan_level=1,quạt mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,mức quạt thấp nhất,HAVE
+set_hvac_fan,fan_level=1,quạt êm nhất,HAVE
+set_hvac_fan,fan_level=1,giảm quạt hết cỡ,HAVE
+set_hvac_fan,fan_level=1,hạ quạt hết cỡ,HAVE
+set_hvac_fan,fan_level=1,chỉnh quạt thấp nhất,HAVE
+set_hvac_fan,fan_level=1,đặt quạt thấp nhất,HAVE
+set_hvac_fan,fan_level=1,cho quạt thấp nhất,HAVE
+set_hvac_fan,fan_level=1,giảm quạt về mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,hạ quạt về mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,quạt về mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,giảm gió về mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,quạt mức nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,quạt mức nhẹ nhất,HAVE
+set_hvac_fan,fan_level=1,mức quạt nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,mức quạt nhẹ nhất,HAVE
+set_hvac_fan,fan_level=1,mức gió nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,bật điều hòa mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,mở điều hòa mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,điều hòa mức thấp nhất,HAVE
+set_hvac_fan,fan_level=1,bật điều hòa mức nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,mở điều hòa mức nhỏ nhất,HAVE
+set_hvac_fan,fan_level=1,điều hòa mức nhỏ nhất,HAVE
+set_hvac_fan,fan_level=4,quạt vừa vừa,HAVE
+set_hvac_fan,fan_level=4,gió vừa vừa,HAVE
+set_hvac_fan,fan_level=4,quạt gió vừa vừa,HAVE
+set_hvac_fan,fan_level=4,quạt mức vừa vừa,HAVE
+set_hvac_fan,fan_level=4,mức gió vừa vừa,HAVE
+set_hvac_fan,fan_level=4,tốc độ gió vừa vừa,HAVE
+set_hvac_fan,fan_level=4,chỉnh tốc độ gió vừa vừa,HAVE
+set_hvac_fan,fan_level=4,chỉnh quạt vừa vừa,HAVE
+set_hvac_fan,fan_level=4,đặt quạt vừa vừa,HAVE
+set_hvac_fan,fan_level=4,cho gió vừa vừa,HAVE
+set_hvac_fan,fan_level=4,cho quạt vừa vừa,HAVE
+set_hvac_fan,fan_level=4,quạt trung bình,HAVE
+set_hvac_fan,fan_level=4,gió trung bình,HAVE
+set_hvac_fan,fan_level=4,quạt mức trung bình,HAVE
+set_hvac_fan,fan_level=4,mức gió trung bình,HAVE
+set_hvac_fan,fan_level=3,quạt mức 3,HAVE
+set_hvac_fan,fan_level=3,quạt mức ba,HAVE
+set_hvac_fan,fan_level=3,quạt số 3,HAVE
+set_hvac_fan,fan_level=3,quạt số ba,HAVE
+set_hvac_fan,fan_level=3,gió mức 3,HAVE
+set_hvac_fan,fan_level=3,gió mức ba,HAVE
+set_hvac_fan,fan_level=3,bậc giáo ba,HAVE
+set_hvac_fan,fan_level=3,bậc gió ba,HAVE
+set_hvac_fan,fan_level=3,bật giáo ba,HAVE
+set_hvac_fan,fan_level=0,tắt quạt,HAVE
+set_hvac_fan,fan_level=0,tắt quạt gió,HAVE
+set_hvac_fan,fan_level=0,tắt gió,HAVE
+set_hvac_fan,fan_level=0,ngừng quạt,HAVE
+set_hvac_fan,fan_level=0,tắt quạt điều hòa,HAVE
+set_hvac_fan,fan_level=0,tắt gió điều hòa,HAVE
+set_hvac_fan,fan_level=0,tắt quạt gió điều hòa,HAVE
+set_window,target=ALL;percent=10,hé kính,HAVE
+set_window,target=ALL;percent=10,mở hé kính,HAVE
+set_window,target=ALL;percent=10,kính hé một chút,HAVE
+set_window,target=ALL;percent=10,hé cửa sổ,HAVE
+set_window,target=ALL;percent=10,hé kính một chút,HAVE
+set_window,target=ALL;percent=10,hé kính cho thoáng,HAVE
+set_window,target=ALL;percent=10,hé cửa sổ một chút,HAVE
+set_window,target=ALL;percent=10,hé cửa kính một chút,HAVE
+set_window,target=ALL;percent=10,hạ hé cửa sổ,HAVE
+set_window,target=ALL;percent=10,hé kiếng,HAVE
+set_window,target=ALL;percent=10,mở hé kiếng,HAVE
+set_window,target=ALL;percent=10,kiếng hé một chút,HAVE
+set_window,target=ALL;percent=10,hé kiếng một chút,HAVE
+set_window,target=ALL;percent=10,hé kiếng cho thoáng,HAVE
+set_window,target=ALL;percent=10,hé cửa kiếng một chút,HAVE
+set_settings,target=AUTO,bật đèn viền tự động,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,target=AUTO,đèn viền tự động,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,target=AUTO,đèn viền theo lịch,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,target=OFF,tắt đèn viền tự động,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,target=OFF,đèn viền không tự động,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,,tự bật mạng không dây,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,,mạng tự bật,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,,bật mạng tự động,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,,tắt tự bật mạng,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,,mạng không tự bật,NO_MAPPING (tuỳ chọn ứng dụng)
+set_settings,,tắt mạng tự động,NO_MAPPING (tuỳ chọn ứng dụng)
+voice_query,target=date,hôm nay ngày bao nhiêu,HAVE
+voice_query,target=date,hôm nay là ngày gì,HAVE
+voice_query,target=date,ngày mấy,HAVE
+voice_query,target=wifi_state,mạng không dây có bật không,HAVE
+voice_query,target=wifi_state,mạng đang bật không,HAVE
+voice_query,target=wifi_state,mạng thế nào,HAVE
+voice_query,target=wifi_state,wifi đang bật không,HAVE
+pip_escape,,thoát pip,DEFERRED
+pip_escape,,thoát hình trong hình,DEFERRED
+pip_escape,,thoát video nổi,DEFERRED
+pip_escape,,đóng video nổi,DEFERRED
+pip_escape,,tắt pip,DEFERRED
+set_freeform,,mở màn hình nổi,DEFERRED
+set_freeform,,bật màn hình nổi,DEFERRED
+set_freeform,,bật freeform,DEFERRED
+set_blackout,on=true,tắt màn hình,HAVE (màn hình đen)
+set_blackout,on=true,màn hình đen,HAVE (màn hình đen)
+set_blackout,on=true,tối màn hình,HAVE (màn hình đen)
+set_blackout,on=true,tắt màn hình xe,HAVE (màn hình đen)
+set_brightness,value=30.0,giảm độ sáng màn hình,HAVE
+set_brightness,value=30.0,giảm độ sáng,HAVE
+set_brightness,value=30.0,giảm sáng màn hình,HAVE
+set_brightness,value=30.0,hạ độ sáng màn hình,HAVE
+set_brightness,value=30.0,hạ độ sáng,HAVE
+set_brightness,value=30.0,làm tối màn hình bớt,HAVE
+set_brightness,value=50.0,độ sáng 50 phần trăm,HAVE
+set_brightness,value=50.0,độ sáng màn hình 50 phần trăm,HAVE
+set_brightness,value=50.0,giảm độ sáng 50 phần trăm,HAVE
+set_brightness,value=50.0,tăng độ sáng lên 50 phần trăm,HAVE
+set_brightness,value=50.0,đặt độ sáng 50 phần trăm,HAVE
+set_brightness,value=50.0,đặt độ sáng màn hình 50 phần trăm,HAVE
+set_brightness,value=50.0,chỉnh độ sáng 50 phần trăm,HAVE
+set_brightness,value=50.0,giảm độ sáng xuống 50 phần trăm,HAVE
+set_brightness,value=50.0,tăng độ sáng màn hình lên 50 phần trăm,HAVE
+set_brightness,value=50.0,cho độ sáng 50 phần trăm,HAVE
+set_brightness,value=50.0,giảm 50 phần trăm độ sáng,HAVE
+set_brightness,value=50.0,tăng 50 phần trăm độ sáng,HAVE
+set_blackout,on=false,bật màn hình,HAVE (màn hình đen)
+set_blackout,on=false,mở màn hình,HAVE (màn hình đen)
+set_blackout,on=false,hết màn hình đen,HAVE (màn hình đen)
+set_blackout,on=false,sáng màn hình,HAVE (màn hình đen)

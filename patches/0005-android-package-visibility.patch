@@ -1,0 +1,43 @@
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android">
++
++    <!-- Target SDK 30+: allow PackageManager to discover only the apps THT Voice can explicitly launch. -->
++    <queries>
++        <package android:name="com.google.android.youtube" />
++        <package android:name="com.vanced.android.youtube" />
++        <package android:name="app.revanced.android.youtube" />
++        <package android:name="app.morphe.android.youtube" />
++        <package android:name="org.smarttube.stable" />
++        <package android:name="org.smarttube.beta" />
++        <package android:name="com.liskovsoft.smarttubetv" />
++
++        <package android:name="com.google.android.apps.youtube.music" />
++        <package android:name="app.revanced.android.apps.youtube.music" />
++        <package android:name="anddea.youtube.music" />
++        <package android:name="com.zing.mp3" />
++        <package android:name="com.spotify.music" />
++
++        <package android:name="com.google.android.apps.maps" />
++        <package android:name="com.waze" />
++        <package android:name="vn.vietmap.live" />
++        <package android:name="com.android.chrome" />
++        <package android:name="com.netflix.mediaclient" />
++        <package android:name="com.zhiliaoapp.musically" />
++        <package android:name="org.videolan.vlc" />
++        <package android:name="ai.zalo.kiki.car" />
++
++        <intent>
++            <action android:name="android.intent.action.VIEW" />
++            <category android:name="android.intent.category.BROWSABLE" />
++            <data android:scheme="https" />
++        </intent>
++        <intent>
++            <action android:name="android.intent.action.VIEW" />
++            <data android:scheme="geo" />
++        </intent>
++    </queries>
+ 
+     <application

@@ -1,0 +1,394 @@
+{
+  "metadata": [
+    {
+      "file": "ref-diag.apk",
+      "size_bytes": 7964776,
+      "sha256": "3e642b9ee5519f84f18978b5c2f680ce2206c74b038de1773b186bc0c65c43fb"
+    },
+    {
+      "file": "ref-voice.apk",
+      "size_bytes": 248002543,
+      "sha256": "36e0024abef318ac58a92c3a858af15ae9c1ca9c17d849737a14100be5ed3e41"
+    }
+  ],
+  "coolray_evidence": {
+    "REF-VOICE": [
+      "enum/name COOLRAY",
+      "model string IHU624G",
+      "display string Geely CoolRay",
+      "isCoolray branch"
+    ],
+    "REF-DIAG": [
+      "profile assets/configs/SX11A5 exists",
+      "IHU623G string exists and analysis indicates FS11A3 special-case; SX11A5 used as other/default profile"
+    ]
+  },
+  "REF-DIAG": {
+    "profile": "SX11A5",
+    "ecu_count": 12,
+    "did_count": 514,
+    "operation_count": 82,
+    "uds_bridge": {
+      "property_hex": "0x2170A634",
+      "property_dec": 561030708,
+      "area_hex": "0x01000000",
+      "area_dec": 16777216,
+      "services": {
+        "read_did": "0x22",
+        "write_did": "0x2E",
+        "io_control": "0x2F",
+        "routine_control": "0x31",
+        "session_control": "0x10",
+        "security_access": "0x27",
+        "extended_session": "0x10 03"
+      }
+    },
+    "ecus": [
+      {
+        "name": "BCM",
+        "localizedName": "Контроллер кузова",
+        "id": 1824,
+        "keys": [
+          "C1C2B9AA"
+        ],
+        "nameEn": "Body Control Module"
+      },
+      {
+        "name": "IPK",
+        "localizedName": "Приборная панель",
+        "id": 1825,
+        "keys": [
+          "31235671"
+        ],
+        "nameEn": "Instrument Panel Cluster"
+      },
+      {
+        "name": "TCM",
+        "localizedName": "Модуль рулевой колонки",
+        "id": 1938,
+        "keys": [
+          "F1310407"
+        ],
+        "nameEn": "Steering Column Module"
+      },
+      {
+        "name": "FCS",
+        "localizedName": "Фронтальная камера",
+        "id": 1939,
+        "keys": [
+          "76688783"
+        ],
+        "nameEn": "Front Camera System"
+      },
+      {
+        "name": "GW",
+        "localizedName": "Шлюз",
+        "id": 1959,
+        "keys": [
+          "7A56884B"
+        ],
+        "nameEn": "Gateway"
+      },
+      {
+        "name": "AC",
+        "localizedName": "Кондиционер",
+        "id": 1990,
+        "keys": [
+          "00111122"
+        ],
+        "nameEn": "Air Conditioning"
+      },
+      {
+        "name": "EPS",
+        "localizedName": "Электроусилитель руля",
+        "id": 2002,
+        "keys": [
+          "C11C1281"
+        ],
+        "nameEn": "Electronic Power Steering"
+      },
+      {
+        "name": "EMS",
+        "localizedName": "Управление двигателем",
+        "id": 2016,
+        "keys": [
+          "D3212301"
+        ],
+        "nameEn": "Engine Management System"
+      },
+      {
+        "name": "TCU",
+        "localizedName": "Контроллер КПП",
+        "id": 2017,
+        "keys": [
+          "E1D5C303"
+        ],
+        "nameEn": "Transmission Control Unit"
+      },
+      {
+        "name": "ESC",
+        "localizedName": "Система стабилизации",
+        "id": 2020,
+        "keys": [
+          "F1312970"
+        ],
+        "nameEn": "Electronic Stability Control"
+      },
+      {
+        "name": "SRS",
+        "localizedName": "Подушки безопасности",
+        "id": 2021,
+        "keys": [
+          "419274CC"
+        ],
+        "nameEn": "Supplemental Restraint System"
+      },
+      {
+        "name": "MMI",
+        "localizedName": "Мультимедиа",
+        "id": 1985,
+        "keys": [
+          "55565A66"
+        ],
+        "nameEn": "Multimedia Interface"
+      }
+    ]
+  },
+  "REF-VOICE": {
+    "coolray_model": "IHU624G",
+    "direct_vhal_mappings": [
+      {
+        "category": "HVAC",
+        "function": "HVAC temperature target",
+        "property_hex": "0x15600503",
+        "area": "1",
+        "type": "Float",
+        "values": "15.5..28.5 °C",
+        "coolray_specific": "No explicit branch",
+        "confidence": "High",
+        "notes": "REF-VOICE direct CarPropertyManager mapping.",
+        "property_dec": 358614275
+      },
+      {
+        "category": "HVAC",
+        "function": "Blower level",
+        "property_hex": "0x15400500",
+        "area": "5",
+        "type": "Int",
+        "values": "0..8 on Coolray",
+        "coolray_specific": "Coolray max=8",
+        "confidence": "High",
+        "notes": "Coolray branch changes max fan speed.",
+        "property_dec": 356517120
+      },
+      {
+        "category": "HVAC",
+        "function": "Air distribution",
+        "property_hex": "0x15400501",
+        "area": "1",
+        "type": "Int bitmask",
+        "values": "1 face; 2 feet; 4 windscreen; combinations 3/5/6/7",
+        "coolray_specific": "No explicit branch",
+        "confidence": "High",
+        "notes": "",
+        "property_dec": 356517121
+      },
+      {
+        "category": "HVAC",
+        "function": "HVAC activation group A",
+        "property_hex": "0x15200505",
+        "area": "117",
+        "type": "Bool",
+        "values": "0/1",
+        "coolray_specific": "No explicit branch",
+        "confidence": "Medium",
+        "notes": "Used as part of grouped HVAC power sequence; exact semantic label needs vehicle log.",
+        "property_dec": 354419973
+      },
+      {
+        "category": "HVAC",
+        "function": "HVAC activation group B",
+        "property_hex": "0x1520050A",
+        "area": "1",
+        "type": "Bool",
+        "values": "0/1",
+        "coolray_specific": "No explicit branch",
+        "confidence": "Medium",
+        "notes": "Grouped HVAC power sequence.",
+        "property_dec": 354419978
+      },
+      {
+        "category": "HVAC",
+        "function": "HVAC activation group C",
+        "property_hex": "0x15200510",
+        "area": "5",
+        "type": "Bool",
+        "values": "0/1",
+        "coolray_specific": "No explicit branch",
+        "confidence": "Medium",
+        "notes": "Grouped HVAC power sequence.",
+        "property_dec": 354419984
+      },
+      {
+        "category": "HVAC",
+        "function": "Defrost/demist",
+        "property_hex": "0x15200514",
+        "area": "2",
+        "type": "Bool",
+        "values": "0/1",
+        "coolray_specific": "No explicit branch",
+        "confidence": "Medium",
+        "notes": "Confirm exact front/rear semantic on target vehicle.",
+        "property_dec": 354419988
+      },
+      {
+        "category": "Window",
+        "function": "Windows / sunroof position (Coolray)",
+        "property_hex": "0x234020AB",
+        "area": "0x10,0x40,0x100,0x400,0x10000,0x20000",
+        "type": "Int/position",
+        "values": "0..100",
+        "coolray_specific": "YES",
+        "confidence": "High",
+        "notes": "Coolray branch replaces default 0x13400BC0.",
+        "property_dec": 591405227
+      },
+      {
+        "category": "Trunk",
+        "function": "Trunk open (Coolray)",
+        "property_hex": "0x21111900",
+        "area": "0",
+        "type": "Int",
+        "values": "1=open; 0=inactive/close candidate",
+        "coolray_specific": "YES",
+        "confidence": "High",
+        "notes": "Coolray branch replaces default trunk property.",
+        "property_dec": 554768640
+      },
+      {
+        "category": "Seat",
+        "function": "Seat heating",
+        "property_hex": "0x1540050B",
+        "area": "1 driver; 4 passenger",
+        "type": "Int",
+        "values": "levels",
+        "coolray_specific": "No explicit branch",
+        "confidence": "High",
+        "notes": "Cross-confirmed with REF-DIAG analysis.",
+        "property_dec": 356517131
+      },
+      {
+        "category": "Seat",
+        "function": "Seat ventilation",
+        "property_hex": "0x15400513",
+        "area": "1 driver; 4 passenger",
+        "type": "Int",
+        "values": "0..3",
+        "coolray_specific": "No explicit branch",
+        "confidence": "High",
+        "notes": "Cross-confirmed with REF-DIAG analysis.",
+        "property_dec": 356517139
+      },
+      {
+        "category": "UI",
+        "function": "Screen brightness (Coolray)",
+        "property_hex": "0x29020400",
+        "area": "2",
+        "type": "Int",
+        "values": "brightness level",
+        "coolray_specific": "YES",
+        "confidence": "High",
+        "notes": "Coolray-specific branch.",
+        "property_dec": 687997952
+      },
+      {
+        "category": "Lighting",
+        "function": "Interior light (Coolray)",
+        "property_hex": "0x15400F04",
+        "area": "1,2,4,16,64",
+        "type": "Bool/Int",
+        "values": "0/1",
+        "coolray_specific": "YES",
+        "confidence": "High",
+        "notes": "Area-to-zone mapping still needs vehicle validation.",
+        "property_dec": 356519684
+      },
+      {
+        "category": "Fuel",
+        "function": "Fuel door state/control candidate",
+        "property_hex": "0x11200308",
+        "area": "0",
+        "type": "Bool",
+        "values": "0/1",
+        "coolray_specific": "No explicit branch",
+        "confidence": "Medium",
+        "notes": "Validate action semantics before control.",
+        "property_dec": 287310600
+      },
+      {
+        "category": "Drive",
+        "function": "Drive mode",
+        "property_hex": "0x2140710C",
+        "area": "0",
+        "type": "Int",
+        "values": "enum",
+        "coolray_specific": "No explicit branch",
+        "confidence": "Medium",
+        "notes": "Do not expose to voice until values validated on target vehicle.",
+        "property_dec": 557871372
+      },
+      {
+        "category": "Lighting",
+        "function": "Exterior light group candidate",
+        "property_hex": "0x21407016",
+        "area": "",
+        "type": "Int",
+        "values": "enum",
+        "coolray_specific": "Unknown",
+        "confidence": "Medium",
+        "notes": "Map enum before use.",
+        "property_dec": 557871126
+      },
+      {
+        "category": "Lighting",
+        "function": "Exterior/fog light candidate",
+        "property_hex": "0x11400E12",
+        "area": "",
+        "type": "Int",
+        "values": "enum",
+        "coolray_specific": "Unknown",
+        "confidence": "Medium",
+        "notes": "Map enum before use.",
+        "property_dec": 289410578
+      },
+      {
+        "category": "Safety check",
+        "function": "Motion/speed candidate",
+        "property_hex": "0x11600207",
+        "area": "0",
+        "type": "Float",
+        "values": "compared with 5.0",
+        "coolray_specific": "Unknown",
+        "confidence": "Candidate",
+        "notes": "Used in pre-action logic; identify exact physical meaning with live logs.",
+        "property_dec": 291504647
+      }
+    ]
+  },
+  "implementation_priority": [
+    "HVAC temperature/fan/airflow",
+    "windows/sunroof",
+    "trunk with stationary-state validation",
+    "seat heat/vent",
+    "lock/unlock/trunk/mirrors via validated path",
+    "read-back confirmation after every command"
+  ],
+  "exclude_from_voice": [
+    "TCU forced gear requests",
+    "EMS throttle/fuel pump/injector actuator tests",
+    "EPS calibration/end-stop routines",
+    "ESC/EPB service routines",
+    "SRS routines",
+    "VIN write / adaptation routines"
+  ]
+}

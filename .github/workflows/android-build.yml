@@ -1,0 +1,187 @@
+name: Android build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      include_gipformer65m:
+        description: 'Stage verified Gipformer 65M INT8 into the debug APK'
+        required: false
+        default: false
+        type: boolean
+      include_wake_kws:
+        description: 'Stage pinned Sherpa selectable KWS profiles into the debug APK'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android 32 SDK
+        shell: bash
+        run: |
+          SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-32" "build-tools;32.0.0"
+
+      - name: Set up Gradle 8.13
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Validate PowerShell test scripts
+        shell: pwsh
+        run: |
+          $failed = $false
+          Get-ChildItem -Path scripts -Filter *.ps1 | ForEach-Object {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $_.FullName,
+              [ref]$tokens,
+              [ref]$errors
+            ) | Out-Null
+            if ($errors.Count -gt 0) {
+              $failed = $true
+              Write-Host "PowerShell parse errors: $($_.FullName)"
+              $errors | ForEach-Object { Write-Host "  $($_.Message)" }
+            }
+          }
+          if ($failed) { throw "PowerShell script syntax validation failed" }
+
+      - name: Test no-car UI evidence runner classifier
+        shell: pwsh
+        run: .\scripts\run-no-car-ui-validation.ps1 -SelfTest
+
+      - name: Test scene read-only contract probe guard
+        shell: pwsh
+        run: .\scripts\probe-scene-contract.ps1 -SelfTest
+
+      - name: Validate Phase 10 hardware matrix
+        shell: pwsh
+        run: .\scripts\validate-phase10-matrix.ps1
+
+      - name: Test Phase 10 wake profile analysis
+        shell: pwsh
+        run: .\scripts\test-analyze-ihu689g-validation.ps1
+
+      - name: Test Phase 10 ZIP bundle review
+        shell: pwsh
+        run: .\scripts\test-review-ihu689g-bundle.ps1
+
+      - name: Fetch Sherpa Android runtime
+        shell: bash
+        run: bash scripts/fetch-sherpa-android.sh
+
+      - name: Test Sherpa 65M model staging
+        shell: bash
+        run: bash scripts/test-prepare-sherpa65m-model.sh
+
+      - name: Set up Node 22 for the license server tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Test license server (Worker)
+        shell: bash
+        working-directory: worker
+        run: npm test
+
+      - name: Test priv-app permission whitelist
+        shell: bash
+        run: python3 scripts/test-privapp-permissions.py
+
+      - name: Test Kokoro voice pack splitter
+        shell: bash
+        run: python3 scripts/test-split-kokoro-pack.py
+
+      - name: Test Kokoro Vietnamese runtime packer
+        shell: bash
+        run: python3 scripts/test-prepare-kokoro-vi-runtime.py
+
+      - name: Test release version gate and workflow syntax
+        shell: bash
+        run: |
+          bash scripts/release/test-check-version.sh
+          for f in scripts/release/*.sh; do bash -n "$f"; done
+          python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in sys.argv[1:]]" .github/workflows/*.yml
+
+      - name: Test hardware package provenance metadata
+        shell: bash
+        run: bash scripts/test-create-hardware-build-info.sh
+
+      - name: Test hardware package preflight verifier
+        shell: pwsh
+        run: .\scripts\test-verify-hardware-package.ps1
+
+      - name: Test package-bound IHU689G runner
+        shell: pwsh
+        run: .\scripts\test-run-ihu689g-package.ps1
+
+      - name: Stage verified Gipformer 65M INT8
+        if: ${{ (github.event_name == 'workflow_dispatch' && inputs.include_gipformer65m) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, '[full-asr]')) }}
+        shell: bash
+        run: bash scripts/fetch-gipformer65m-int8.sh
+
+      - name: Stage pinned selectable wake word profiles
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.include_wake_kws }}
+        shell: bash
+        run: bash scripts/fetch-sherpa-kws-heytht.sh
+
+      - name: Show tool versions
+        shell: bash
+        run: |
+          java -version
+          gradle --version
+          "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --list_installed | head -80
+          if [[ -f app/src/main/assets/models/sherpa-onnx-streaming-zipformer-vi-65M-int8/asr-backend.txt ]]; then
+            echo "ASR backend: $(cat app/src/main/assets/models/sherpa-onnx-streaming-zipformer-vi-65M-int8/asr-backend.txt)"
+          else
+            echo "ASR model assets not staged in this build"
+          fi
+          KWS_DIR="app/src/main/assets/models/sherpa-onnx-kws-zipformer-zh-en-3M-2025-12-20"
+          if [[ -f "$KWS_DIR/keywords.txt" && -f "$KWS_DIR/keywords-hello-geely.txt" && -f "$KWS_DIR/keywords-hey-geely.txt" ]]; then
+            echo "Wake KWS profiles staged: Hey THT | Hello Geely | Hey Geely"
+          else
+            echo "Wake KWS model assets not staged in this build"
+          fi
+
+      - name: Unit tests
+        shell: bash
+        run: |
+          set -o pipefail
+          gradle :app:testDebugUnitTest --stacktrace 2>&1 | tee unit-test.log
+
+      - name: Report compile / unit test errors
+        if: failure()
+        shell: bash
+        run: |
+          # Surface the first errors as annotations so they are readable without the raw log.
+          grep -E "^e: " unit-test.log | head -40 | while IFS= read -r line; do echo "::error title=Kotlin compile::${line}"; done || true
+          grep -E "> .* FAILED$|AssertionError|ComparisonFailure|Exception at" unit-test.log | head -40 | while IFS= read -r line; do echo "::error title=Unit test::${line}"; done || true
+
+      - name: Assemble debug APK
+        run: gradle :app:assembleDebug --stacktrace
+
+      # Standard CI intentionally does not upload APK artifacts. The only APK
+      # delivery path is .github/workflows/hardware-test-build.yml so GitHub
+      # artifact quota cannot make normal PR/main CI noisy or misleading.

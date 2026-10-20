@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.VoiceApp3" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/voice_primary</item>
+        <item name="colorPrimaryVariant">@color/voice_background</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/voice_secondary</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/voice_background</item>
+        <item name="android:navigationBarColor">@color/voice_background</item>
+        <item name="android:windowBackground">@color/voice_background</item>
+    </style>
+    <style name="Theme.VoiceWake" parent="android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+</resources>

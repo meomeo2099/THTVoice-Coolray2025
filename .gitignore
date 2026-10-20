@@ -1,0 +1,26 @@
+# Local/CI generated Sherpa runtime
+app/libs/sherpa-onnx-*.aar
+
+# Large ASR model binaries are staged locally before build, not stored in normal Git history.
+app/src/main/assets/models/sherpa-onnx-streaming-zipformer-vi-65M-int8/
+
+# Small always-on KWS model is also staged from a pinned upstream release.
+app/src/main/assets/models/sherpa-onnx-kws-zipformer-zh-en-3M-2025-12-20/
+
+# Selectable offline TTS voice models are staged before build as well.
+app/src/main/assets/models/tts/
+
+# Release signing material must never enter Git history.
+*.jks
+*.keystore
+keystore.properties
+release-signing/
+
+# Android/Gradle outputs
+.gradle/
+build/
+**/build/
+local.properties
+*.iml
+.idea/
+worker/dist/

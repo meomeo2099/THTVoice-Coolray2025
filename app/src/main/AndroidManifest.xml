@@ -1,0 +1,232 @@
+<!--suppress AndroidUnknownAttribute -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:sharedUserId="android.uid.system"
+    tools:ignore="Deprecated">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+    <uses-permission android:name="android.car.permission.CAR_CONTROL_APP"/>
+    <uses-permission android:name="android.car.permission.CONTROL_CAR_DOORS"/>
+    <uses-permission android:name="android.car.permission.CAR_CONTROL_AUDIO_VOLUME"/>
+    <uses-permission android:name="android.car.permission.CAR_PROPERTY_ACCESS"/>
+    <uses-permission android:name="android.car.permission.CAR_PROPERTY_READ_WRITE" />
+    <uses-permission android:name="android.car.permission.CONTROL_CAR_WINDOWS"/>
+    <uses-permission android:name="android.car.permission.CONTROL_CAR_CLIMATE" />
+    <uses-permission android:name="android.car.permission.CAR_VENDOR_EXTENSION" />
+    <uses-permission android:name="android.car.permission.CAR_ENERGY_PORTS" />
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <!-- THT Split: granted by Android only when both APKs share the signing certificate. -->
+    <uses-permission android:name="com.tht.split.permission.CONTROL_SPLIT" />
+    <uses-permission android:name="android.car.permission.CAR_CONTROL_ACCESS" />
+    <uses-permission android:name="android.car.permission.CAR_INSTRUMENT_CLUSTER_CONTROL" />
+    <uses-permission android:name="android.car.permission.CAR_IDENTIFICATION" />
+    <uses-permission android:name="android.car.permission.CAR_POWERTRAIN" />
+    <uses-permission android:name="android.car.permission.CAR_PRIVILEGED" />
+    <uses-permission android:name="android.car.permission.ACCESS_CAR_VENDOR_EXTENSION" />
+    <uses-permission android:name="com.flyme.auto.permission.ACCESS_VHAL" />
+    <uses-permission android:name="com.flyme.auto.hvac.permission.FAN_SPEED_CONTROL" />
+    <uses-permission android:name="com.flyme.auto.user.permission.USER"/>
+    <uses-permission android:name="ecarx.oem.permission.OPENAPI_MEDIACENTER_PERMISSION"/>
+    <uses-permission android:name="android.permission.BIND_VOICE_INTERACTION" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="com.meizu.flymeauto.permission.VEHICLE_CONTROL"/>
+    <uses-permission android:name="com.meizu.flymeauto.permission.CAR_CONTROL"/>
+    <uses-permission android:name="com.meizu.flymeauto.permission.ACCESS_CAR_API"/>
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RECEIVE_MEDIA_BUTTONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" tools:ignore="SystemPermissionTypo" />
+    <uses-permission android:name="android.permission.INJECT_EVENTS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.PARTIAL_WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <uses-feature android:name="android.hardware.type.automotive" android:required="false" />
+
+    <queries>
+        <!-- Settings → "Kiểm tra nút voice": list other apps that also take the steering voice key. -->
+        <intent><action android:name="ecarx.intent.action.ECARX_KEY_RVOICEASSIST_EVENT" /></intent>
+        <intent><action android:name="ecarx.intent.actiOn.ECARX_KEY_RVOICEASSIST_EVENT" /></intent>
+        <intent><action android:name="android.intent.action.ASSIST" /></intent>
+        <intent><action android:name="android.intent.action.VOICE_COMMAND" /></intent>
+        <package android:name="com.flyme.auto.scenedirector" />
+        <package android:name="com.google.android.apps.maps" />
+        <package android:name="com.waze" />
+        <package android:name="vn.vietmap.live" />
+        <package android:name="com.tht.split" />
+        <package android:name="app.morphe.android.apps.maps" />
+
+        <package android:name="com.google.android.youtube" />
+        <package android:name="com.vanced.android.youtube" />
+        <package android:name="app.revanced.android.youtube" />
+        <package android:name="app.rvx.android.youtube" />
+        <package android:name="com.revanced.android.youtube" />
+        <package android:name="app.morphe.android.youtube" />
+        <package android:name="anddea.youtube" />
+
+        <package android:name="org.smarttube.stable" />
+        <package android:name="org.smarttube.beta" />
+        <package android:name="com.liskovsoft.smarttubetv" />
+        <package android:name="com.liskovsoft.smarttubetv.beta" />
+        <package android:name="com.teamsmart.videomanager.tv" />
+
+        <package android:name="com.google.android.apps.youtube.music" />
+        <package android:name="app.revanced.android.apps.youtube.music" />
+        <package android:name="anddea.youtube.music" />
+        <package android:name="com.zing.mp3" />
+        <package android:name="com.spotify.music" />
+
+        <package android:name="com.android.chrome" />
+        <package android:name="com.netflix.mediaclient" />
+        <package android:name="com.ss.android.ugc.trill" />
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="org.videolan.vlc" />
+        <package android:name="ai.zalo.kiki.car" />
+
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" android:host="www.youtube.com" />
+        </intent>
+    </queries>
+
+    <application
+        android:name="com.voicegeely.app.ThtVoiceApplication"
+        android:label="@string/app_name"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        tools:ignore="DataExtractionRules,GoogleAppIndexingWarning">
+
+        <uses-library android:name="android.car" android:required="false"/>
+
+        <activity
+            android:name="com.voicegeely.app.ActivationActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.VoiceApp3"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.voicegeely.app.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.VoiceApp3"
+            android:exported="false" />
+
+        <activity
+            android:name="com.voicegeely.app.ui.BlackoutActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.VoiceBlackout" />
+
+        <!-- Choosable as the head unit's assistant app: the voice key then opens THT Voice
+             instead of another app (e.g. phone projection asking for a USB cable). -->
+        <activity
+            android:name="com.voicegeely.app.VoiceAssistEntryActivity"
+            android:taskAffinity=""
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.VoiceWake">
+            <intent-filter>
+                <action android:name="android.intent.action.VOICE_COMMAND" />
+                <action android:name="android.intent.action.ASSIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.voicegeely.app.VoiceWakeActivity"
+            android:taskAffinity=""
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true"
+            android:theme="@style/Theme.VoiceWake" />
+
+        <service
+            android:name="com.baidu.bridge.server.AIDLService"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="com.voicegeely.app.AIDLService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.voicegeely.app.VoiceAssistantService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="microphone"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <intent-filter>
+                <action android:name="com.flyme.auto.settings.action.privacy_policy"/>
+                <action android:name="com.flyme.auto.settings.action.user_policy"/>
+                <action android:name="com.flyme.auto.settings.action.user_improve_policy"/>
+                <action android:name="android.car.intent.action.CAR_SERVICE" />
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="com.voicegeely.app.VoiceAssistantService" />
+                <action android:name="ecarx.intent.action.ECARX_KEY_RVOICEASSIST_EVENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="com.voicegeely.app.BootReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.voicegeely.app.voice.SplitResultReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name="com.voicegeely.app.VoiceKeyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="999">
+                <action android:name="ecarx.intent.action.ECARX_KEY_RVOICEASSIST_EVENT" />
+                <action android:name="ecarx.intent.actiOn.ECARX_KEY_RVOICEASSIST_EVENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+    </application>
+</manifest>

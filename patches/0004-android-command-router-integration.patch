@@ -1,0 +1,62 @@
+diff --git a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+--- a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
++++ b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+@@
++import com.voicegeely.app.voice.AndroidSystemActionBackend
+ import com.voicegeely.app.voice.CommandExecutionResult
+-import com.voicegeely.app.voice.LegacyPredictionBridge
+-import com.voicegeely.app.voice.VehicleCommandRouter
++import com.voicegeely.app.voice.VoiceCommandRouter
+ import com.voicegeely.app.voice.VoiceCommandCoordinator
+ import com.voicegeely.app.voice.VoiceCommandParser
+ import com.voicegeely.app.voice.VoiceResponseMode
+ import com.voicegeely.app.voice.VoiceSpeechSink
+ import kotlinx.coroutines.runBlocking
+@@
+         val typed = VoiceCommandParser.parse(parsedText)
+         if (typed != null) {
+-            val helper = vehiclePropertyHelper
+-            if (helper != null) {
+-                val coordinator = VoiceCommandCoordinator(
+-                    executor = VehicleCommandRouter(helper),
+-                    speech = VoiceSpeechSink { text ->
+-                        if (ttsReady && text.isNotBlank()) carAudioPlayer.playText(text)
+-                    }
+-                )
+-                val result = runBlocking { coordinator.handle(typed, VoiceResponseMode.FULL) }
+-                return when (result) {
+-                    is CommandExecutionResult.Confirmed -> true
+-                    is CommandExecutionResult.AcceptedUnverified -> true
+-                    is CommandExecutionResult.Rejected -> false
+-                    is CommandExecutionResult.Failed -> false
+-                }
+-            }
+-
+-            val bridged = LegacyPredictionBridge.toPayload(typed)
+-            val prediction = PredictionResult(
+-                text = bridged.originalText,
+-                normalizedText = bridged.normalizedText,
+-                intent = bridged.intent,
+-                confidence = 1f,
+-                entities = bridged.entities
+-            )
+-            return handlerRegistry.handle(prediction)
++            val coordinator = VoiceCommandCoordinator(
++                executor = VoiceCommandRouter(
++                    vehicle = vehiclePropertyHelper,
++                    androidBackend = AndroidSystemActionBackend(this)
++                ),
++                speech = VoiceSpeechSink { text ->
++                    if (ttsReady && text.isNotBlank()) carAudioPlayer.playText(text)
++                }
++            )
++            val result = runBlocking { coordinator.handle(typed, VoiceResponseMode.FULL) }
++            return when (result) {
++                is CommandExecutionResult.Confirmed -> true
++                is CommandExecutionResult.AcceptedUnverified -> true
++                is CommandExecutionResult.Rejected -> false
++                is CommandExecutionResult.Failed -> false
++            }
+         }
+ 
+         val prediction = intentModel.predict(parsedText)

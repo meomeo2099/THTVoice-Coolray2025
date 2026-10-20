@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Whitelist quyền đặc quyền cho THT Voice Coolray khi cài vào /system/priv-app.
+     Sinh từ app/src/main/AndroidManifest.xml (01/10/2026). Thiếu file này trên máy có
+     ro.control_privapp_permissions=enforce có thể làm xe không khởi động được. -->
+<permissions>
+    <privapp-permissions package="com.tht.voice.coolray2025">
+        <permission name="android.car.permission.ACCESS_CAR_VENDOR_EXTENSION"/>
+        <permission name="android.car.permission.CAR_CONTROL_ACCESS"/>
+        <permission name="android.car.permission.CAR_CONTROL_APP"/>
+        <permission name="android.car.permission.CAR_CONTROL_AUDIO_VOLUME"/>
+        <permission name="android.car.permission.CAR_ENERGY_PORTS"/>
+        <permission name="android.car.permission.CAR_IDENTIFICATION"/>
+        <permission name="android.car.permission.CAR_INSTRUMENT_CLUSTER_CONTROL"/>
+        <permission name="android.car.permission.CAR_POWERTRAIN"/>
+        <permission name="android.car.permission.CAR_PRIVILEGED"/>
+        <permission name="android.car.permission.CAR_PROPERTY_ACCESS"/>
+        <permission name="android.car.permission.CAR_PROPERTY_READ_WRITE"/>
+        <permission name="android.car.permission.CAR_SPEED"/>
+        <permission name="com.tht.split.permission.CONTROL_SPLIT"/>
+        <permission name="android.car.permission.CAR_VENDOR_EXTENSION"/>
+        <permission name="android.car.permission.CONTROL_CAR_CLIMATE"/>
+        <permission name="android.car.permission.CONTROL_CAR_DOORS"/>
+        <permission name="android.car.permission.CONTROL_CAR_WINDOWS"/>
+        <permission name="android.permission.ACCESS_FINE_LOCATION"/>
+        <permission name="android.permission.ACCESS_NETWORK_STATE"/>
+        <permission name="android.permission.ACCESS_WIFI_STATE"/>
+        <permission name="android.permission.BIND_ACCESSIBILITY_SERVICE"/>
+        <permission name="android.permission.BIND_VOICE_INTERACTION"/>
+        <permission name="android.permission.FOREGROUND_SERVICE"/>
+        <permission name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+        <permission name="android.permission.INJECT_EVENTS"/>
+        <permission name="android.permission.INTERNET"/>
+        <permission name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+        <permission name="android.permission.MEDIA_CONTENT_CONTROL"/>
+        <permission name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+        <permission name="android.permission.PARTIAL_WAKE_LOCK"/>
+        <permission name="android.permission.READ_EXTERNAL_STORAGE"/>
+        <permission name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+        <permission name="android.permission.RECEIVE_MEDIA_BUTTONS"/>
+        <permission name="android.permission.RECORD_AUDIO"/>
+        <permission name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+        <permission name="android.permission.SYSTEM_ALERT_WINDOW"/>
+        <permission name="android.permission.USE_FULL_SCREEN_INTENT"/>
+        <permission name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+        <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
+        <permission name="android.permission.WRITE_SETTINGS"/>
+        <permission name="com.flyme.auto.hvac.permission.FAN_SPEED_CONTROL"/>
+        <permission name="com.flyme.auto.permission.ACCESS_VHAL"/>
+        <permission name="com.flyme.auto.user.permission.USER"/>
+        <permission name="com.meizu.flymeauto.permission.ACCESS_CAR_API"/>
+        <permission name="com.meizu.flymeauto.permission.CAR_CONTROL"/>
+        <permission name="com.meizu.flymeauto.permission.VEHICLE_CONTROL"/>
+        <permission name="ecarx.oem.permission.OPENAPI_MEDIACENTER_PERMISSION"/>
+    </privapp-permissions>
+</permissions>

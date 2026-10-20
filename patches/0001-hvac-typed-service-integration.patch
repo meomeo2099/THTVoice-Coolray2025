@@ -1,0 +1,75 @@
+diff --git a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+--- a/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
++++ b/app/src/main/java/com/voicegeely/app/VoiceAssistantService.kt
+@@
++import com.voicegeely.app.voice.CommandExecutionResult
++import com.voicegeely.app.voice.HvacVoiceCommandExecutor
++import com.voicegeely.app.voice.LegacyPredictionBridge
++import com.voicegeely.app.voice.VoiceCommand
++import com.voicegeely.app.voice.VoiceCommandCoordinator
++import com.voicegeely.app.voice.VoiceCommandParser
++import com.voicegeely.app.voice.VoiceResponseMode
++import com.voicegeely.app.voice.VoiceSpeechSink
++import kotlinx.coroutines.runBlocking
+@@
+-        val prediction = intentModel.predict(parsedText)
++        val typed = VoiceCommandParser.parse(parsedText)
++        if (typed != null && isTypedHvacTemperatureCommand(typed.command)) {
++            return executeTypedHvacCommand(typed)
++        }
++
++        val prediction = if (typed != null) {
++            val bridged = LegacyPredictionBridge.toPayload(typed)
++            Log.i(TAG, "[TYPED_PARSER] command=${typed.command} normalized=${typed.normalizedText}")
++            PredictionResult(
++                text = bridged.originalText,
++                normalizedText = bridged.normalizedText,
++                intent = bridged.intent,
++                confidence = 1f,
++                entities = bridged.entities
++            )
++        } else {
++            intentModel.predict(parsedText)
++        }
+@@
++    private fun isTypedHvacTemperatureCommand(command: VoiceCommand): Boolean = when (command) {
++        is VoiceCommand.SetTemperature,
++        is VoiceCommand.AdjustTemperature,
++        VoiceCommand.TemperatureHigh,
++        VoiceCommand.TemperatureLow -> true
++        is VoiceCommand.Window -> false
++    }
++
++    private fun executeTypedHvacCommand(parsed: com.voicegeely.app.voice.ParsedVoiceCommand): Boolean {
++        val helper = vehiclePropertyHelper
++        if (helper == null) {
++            lastCommandRequiresVehicle = true
++            return true
++        }
++
++        Log.i(TAG, "[VOICE_FLOW][HVAC] ACK -> EXECUTE -> VERIFY -> RESULT command=${parsed.command}")
++        val coordinator = VoiceCommandCoordinator(
++            executor = HvacVoiceCommandExecutor(helper),
++            speech = VoiceSpeechSink { text ->
++                if (ttsReady && text.isNotBlank()) {
++                    carAudioPlayer.playText(text)
++                }
++            }
++        )
++
++        val result = runBlocking {
++            coordinator.handle(parsed, VoiceResponseMode.FULL)
++        }
++
++        lastTemperatureUnconfirmed = result is CommandExecutionResult.AcceptedUnverified
++        if (helper.isMock && result is CommandExecutionResult.Confirmed) {
++            lastCommandUsedMockVhal = true
++        }
++
++        return when (result) {
++            is CommandExecutionResult.Confirmed -> true
++            is CommandExecutionResult.AcceptedUnverified -> true
++            is CommandExecutionResult.Rejected -> false
++            is CommandExecutionResult.Failed -> false
++        }
++    }

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111d"/><stop offset="1" stop-color="#0b1b2e"/></linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#06d7ff"/><stop offset="1" stop-color="#1677ff"/></linearGradient>
+    <style>
+      .t{font-family:Arial,sans-serif;fill:#f4fbff}.m{font-family:Arial,sans-serif;fill:#9fb7cb}.c{fill:#0d2236;stroke:#1597d5;stroke-width:2}.s{fill:#0a1827;stroke:#28455f;stroke-width:1.5}.a{fill:url(#blue)}.h{font:700 30px Arial,sans-serif;fill:#f4fbff}.sh{font:700 20px Arial,sans-serif;fill:#dff7ff}.tx{font:16px Arial,sans-serif;fill:#a9bfd2}.sm{font:14px Arial,sans-serif;fill:#8da9bd}.cy{fill:#2ce6ff}.ok{fill:#31df9a}
+    </style>
+  </defs>
+  <rect width="1600" height="1080" fill="url(#bg)"/>
+  <text x="50" y="55" class="h">THT Voice — UI Baseline (APPROVED / NO-BRAND)</text>
+  <text x="50" y="84" class="tx">6 menu chính + popup Voice overlay • landscape 1920×1080 • chỉ branding THT Voice</text>
+
+  <g transform="translate(50,120)">
+    <rect width="730" height="250" rx="24" class="c"/>
+    <text x="24" y="38" class="sh">1. Trang chủ</text>
+    <rect x="20" y="58" width="690" height="72" rx="16" class="s"/>
+    <text x="42" y="86" class="sh">THT Voice</text><text x="42" y="111" class="tx">Trợ lý giọng nói tiếng Việt cho xe của bạn</text>
+    <circle cx="650" cy="92" r="25" class="a"/><rect x="20" y="145" width="160" height="78" rx="14" class="s"/><rect x="192" y="145" width="160" height="78" rx="14" class="s"/><rect x="364" y="145" width="160" height="78" rx="14" class="s"/><rect x="536" y="145" width="174" height="78" rx="14" class="s"/>
+    <text x="44" y="178" class="tx">Mở Trợ lý</text><text x="216" y="178" class="tx">Ứng dụng</text><text x="388" y="178" class="tx">Cài đặt</text><text x="560" y="178" class="tx">Ủng hộ</text>
+  </g>
+
+  <g transform="translate(820,120)">
+    <rect width="730" height="250" rx="24" class="c"/>
+    <text x="24" y="38" class="sh">2. Trợ lý</text>
+    <circle cx="100" cy="122" r="54" fill="#0b3151" stroke="#2ce6ff" stroke-width="5"/><text x="77" y="131" class="h">●</text>
+    <rect x="180" y="62" width="150" height="40" rx="20" class="s"/><rect x="345" y="62" width="150" height="40" rx="20" class="s"/><rect x="510" y="62" width="140" height="40" rx="20" class="s"/>
+    <text x="210" y="88" class="tx">Hey THT</text><text x="373" y="88" class="tx">Nút Voice</text><text x="530" y="88" class="tx">Nghe thủ công</text>
+    <text x="182" y="132" class="tx">Sẵn sàng → Đang nghe → Đang xử lý → Hoàn tất</text>
+    <rect x="180" y="150" width="470" height="65" rx="14" class="s"/><text x="200" y="180" class="tx">“Mở điều hòa...”</text><text x="200" y="202" class="sm">Kết quả thực thi hiển thị riêng</text>
+  </g>
+
+  <g transform="translate(50,400)">
+    <rect width="730" height="250" rx="24" class="c"/>
+    <text x="24" y="38" class="sh">3. Ứng dụng</text>
+    <rect x="20" y="58" width="430" height="40" rx="18" class="s"/><text x="40" y="84" class="tx">Tìm ứng dụng...</text>
+    <rect x="465" y="58" width="80" height="40" rx="18" class="a"/><rect x="555" y="58" width="72" height="40" rx="18" class="s"/><rect x="637" y="58" width="72" height="40" rx="18" class="s"/>
+    <text x="486" y="84" class="tx">Tất cả</text><text x="569" y="84" class="sm">Media</text><text x="647" y="84" class="sm">Bản đồ</text>
+    <g transform="translate(20,116)"><rect width="160" height="105" rx="14" class="s"/><rect x="174" width="160" height="105" rx="14" class="s"/><rect x="348" width="160" height="105" rx="14" class="s"/><rect x="522" width="188" height="105" rx="14" class="s"/></g>
+    <text x="42" y="155" class="tx">YouTube</text><text x="216" y="155" class="tx">Google Maps</text><text x="390" y="155" class="tx">VietMap</text><text x="564" y="155" class="tx">Zing MP3</text>
+    <text x="42" y="190" class="ok">● Đã cài</text><text x="216" y="190" class="ok">● Đã cài</text><text x="390" y="190" class="ok">● Đã cài</text><text x="564" y="190" class="ok">● Đã cài</text>
+  </g>
+
+  <g transform="translate(820,400)">
+    <rect width="730" height="250" rx="24" class="c"/>
+    <text x="24" y="38" class="sh">4. Cài đặt</text>
+    <rect x="20" y="58" width="335" height="145" rx="16" class="s"/><rect x="375" y="58" width="335" height="145" rx="16" class="s"/>
+    <text x="42" y="86" class="sh">Thiết lập popup</text><text x="397" y="86" class="sh">Thiết lập giọng nói</text>
+    <text x="42" y="115" class="tx">Hiển thị popup: Bật</text><text x="42" y="140" class="tx">Vị trí: Dưới</text><text x="42" y="165" class="tx">Tự ẩn: 2 giây</text><text x="42" y="190" class="tx">Kiểu: Thanh ngang</text>
+    <text x="397" y="115" class="tx">Wake word: Hey THT</text><text x="397" y="140" class="tx">Độ nhạy mic: Chuẩn</text><text x="397" y="165" class="tx">Im lặng: 0,7 giây</text><text x="397" y="190" class="tx">Nghe tối đa: 12 giây</text>
+    <rect x="20" y="212" width="330" height="28" rx="12" class="a"/><rect x="375" y="212" width="335" height="28" rx="12" class="s"/><text x="160" y="232" class="sm">Lưu</text><text x="480" y="232" class="sm">Khôi phục mặc định</text>
+  </g>
+
+  <g transform="translate(50,680)">
+    <rect width="730" height="250" rx="24" class="c"/>
+    <text x="24" y="38" class="sh">5. Ủng hộ</text>
+    <text x="24" y="74" class="h">Ủng hộ phát triển THT Voice</text>
+    <text x="24" y="106" class="tx">TRAN HUU TAI • MBBank • 67777777778</text>
+    <rect x="24" y="130" width="380" height="80" rx="16" class="s"/><text x="44" y="162" class="tx">QR ưu tiên lớn, tương phản cao</text><text x="44" y="188" class="sm">Không chèn logo/khung vào vùng QR</text>
+    <rect x="445" y="82" width="170" height="170" rx="12" fill="#fff"/><rect x="462" y="99" width="48" height="48" fill="#111"/><rect x="552" y="99" width="48" height="48" fill="#111"/><rect x="462" y="189" width="48" height="48" fill="#111"/><path d="M525 110h16v16h16v16h-16v16h-16v-16h-16v-16h16zM525 178h16v16h16v16h-16v16h-16v-16h-16v-16h16z" fill="#111"/>
+  </g>
+
+  <g transform="translate(820,680)">
+    <rect width="730" height="250" rx="24" class="c"/>
+    <text x="24" y="38" class="sh">6. Giới thiệu</text>
+    <text x="24" y="78" class="h">THT Voice</text><text x="24" y="106" class="tx">Trợ lý giọng nói tiếng Việt cho xe của bạn</text>
+    <rect x="24" y="126" width="150" height="65" rx="14" class="s"/><rect x="184" y="126" width="150" height="65" rx="14" class="s"/><rect x="344" y="126" width="150" height="65" rx="14" class="s"/><rect x="504" y="126" width="190" height="65" rx="14" class="s"/>
+    <text x="42" y="165" class="sm">Tính năng</text><text x="202" y="165" class="sm">Phiên bản</text><text x="362" y="165" class="sm">Hệ thống</text><text x="522" y="165" class="sm">Hướng dẫn / GitHub</text>
+    <text x="24" y="224" class="sm">Ảnh xe trung tính — không chữ/badge/logo hãng</text>
+  </g>
+
+  <g transform="translate(250,970)">
+    <rect width="1100" height="72" rx="30" fill="#0c2033" stroke="#2ce6ff" stroke-width="3"/>
+    <circle cx="50" cy="36" r="24" fill="#103a5a" stroke="#2ce6ff" stroke-width="3"/>
+    <text x="88" y="31" class="sh">THT Voice</text><text x="88" y="53" class="sm">Đang nghe...</text>
+    <text x="300" y="43" class="tx">“Chỉ đường về nhà...”</text><text x="665" y="43" class="tx">Đang xử lý / Kết quả</text>
+    <circle cx="1048" cy="36" r="18" fill="#17324a"/><text x="1042" y="42" class="tx">×</text>
+  </g>
+  <text x="50" y="1060" class="sm">Popup: thanh ngang nhỏ • mặc định phía dưới • auto-hide 2 giây • kéo được khi bật setting</text>
+</svg>

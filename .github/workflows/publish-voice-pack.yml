@@ -1,0 +1,60 @@
+name: Publish voice pack
+
+# Builds the Kokoro Vietnamese voice pack (Ngọc Huyền / Diễm Trinh) and publishes it as a
+# GitHub Release "voice-kokoro_vi-<rev>" (never marked Latest, so OTA is unaffected). The license
+# Worker finds it by SHA-256 via voice-pack.json and streams it to the app's "Tải về" button,
+# so no R2 / manual upload is needed. The pack only changes when the voice sources change.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/fetch-kokoro-vi-tts.sh'
+      - 'scripts/prepare-kokoro-vi-runtime.py'
+      - 'scripts/split-kokoro-pack.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-voice-pack
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage Kokoro Vietnamese runtime
+        shell: bash
+        run: THTVOICE_KOKORO_TTS_DIR=build/kokoro-full/kokoro_vi bash scripts/fetch-kokoro-vi-tts.sh
+
+      - name: Split into APK part and voice pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/split-kokoro-pack.py build/kokoro-full/kokoro_vi build/apk-part/kokoro_vi voice-pack
+          python3 scripts/release/create-voice-pack-json.py build/apk-part/kokoro_vi/PACK.txt voice-pack
+          cat voice-pack/voice-pack.json
+
+      - name: Publish GitHub Release (skip when this pack is already published)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rev="$(python3 -c "import json;print(json.load(open('voice-pack/voice-pack.json'))['sha256'][:12])")"
+          tag="voice-kokoro_vi-$rev"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Voice pack $tag already published." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          gh release create "$tag" --target "$GITHUB_SHA" --latest=false \
+            --title "Giọng đọc Ngọc Huyền / Diễm Trinh ($rev)" \
+            --notes "Gói giọng đọc Kokoro tiếng Việt cho nút Tải về trong app. Không phải bản cập nhật app." \
+            voice-pack/*.zip voice-pack/voice-pack.json voice-pack/SHA256.txt
+          echo "Published $tag" | tee -a "$GITHUB_STEP_SUMMARY"

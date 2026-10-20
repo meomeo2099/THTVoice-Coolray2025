@@ -1,0 +1,9 @@
+ref-diag.apk
+  size_bytes: 7964776
+  sha256: 3e642b9ee5519f84f18978b5c2f680ce2206c74b038de1773b186bc0c65c43fb
+
+ref-voice.apk
+  size_bytes: 248002543
+  sha256: 36e0024abef318ac58a92c3a858af15ae9c1ca9c17d849737a14100be5ed3e41
+
+REF-DIAG SX11A5: 12 ECUs, 514 DIDs, 82 operations

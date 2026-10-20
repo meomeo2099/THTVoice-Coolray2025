@@ -1,0 +1,18 @@
+# Separate management site for THT Voice Coolray licenses (worker/README.md → Trang quản lý riêng).
+# Same D1 database as wrangler.toml. Deploy:  npx wrangler deploy -c admin.wrangler.toml
+# Secrets for THIS worker (same values as the license server):
+#   npx wrangler secret put ADMIN_PASSWORD -c admin.wrangler.toml
+#   npx wrangler secret put VIN_KEY -c admin.wrangler.toml
+name = "keythtvoice-coolray"
+main = "src/admin-worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[vars]
+LICENSE_KEY_ID = "c1"
+ROLE = "admin"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tht-voice-coolray-license"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
