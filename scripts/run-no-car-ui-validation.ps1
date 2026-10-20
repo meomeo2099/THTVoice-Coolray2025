@@ -82,13 +82,13 @@ function Pull-InstalledBaseApk {
 function Get-ForegroundClassification {
     param([string]$ActivityDump, [string]$WindowDump)
     $combined = "$ActivityDump`n$WindowDump"
-    if ($combined -match 'com\.tht\.voice\.coolray/(com\.voicegeely\.app\.)?ActivationActivity') {
+    if ($combined -match 'com\.tht\.voice\.coolray2025/(com\.voicegeely\.app\.)?ActivationActivity') {
         return "ANDROID_UI_OBSERVED_ACTIVATION_GATE"
     }
-    if ($combined -match 'com\.tht\.voice\.coolray/(com\.voicegeely\.app\.)?MainActivity') {
+    if ($combined -match 'com\.tht\.voice\.coolray2025/(com\.voicegeely\.app\.)?MainActivity') {
         return "ANDROID_UI_OBSERVED_LICENSE_ACTIVE_REDIRECT"
     }
-    if ($combined -match 'com\.tht\.voice\.coolray') {
+    if ($combined -match 'com\.tht\.voice\.coolray2025') {
         return "ANDROID_UI_OBSERVED_APP_FOREGROUND_UNKNOWN"
     }
     return "BLOCKED_PLATFORM_OR_UNEXPECTED_FOREGROUND"
