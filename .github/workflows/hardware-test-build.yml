@@ -171,6 +171,17 @@ jobs:
       - name: Assemble hardware-test APK
         run: gradle :app:assembleDebug --stacktrace
 
+      - name: Show APK signer
+        shell: bash
+        run: |
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          APKSIGNER=$(ls "$SDK"/build-tools/*/apksigner 2>/dev/null | sort -V | tail -1)
+          for f in $(find app/build/outputs/apk -name '*.apk'); do
+            info=$("$APKSIGNER" verify --print-certs "$f" 2>&1 | grep -E "certificate (DN|SHA-256)" | tr '\n' ' ')
+            echo "::notice::$(basename "$f"): ${info:-KHÔNG ĐỌC ĐƯỢC CHỮ KÝ}"
+            echo "$(basename "$f"): $info" >> "$GITHUB_STEP_SUMMARY"
+          done
+
       - name: Remove keystore
         if: ${{ always() }}
         shell: bash
