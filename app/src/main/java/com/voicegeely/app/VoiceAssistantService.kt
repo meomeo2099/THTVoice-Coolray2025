@@ -118,6 +118,7 @@ class VoiceAssistantService : Service() {
     @Volatile private var vehicleReconnectScheduled = false
     /** [REF-02] VHAL voice-key callback handle; values are always logged, trigger only when enabled. */
     private var vehicleVoiceKeyWatch: (() -> Unit)? = null
+    @Volatile private var lastMicSource: Int? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -571,6 +572,7 @@ class VoiceAssistantService : Service() {
                 candidate.startRecording()
                 if (candidate.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
                     Log.i(TAG, "Microphone active with source=$source")
+                    if (!forWakeWord) lastMicSource = source
                     val musicActive = runCatching { (getSystemService(AUDIO_SERVICE) as android.media.AudioManager).isMusicActive }
                         .getOrDefault(false)
                     val aec = com.voicegeely.app.asr.EchoCancelPolicy.shouldAttach(
@@ -639,6 +641,7 @@ class VoiceAssistantService : Service() {
             voiceOverlay.showListening()
             broadcastStatus("Đang nghe...", sherpaReady = true)
             val pcm = ShortArray(CHUNK_SAMPLES)
+            val micProbe = com.voicegeely.app.asr.MicCaptureProbe.start(this, Sherpa65mModelSpec.SAMPLE_RATE)
             val startedAt = System.currentTimeMillis()
             val maxListenMs = voicePreferences.maxListenMs
             var lastPartial = ""
@@ -656,6 +659,7 @@ class VoiceAssistantService : Service() {
                     break
                 }
                 if (count == 0) continue
+                micProbe.add(pcm, count)
 
                 val samples = FloatArray(count) { index -> pcm[index] / 32768.0f }
                 if (!asrEngine.acceptWaveform(samples)) {
@@ -692,6 +696,7 @@ class VoiceAssistantService : Service() {
 
             val result = asrEngine.finishStream()
             val heardText = result.text.trim().ifBlank { lastPartial.trim() }
+            micProbe.finish(lastMicSource, heardText)
             // "Hey Geely" said again at the start is not part of the command (owner report 03/10/2026).
             val onlyWakePhrase = com.voicegeely.app.voice.WakePhraseEcho.isOnlyWakePhrase(heardText)
             val finalText = com.voicegeely.app.voice.WakePhraseEcho.strip(heardText)
@@ -1408,8 +1413,22 @@ class VoiceAssistantService : Service() {
      * short press goes through [VoiceKeyLauncher] like the broadcast, so the shared debounce keeps
      * one session per press when both paths fire.
      */
-    /** Coolray: no VHAL voice-key mapping yet (the EX2 property is not used here); broadcast only. */
-    private fun startVehicleVoiceKeyWatch() = Unit
+    /**
+     * Coolray 2025 (GKUI): the steering-wheel voice key comes from ECARX's input service, not the
+     * Flyme broadcast. Intercept KEYCODE_VOICE_ASSIST / KEYCODE_R_VOICE_ASSIST through AdaptAPI and
+     * route each press through [VoiceKeyLauncher] exactly like the broadcast (same debounce, license
+     * and projection rules). Idempotent; released in [stopVehicleVoiceKeyWatch].
+     */
+    private fun startVehicleVoiceKeyWatch() {
+        if (vehicleVoiceKeyWatch != null) return
+        com.voicegeely.app.car.EcarxKeyInterceptor.start(this) { code ->
+            Log.i(TAG, "voice_key_adaptapi code=$code")
+            VoiceKeyLauncher.handle(this, VoiceKeyActions.ECARX, source = "adaptapi")
+        }.fold(
+            onSuccess = { interceptor -> vehicleVoiceKeyWatch = { interceptor.release() } },
+            onFailure = { Log.w(TAG, "voice_key_adaptapi_unavailable ${it.javaClass.simpleName} ${it.message}") }
+        )
+    }
 
     private fun stopVehicleVoiceKeyWatch() {
         vehicleVoiceKeyWatch?.invoke()
