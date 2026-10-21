@@ -14,7 +14,10 @@ import java.lang.reflect.Proxy
  * out by ECARX's input service. AdaptAPI exposes it as
  * `com.ecarx.xui.adaptapi.input.Input.create(context).requestKeysInterception(int[], IKeyCallback)`
  * (`IKeyCallback.onKeyPressed(int)` / `onKeyReleased(int)` return true = consumed).
- * Keys requested: `KeyCode.KEYCODE_VOICE_ASSIST` (231) and `KEYCODE_R_VOICE_ASSIST` (200231).
+ * Keys requested: ECARX vendor voice key 298 (the steering-wheel voice key on SX11 Coolray units,
+ * delivered by CarService InputHalService as vendor code 298), plus `KeyCode.KEYCODE_VOICE_ASSIST`
+ * (231) and `KEYCODE_R_VOICE_ASSIST` (200231) from AdaptAPI. Only voice codes are requested so
+ * volume / power / media keys are never taken from the system.
  *
  * Reflection only (no vendor JAR at compile time). The trigger fires on key release, on the main
  * thread. REFERENCE: from the head unit's AdapterAPI.jar, not yet confirmed on the car.
@@ -38,7 +41,9 @@ class EcarxKeyInterceptor private constructor(
         private const val TAG = "EcarxKeyInterceptor"
         const val KEYCODE_VOICE_ASSIST = 231
         const val KEYCODE_R_VOICE_ASSIST = 200231
-        val VOICE_KEYS = intArrayOf(KEYCODE_VOICE_ASSIST, KEYCODE_R_VOICE_ASSIST)
+        /** ECARX vendor code of the steering-wheel voice key on SX11 (Coolray) head units. */
+        const val KEYCODE_ECARX_WHEEL_VOICE = 298
+        val VOICE_KEYS = intArrayOf(KEYCODE_ECARX_WHEEL_VOICE, KEYCODE_VOICE_ASSIST, KEYCODE_R_VOICE_ASSIST)
 
         /** Long presses on some wheels repeat the press; ignore triggers closer than this. */
         private const val DEBOUNCE_MS = 700L
