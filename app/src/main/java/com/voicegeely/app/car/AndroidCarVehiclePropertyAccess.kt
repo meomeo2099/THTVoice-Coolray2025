@@ -99,10 +99,45 @@ class AndroidCarVehiclePropertyAccess private constructor(
 
     companion object {
         private const val TAG = "THTVoiceVHAL"
+        /** Max wait for the Android 9 car service binder (connect() is asynchronous there). */
+        private const val P_CONNECT_TIMEOUT_MS = 5_000L
+        private val connectThread by lazy { android.os.HandlerThread("THTVoiceCarConnect").apply { start() } }
+
+        /**
+         * Coolray 2025 runs Android 9 (API 28): `Car.createCar(Context)` only exists from Android 10
+         * and throws NoSuchMethodError there, so the car was never connected. API 28 uses
+         * `createCar(context, ServiceConnection, Handler)` + `connect()` and the managers are only
+         * usable after `onServiceConnected`. Callbacks run on a private HandlerThread, so waiting here
+         * never deadlocks the main thread.
+         */
+        @Suppress("DEPRECATION")
+        private fun connectApi28(context: Context): Car {
+            val latch = java.util.concurrent.CountDownLatch(1)
+            val connection = object : android.content.ServiceConnection {
+                override fun onServiceConnected(name: android.content.ComponentName?, service: android.os.IBinder?) { latch.countDown() }
+                override fun onServiceDisconnected(name: android.content.ComponentName?) {
+                    VehicleTelemetryRegistry.markDisconnected()
+                    Log.w(TAG, "trace=0 scope=NONE op=CONNECT result=SERVICE_DISCONNECTED")
+                }
+            }
+            val car = Car.createCar(context, connection, android.os.Handler(connectThread.looper))
+            car.connect()
+            if (!latch.await(P_CONNECT_TIMEOUT_MS, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                try { car.disconnect() } catch (_: Throwable) {}
+                error("car service not connected after ${P_CONNECT_TIMEOUT_MS} ms")
+            }
+            Log.i(TAG, "trace=0 scope=NONE op=CONNECT mode=API28_SERVICE_CONNECTION result=BOUND")
+            return car
+        }
+
         fun create(context: Context): AndroidCarVehiclePropertyAccess? {
             var car: Car? = null
             return try {
-                car = Car.createCar(context.applicationContext)
+                car = if (android.os.Build.VERSION.SDK_INT >= 29) {
+                    Car.createCar(context.applicationContext)
+                } else {
+                    connectApi28(context.applicationContext)
+                }
                 val manager = car.getCarManager(Car.PROPERTY_SERVICE) as? CarPropertyManager ?: run {
                     VehicleTelemetryRegistry.markUnavailable("NO_PROPERTY_MANAGER"); Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=NO_PROPERTY_MANAGER"); try { car.disconnect() } catch (_: Throwable) {}; return null
                 }
