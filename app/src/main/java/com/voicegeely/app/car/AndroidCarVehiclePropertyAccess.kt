@@ -133,15 +133,16 @@ class AndroidCarVehiclePropertyAccess private constructor(
         fun create(context: Context): AndroidCarVehiclePropertyAccess? {
             var car: Car? = null
             return try {
-                car = if (android.os.Build.VERSION.SDK_INT >= 29) {
-                    Car.createCar(context.applicationContext)
+                val connected: Car = if (android.os.Build.VERSION.SDK_INT >= 29) {
+                    Car.createCar(context.applicationContext) ?: error("Car.createCar returned null")
                 } else {
                     connectApi28(context.applicationContext)
                 }
-                val manager = car.getCarManager(Car.PROPERTY_SERVICE) as? CarPropertyManager ?: run {
-                    VehicleTelemetryRegistry.markUnavailable("NO_PROPERTY_MANAGER"); Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=NO_PROPERTY_MANAGER"); try { car.disconnect() } catch (_: Throwable) {}; return null
+                car = connected
+                val manager = connected.getCarManager(Car.PROPERTY_SERVICE) as? CarPropertyManager ?: run {
+                    VehicleTelemetryRegistry.markUnavailable("NO_PROPERTY_MANAGER"); Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=NO_PROPERTY_MANAGER"); try { connected.disconnect() } catch (_: Throwable) {}; return null
                 }
-                VehicleTelemetryRegistry.markConnected(); Log.i(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=OK"); AndroidCarVehiclePropertyAccess(car, manager)
+                VehicleTelemetryRegistry.markConnected(); Log.i(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=OK"); AndroidCarVehiclePropertyAccess(connected, manager)
             } catch (t: Throwable) {
                 VehicleTelemetryRegistry.markUnavailable(t.javaClass.simpleName)
                 Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=FAILED status=${if (t is SecurityException) "SECURITY_DENIED" else "BACKEND_ERROR"} type=${t.javaClass.simpleName}")
