@@ -88,6 +88,23 @@ class VehicleStatusQueryExecutorTest {
     }
 
     @Test
+    fun batteryVoltageAndFuelLitresUseMcuProperties() = runBlocking {
+        val fake = FakeVehicle(
+            floatValues = mutableMapOf(Pair(CoolrayProperties.FUEL_LEVEL, 0) to 30000f, Pair(CoolrayProperties.FUEL_CAPACITY, 0) to 50000f)
+        )
+        val port = FakeEcarxPort().apply {
+            byteProps[com.voicegeely.app.car.Coolray2025Functions.INFO_ID_BATTERY_VOLTAGE] = byteArrayOf(12, 6)
+            byteProps[com.voicegeely.app.car.Coolray2025Functions.INFO_ID_REMAINING_FUEL] = byteArrayOf(30)
+        }
+        val v = VehicleStatusQueryExecutor(fake, port).execute(VoiceCommand.QueryVehicleStatus(VehicleStatusQuery.BATTERY_VOLTAGE))
+        assertEquals("Điện áp ắc quy là 12 phẩy 6 vôn", (v as CommandExecutionResult.Confirmed).actualValue)
+        val f = VehicleStatusQueryExecutor(fake, port).execute(VoiceCommand.QueryVehicleStatus(VehicleStatusQuery.FUEL_LEVEL))
+        assertEquals("Bình xăng còn 60 phần trăm, khoảng 30 lít", (f as CommandExecutionResult.Confirmed).actualValue)
+        val none = VehicleStatusQueryExecutor(fake).execute(VoiceCommand.QueryVehicleStatus(VehicleStatusQuery.BATTERY_VOLTAGE))
+        assertTrue(none is CommandExecutionResult.Rejected)
+    }
+
+    @Test
     fun unknownGearIsRejectedInsteadOfGuessed() = runBlocking {
         val fake = FakeVehicle(
             intValues = mutableMapOf(Pair(CoolrayProperties.GEAR, 0) to 999)

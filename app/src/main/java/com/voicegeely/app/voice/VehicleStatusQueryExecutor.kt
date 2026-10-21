@@ -29,6 +29,7 @@ class VehicleStatusQueryExecutor(
                 VehicleStatusQuery.FUEL_LEVEL -> readFuelLevel()
                 VehicleStatusQuery.ODOMETER -> readOdometer()
                 VehicleStatusQuery.OUTSIDE_TEMPERATURE -> readOutsideTemperature()
+                VehicleStatusQuery.BATTERY_VOLTAGE -> readBatteryVoltage()
                 VehicleStatusQuery.CAR_SUMMARY -> readCarSummary()
                 else -> CommandExecutionResult.Rejected("Xe này chưa hỗ trợ đọc thông tin đó.")
             }
@@ -78,14 +79,33 @@ class VehicleStatusQueryExecutor(
         return (level / capacity * 100f).roundToInt().takeIf { it in 0..100 }
     }
 
+    /** Litres left from the vendor MCU property INFO_ID_REMAINING_OIL (1 byte), when the car reports it. */
+    private fun fuelLitres(): Int? = (try { ecarx?.getBytesByProp(F.INFO_ID_REMAINING_FUEL) } catch (_: Throwable) { null })
+        ?.takeIf { it.size == 1 }?.let { it[0].toInt() and 0xFF }?.takeIf { it in 1..120 }
+
+    /** 12 V battery: vendor MCU property INFO_ID_VPOWERINFO_BATTERY_VOL, bytes [volts, tenths]. */
+    private fun readBatteryVoltage(): CommandExecutionResult {
+        val bytes = (try { ecarx?.getBytesByProp(F.INFO_ID_BATTERY_VOLTAGE) } catch (_: Throwable) { null })
+            ?.takeIf { it.size >= 2 } ?: return unavailable("điện áp ắc quy")
+        val volts = (bytes[0].toInt() and 0xFF) + (bytes[1].toInt() and 0xFF) / 10f
+        if (volts !in 6f..18f) return unavailable("điện áp ắc quy")
+        val tenths = (volts * 10f).roundToInt()
+        val spoken = if (tenths % 10 == 0) "${tenths / 10}" else "${tenths / 10} phẩy ${tenths % 10}"
+        return confirmed("Điện áp ắc quy là $spoken vôn")
+    }
+
     private fun readFuelLevel(): CommandExecutionResult {
+        val litres = fuelLitres()
         val percent = fuelPercent()
         val low = try {
             vehicle.getBoolPropertyOrNull(CoolrayProperties.FUEL_LEVEL_LOW, CoolrayProperties.GLOBAL_AREA)
         } catch (_: Throwable) { null }
         return when {
+            percent != null && litres != null && low == true -> confirmed("Bình xăng còn $percent phần trăm, khoảng $litres lít, xăng sắp hết")
+            percent != null && litres != null -> confirmed("Bình xăng còn $percent phần trăm, khoảng $litres lít")
             percent != null && low == true -> confirmed("Bình xăng còn $percent phần trăm, xăng sắp hết")
             percent != null -> confirmed("Bình xăng còn $percent phần trăm")
+            litres != null -> confirmed("Bình xăng còn khoảng $litres lít")
             low == true -> confirmed("Xăng sắp hết")
             else -> unavailable("mức xăng")
         }

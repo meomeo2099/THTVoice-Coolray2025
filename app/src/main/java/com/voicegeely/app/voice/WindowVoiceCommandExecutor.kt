@@ -7,8 +7,10 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
- * Coolray 2025 door windows through the ECARX AdaptAPI (the head unit exposes no window VHAL
- * property). REFERENCE (AdapterAPI 1.1.18.9, `IBcm`):
+ * Coolray 2025 door windows. Primary path (same platform reference, 21/10/2026): the vendor MCU
+ * property `INFO_ID_WINDOW_GROUP` (0x287000A2) sent with AdaptAPI `CarImpl.sendBytesToMcuByPropID`,
+ * 8 bytes (index 0 FL, 1 FR, 2 RL, 3 RR; 0..100 %, -1 = unchanged); position read back from
+ * `INFO_ID_WINDOW_FL/FR/RL/RR`. Fallback when the MCU path is refused, ECARX AdaptAPI `IBcm`:
  * - target position: `BCM_FUNC_WINDOW_POS`, customize value 0..100 %, zones 16 / 32 / 256 / 512;
  * - when the position write is refused, open/close fall back once to `BCM_FUNC_WINDOW` ON / OFF;
  * - stop: `BCM_FUNC_WINDOW` = WINDOW_PAUSE;
@@ -27,9 +29,8 @@ class WindowVoiceCommandExecutor(
         return try {
             val zones = resolveZones(command.targets)
             if (zones.isEmpty()) return CommandExecutionResult.Rejected("Chưa xác định được kính cần điều khiển.")
-            if (zones.none { support.supported(F.BCM_FUNC_WINDOW_POS, it) || support.supported(F.BCM_FUNC_WINDOW, it) }) {
-                return CommandExecutionResult.Rejected(EcarxCommandSupport.NOT_ACTIVE)
-            }
+            // No AdaptAPI isFunctionSupported gate: the primary MCU window-group path does not depend on it;
+            // a refused write on every path is reported as "Xe không chấp nhận lệnh".
             if (command.operation == WindowOperation.STOP) return stop(zones)
             val percent = when (command.operation) {
                 WindowOperation.OPEN -> 100
@@ -49,7 +50,10 @@ class WindowVoiceCommandExecutor(
     private fun moveTo(zone: Int, percent: Int): ZoneResult {
         val before = position(zone)
         if (before != null && abs(before - percent) <= TOLERANCE) return ZoneResult(zone, true, true, false, before)
-        var accepted = try { port.setFloat(F.BCM_FUNC_WINDOW_POS, zone, percent.toFloat()) } catch (_: Throwable) { false }
+        var accepted = groupIndex(zone)?.let { idx ->
+            try { port.sendBytesToMcu(F.INFO_ID_WINDOW_GROUP, F.windowGroupPayload(idx, percent)) } catch (_: Throwable) { false }
+        } ?: false
+        if (!accepted) accepted = try { port.setFloat(F.BCM_FUNC_WINDOW_POS, zone, percent.toFloat()) } catch (_: Throwable) { false }
         if (!accepted && (percent == 0 || percent == 100)) {
             accepted = try { port.setInt(F.BCM_FUNC_WINDOW, zone, if (percent == 100) F.ON else F.OFF) } catch (_: Throwable) { false }
         }
@@ -77,9 +81,22 @@ class WindowVoiceCommandExecutor(
         } else CommandExecutionResult.Rejected("Xe không nhận lệnh dừng kính.")
     }
 
-    private fun position(zone: Int): Int? =
-        (support.readFloat(F.BCM_FUNC_WINDOW_CURRENT_POS, zone) ?: support.readFloat(F.BCM_FUNC_WINDOW_POS, zone))
+    private fun position(zone: Int): Int? {
+        groupIndex(zone)?.let(F::windowStateProp)?.let { prop ->
+            (try { port.getIntByProp(prop, F.BCM_FUNC_WINDOW_POS) } catch (_: Throwable) { null })
+                ?.takeIf { it in 0..100 }?.let { return it }
+        }
+        return (support.readFloat(F.BCM_FUNC_WINDOW_CURRENT_POS, zone) ?: support.readFloat(F.BCM_FUNC_WINDOW_POS, zone))
             ?.takeIf { it in 0f..100f }?.roundToInt()
+    }
+
+    private fun groupIndex(zone: Int): Int? = when (zone) {
+        F.WINDOW_ROW_1_LEFT -> F.GROUP_FL
+        F.WINDOW_ROW_1_RIGHT -> F.GROUP_FR
+        F.WINDOW_ROW_2_LEFT -> F.GROUP_RL
+        F.WINDOW_ROW_2_RIGHT -> F.GROUP_RR
+        else -> null
+    }
 
     private fun aggregate(results: List<ZoneResult>, requested: Int): CommandExecutionResult {
         if (results.any { !it.accepted }) {

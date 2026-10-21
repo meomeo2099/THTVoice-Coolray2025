@@ -60,6 +60,7 @@ object CoolrayCapabilities {
         VehicleStatusQuery.FUEL_LEVEL,
         VehicleStatusQuery.ODOMETER,
         VehicleStatusQuery.OUTSIDE_TEMPERATURE,
+        VehicleStatusQuery.BATTERY_VOLTAGE,
         VehicleStatusQuery.CAR_SUMMARY
     )
 

@@ -79,11 +79,22 @@ class WindowVoiceCommandExecutorTest {
         assertTrue(result is CommandExecutionResult.Rejected)
     }
 
-    @Test fun inactiveFunctionIsRejectedWithoutWrite() = runBlocking {
-        val port = FakeEcarxPort().apply { unsupported += F.BCM_FUNC_WINDOW_POS; unsupported += F.BCM_FUNC_WINDOW }
-        val result = exec(port).execute(VoiceCommand.Window(setOf(WindowTarget.FRONT_LEFT), WindowOperation.OPEN))
-        assertTrue(result is CommandExecutionResult.Rejected)
-        assertTrue(port.floatWrites.isEmpty() && port.intWrites.isEmpty())
+    @Test fun mcuWindowGroupIsThePrimaryPath() = runBlocking {
+        val port = FakeEcarxPort().apply { mcuAccepts = true; props[F.INFO_ID_WINDOW_FR] = 0 }
+        val result = exec(port).execute(VoiceCommand.Window(setOf(WindowTarget.FRONT_RIGHT), WindowOperation.SET_PERCENT, 40))
+        assertTrue(result is CommandExecutionResult.Confirmed)
+        val (prop, bytes) = port.mcuWrites.single()
+        assertEquals(F.INFO_ID_WINDOW_GROUP, prop)
+        assertEquals(listOf<Byte>(-1, 40, -1, -1, -1, -1, -1, -1), bytes.toList())
+        assertTrue(port.floatWrites.isEmpty())
+    }
+
+    @Test fun refusedMcuFallsBackToAdaptApi() = runBlocking {
+        val port = FakeEcarxPort().apply { mcuAccepts = false }
+        val result = exec(port).execute(VoiceCommand.Window(setOf(WindowTarget.REAR_LEFT), WindowOperation.CLOSE))
+        assertTrue(result is CommandExecutionResult.Confirmed)
+        assertEquals(1, port.mcuWrites.size)
+        assertEquals(Triple(F.BCM_FUNC_WINDOW_POS, 256, 0f), port.floatWrites.single())
     }
 
     @Test fun stopSendsPauseAndNeverClaimsConfirmed() = runBlocking {

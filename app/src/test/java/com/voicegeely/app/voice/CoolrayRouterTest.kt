@@ -36,7 +36,7 @@ class CoolrayRouterTest {
             setOf(
                 VehicleStatusQuery.SPEED, VehicleStatusQuery.GEAR, VehicleStatusQuery.CLIMATE_TEMPERATURE, VehicleStatusQuery.FAN_SPEED,
                 VehicleStatusQuery.FUEL_LEVEL, VehicleStatusQuery.ODOMETER, VehicleStatusQuery.OUTSIDE_TEMPERATURE,
-                VehicleStatusQuery.CAR_SUMMARY
+                VehicleStatusQuery.BATTERY_VOLTAGE, VehicleStatusQuery.CAR_SUMMARY
             ),
             allowed
         )

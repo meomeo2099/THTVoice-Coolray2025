@@ -21,6 +21,14 @@ interface EcarxFunctionPort {
 
     fun getFloat(functionId: Int, zone: Int): Float?
     fun setFloat(functionId: Int, zone: Int, value: Float): Boolean
+
+    // --- MCU property path of the AdaptAPI CarImpl (vendor INFO_ID_* properties, 0x287xxxxx) ---
+    /** `CarImpl.sendBytesToMcuByPropID(prop, bytes)`; false when unavailable. */
+    fun sendBytesToMcu(propertyId: Int, bytes: ByteArray): Boolean = false
+    /** `CarImpl.getIntByPropID(prop, area)` (falls back to the 1-arg overload); null when unavailable. */
+    fun getIntByProp(propertyId: Int, area: Int): Int? = null
+    /** `CarImpl.getBytesByPropID(prop)`; null when unavailable. */
+    fun getBytesByProp(propertyId: Int): ByteArray? = null
 }
 
 /** In-memory port used when the car connection is a mock (development without a head unit). */
@@ -33,6 +41,14 @@ class MockEcarxFunctionPort : EcarxFunctionPort {
     override fun setInt(functionId: Int, zone: Int, value: Int): Boolean { ints[functionId to zone] = value; return true }
     override fun getFloat(functionId: Int, zone: Int): Float? = floats[functionId to zone]
     override fun setFloat(functionId: Int, zone: Int, value: Float): Boolean { floats[functionId to zone] = value; return true }
+    private val props = HashMap<Int, Int>()
+    override fun sendBytesToMcu(propertyId: Int, bytes: ByteArray): Boolean {
+        if (propertyId == Coolray2025Functions.INFO_ID_WINDOW_GROUP) {
+            bytes.forEachIndexed { i, b -> if (b.toInt() != -1) Coolray2025Functions.windowStateProp(i)?.let { props[it] = b.toInt() } }
+        }
+        return true
+    }
+    override fun getIntByProp(propertyId: Int, area: Int): Int? = props[propertyId]
 }
 
 /**
@@ -104,6 +120,28 @@ class EcarxFunctionAccess private constructor(
 
     override fun setFloat(functionId: Int, zone: Int, value: Float): Boolean =
         invokeBoolean(setFloat3, functionId, zone, value)
+
+    private val carMethods by lazy { car.javaClass.methods }
+    private fun carMethod(name: String, vararg types: Class<*>): Method? =
+        carMethods.firstOrNull { it.name == name && it.parameterTypes.contentEquals(arrayOf(*types)) }
+
+    override fun sendBytesToMcu(propertyId: Int, bytes: ByteArray): Boolean = try {
+        when (val r = carMethod("sendBytesToMcuByPropID", INT, ByteArray::class.java)?.invoke(car, propertyId, bytes)) {
+            is Boolean -> r
+            is Number -> r.toInt() != 0
+            else -> false
+        }
+    } catch (_: Throwable) { false }
+
+    override fun getIntByProp(propertyId: Int, area: Int): Int? = try {
+        val two = carMethod("getIntByPropID", INT, INT)
+        val one = carMethod("getIntByPropID", INT)
+        ((two?.invoke(car, propertyId, area) ?: one?.invoke(car, propertyId)) as? Number)?.toInt()
+    } catch (_: Throwable) { null }
+
+    override fun getBytesByProp(propertyId: Int): ByteArray? = try {
+        carMethod("getBytesByPropID", INT)?.invoke(car, propertyId) as? ByteArray
+    } catch (_: Throwable) { null }
 
     private fun invokeBoolean(method: Method?, vararg args: Any): Boolean {
         if (method == null) return false

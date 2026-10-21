@@ -59,6 +59,45 @@ object Coolray2025Functions {
     const val BCM_FUNC_LIGHT_FRONT_POSITION_LAMPS = 553977856
     const val BCM_FUNC_LIGHT_READING_LIGHT = 553980672
 
+    // ---- Vendor MCU properties (0x287xxxxx), present in the head unit's car_service dump ----
+    /**
+     * Window group command: 8 bytes, index 0 FL, 1 FR, 2 RL, 3 RR, 4 sunroof glass, 6 sunshade;
+     * value 0..100 % open, -1 (0xFF) = leave unchanged. Sent with CarImpl.sendBytesToMcuByPropID.
+     */
+    const val INFO_ID_WINDOW_GROUP = 678428834 // 0x287000A2
+    const val WINDOW_GROUP_SIZE = 8
+    const val GROUP_FL = 0
+    const val GROUP_FR = 1
+    const val GROUP_RL = 2
+    const val GROUP_RR = 3
+    const val GROUP_SUNROOF = 4
+    const val GROUP_SUNSHADE = 6
+    /** Per-window position state (0..100 %), read with CarImpl.getIntByPropID(prop, BCM_FUNC_WINDOW_POS). */
+    const val INFO_ID_WINDOW_SUNSHADE = 678428828 // 0x2870009C INFO_ID_WINDOW_ROLLSHADE
+    const val INFO_ID_WINDOW_SUNROOF = 678428827 // 0x2870009B
+    const val INFO_ID_WINDOW_FL = 678428829 // 0x2870009D
+    const val INFO_ID_WINDOW_FR = 678428830
+    const val INFO_ID_WINDOW_RL = 678428831
+    const val INFO_ID_WINDOW_RR = 678428832
+    /** 12 V battery voltage: bytes [volts, tenths]. */
+    const val INFO_ID_BATTERY_VOLTAGE = 678428900 // INFO_ID_VPOWERINFO_BATTERY_VOL
+    /** Fuel remaining in litres: 1 byte. */
+    const val INFO_ID_REMAINING_FUEL = 678429191 // INFO_ID_REMAINING_OIL
+
+    fun windowStateProp(groupIndex: Int): Int? = when (groupIndex) {
+        GROUP_FL -> INFO_ID_WINDOW_FL
+        GROUP_FR -> INFO_ID_WINDOW_FR
+        GROUP_RL -> INFO_ID_WINDOW_RL
+        GROUP_RR -> INFO_ID_WINDOW_RR
+        GROUP_SUNROOF -> INFO_ID_WINDOW_SUNROOF
+        GROUP_SUNSHADE -> INFO_ID_WINDOW_SUNSHADE
+        else -> null
+    }
+
+    /** Window group payload moving only [groupIndex] to [percent]. */
+    fun windowGroupPayload(groupIndex: Int, percent: Int): ByteArray =
+        ByteArray(WINDOW_GROUP_SIZE) { -1 }.also { it[groupIndex] = percent.coerceIn(0, 100).toByte() }
+
     // ---- car.hvac.IHvac ----
     /** Seat ventilation, zone ROW_1_LEFT / ROW_1_RIGHT, value OFF or level(…, 1..3). */
     const val HVAC_FUNC_SEAT_VENTILATION = 268763392

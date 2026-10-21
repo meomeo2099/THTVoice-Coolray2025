@@ -29,6 +29,21 @@ class FakeEcarxPort(
         floatSequences[functionId to zone]?.let { if (it.isNotEmpty()) return it.removeAt(0) }
         return floats[functionId to zone]
     }
+    /** MCU path (null = path unavailable, like a head unit without CarImpl). */
+    var mcuAccepts: Boolean? = null
+    val mcuWrites = mutableListOf<Pair<Int, ByteArray>>()
+    val props = mutableMapOf<Int, Int>()
+    val byteProps = mutableMapOf<Int, ByteArray>()
+    override fun sendBytesToMcu(propertyId: Int, bytes: ByteArray): Boolean {
+        val ok = mcuAccepts ?: return false
+        mcuWrites += propertyId to bytes
+        if (ok && reflectWrites && propertyId == com.voicegeely.app.car.Coolray2025Functions.INFO_ID_WINDOW_GROUP) {
+            bytes.forEachIndexed { i, b -> if (b.toInt() != -1) com.voicegeely.app.car.Coolray2025Functions.windowStateProp(i)?.let { props[it] = b.toInt() } }
+        }
+        return ok
+    }
+    override fun getIntByProp(propertyId: Int, area: Int): Int? = props[propertyId]
+    override fun getBytesByProp(propertyId: Int): ByteArray? = byteProps[propertyId]
     override fun setFloat(functionId: Int, zone: Int, value: Float): Boolean {
         floatWrites += Triple(functionId, zone, value)
         if (acceptWrites && reflectWrites) floats[functionId to zone] = value

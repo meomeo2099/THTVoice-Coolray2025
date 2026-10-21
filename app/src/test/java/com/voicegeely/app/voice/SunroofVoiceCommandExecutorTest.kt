@@ -23,11 +23,26 @@ class SunroofVoiceCommandExecutorTest {
         assertEquals(40f, port.floatWrites.single().third)
     }
 
-    @Test fun shadeIsRejectedWithoutWrite() = runBlocking {
+    @Test fun shadeUsesMcuGroupIndexSix() = runBlocking {
+        val port = FakeEcarxPort().apply { mcuAccepts = true; props[F.INFO_ID_WINDOW_SUNSHADE] = 0 }
+        val result = exec(port).execute(VoiceCommand.Sunroof(SunroofPart.SHADE, WindowOperation.OPEN))
+        assertTrue(result is CommandExecutionResult.Confirmed)
+        assertEquals(listOf<Byte>(-1, -1, -1, -1, -1, -1, 100, -1), port.mcuWrites.single().second.toList())
+    }
+
+    @Test fun shadeWithoutMcuIsRejectedWithoutAdaptApiWrite() = runBlocking {
         val port = FakeEcarxPort()
         val result = exec(port).execute(VoiceCommand.Sunroof(SunroofPart.SHADE, WindowOperation.OPEN))
-        assertEquals(SunroofVoiceCommandExecutor.SHADE_UNSUPPORTED, (result as CommandExecutionResult.Rejected).reason)
+        assertTrue(result is CommandExecutionResult.Rejected)
         assertTrue(port.floatWrites.isEmpty() && port.intWrites.isEmpty())
+    }
+
+    @Test fun glassUsesMcuGroupIndexFourFirst() = runBlocking {
+        val port = FakeEcarxPort().apply { mcuAccepts = true; props[F.INFO_ID_WINDOW_SUNROOF] = 0 }
+        val result = exec(port).execute(VoiceCommand.Sunroof(SunroofPart.GLASS, WindowOperation.SET_PERCENT, 60))
+        assertTrue(result is CommandExecutionResult.Confirmed)
+        assertEquals(60.toByte(), port.mcuWrites.single().second[4])
+        assertTrue(port.floatWrites.isEmpty())
     }
 
     @Test fun alreadyAtTargetSkipsWrite() = runBlocking {
