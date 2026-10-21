@@ -1,0 +1,4 @@
+gtcrn_simple.onnx
+source: https://github.com/k2-fsa/sherpa-onnx/releases/download/speech-enhancement-models/gtcrn_simple.onnx
+sha256: e77603ac0c23dac3227dd2d7135b3a585cbee2679048aecfa886657d3ae1b534
+license: GTCRN (MIT), via sherpa-onnx (Apache-2.0)

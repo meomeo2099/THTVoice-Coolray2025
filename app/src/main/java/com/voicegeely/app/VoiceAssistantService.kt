@@ -119,6 +119,12 @@ class VoiceAssistantService : Service() {
     /** [REF-02] VHAL voice-key callback handle; values are always logged, trigger only when enabled. */
     private var vehicleVoiceKeyWatch: (() -> Unit)? = null
     @Volatile private var lastMicSource: Int? = null
+    private var micFrontEndInstance: com.voicegeely.app.asr.MicFrontEnd? = null
+
+    /** Gain + GTCRN denoise before ASR (Coolray 2025 quiet mic). Created once, reused per session. */
+    private fun micFrontEnd(): com.voicegeely.app.asr.MicFrontEnd =
+        micFrontEndInstance ?: com.voicegeely.app.asr.MicFrontEnd.create(assets, Sherpa65mModelSpec.SAMPLE_RATE)
+            .also { micFrontEndInstance = it }
 
     override fun onCreate() {
         super.onCreate()
@@ -558,9 +564,11 @@ class VoiceAssistantService : Service() {
 
     @SuppressLint("MissingPermission")
     private fun openMicrophone(forWakeWord: Boolean): AudioRecord? {
+        // Coolray 2025: the plain MIC source carries the usable speech level on this head unit;
+        // VOICE_RECOGNITION is kept as fallback only.
         val sources = listOf(
-            MediaRecorder.AudioSource.VOICE_RECOGNITION,
-            MediaRecorder.AudioSource.MIC
+            MediaRecorder.AudioSource.MIC,
+            MediaRecorder.AudioSource.VOICE_RECOGNITION
         )
         for (source in sources) {
             val candidate = buildAudioRecord(source) ?: continue
@@ -642,6 +650,8 @@ class VoiceAssistantService : Service() {
             broadcastStatus("Đang nghe...", sherpaReady = true)
             val pcm = ShortArray(CHUNK_SAMPLES)
             val micProbe = com.voicegeely.app.asr.MicCaptureProbe.start(this, Sherpa65mModelSpec.SAMPLE_RATE)
+            val frontEnd = micFrontEnd()
+            frontEnd.reset()
             val startedAt = System.currentTimeMillis()
             val maxListenMs = voicePreferences.maxListenMs
             var lastPartial = ""
@@ -661,8 +671,9 @@ class VoiceAssistantService : Service() {
                 if (count == 0) continue
                 micProbe.add(pcm, count)
 
-                val samples = FloatArray(count) { index -> pcm[index] / 32768.0f }
-                if (!asrEngine.acceptWaveform(samples)) {
+                val raw = FloatArray(count) { index -> pcm[index] / 32768.0f }
+                val samples = frontEnd.process(raw)
+                if (samples.isNotEmpty() && !asrEngine.acceptWaveform(samples)) {
                     val detail = "Bộ nhận giọng nói không nhận được âm thanh"
                     voiceOverlay.showError(detail)
                     broadcastStatus(detail, sherpaReady = true)
@@ -694,6 +705,7 @@ class VoiceAssistantService : Service() {
                 }
             }
 
+            frontEnd.finish().takeIf { it.isNotEmpty() }?.let { tail -> runCatching { asrEngine.acceptWaveform(tail) } }
             val result = asrEngine.finishStream()
             val heardText = result.text.trim().ifBlank { lastPartial.trim() }
             micProbe.finish(lastMicSource, heardText)
@@ -1458,6 +1470,8 @@ class VoiceAssistantService : Service() {
         com.voicegeely.app.voice.AirflowDirectionCycler.stop()
         if (instance === this) instance = null
         stopVehicleVoiceKeyWatch()
+        micFrontEndInstance?.release()
+        micFrontEndInstance = null
         screenOnReceiver?.let { runCatching { unregisterReceiver(it) } }
         screenOnReceiver = null
         voiceKeyReceiver?.let { runCatching { unregisterReceiver(it) } }
