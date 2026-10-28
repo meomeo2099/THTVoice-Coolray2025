@@ -67,9 +67,13 @@ class OfflineEndpointTracker(
         return speechSamples >= minSpeech && trailingSilenceSamples >= silence
     }
 
+    /** A timeout is not evidence of speech: never decode silence or a short noise click. */
+    fun hasSpeechForDecode(): Boolean = speechSeen &&
+        speechSamples >= configProvider().normalized().minSpeechMs * sampleRate / 1000L
+
     /** No speech at all for [AsrEndpointConfig.DEFAULT_NO_SPEECH_MS] (never longer than max listen). */
     fun noSpeechTimedOut(): Boolean {
-        if (speechSeen) return false
+        if (hasSpeechForDecode()) return false
         val config = configProvider().normalized()
         val limitMs = minOf(AsrEndpointConfig.DEFAULT_NO_SPEECH_MS, config.maxListenMs)
         return totalSamples >= limitMs * sampleRate / 1000L
@@ -94,3 +98,4 @@ class OfflineEndpointTracker(
         }
     }
 }
+

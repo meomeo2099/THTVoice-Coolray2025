@@ -98,6 +98,22 @@ class VoiceAssistantService : Service() {
     /** Bumped for every listening session; a session abandoned by the watchdog must not touch the next one. */
     @Volatile private var sessionGeneration = 0L
     @Volatile private var sessionStartedAt = 0L
+    private val sessionThreadGeneration = InheritableThreadLocal<Long>()
+    private val sessionDeadline by lazy {
+        com.voicegeely.app.voice.SessionDeadline(
+            schedule = { delay, action ->
+                val callback = Runnable { action() }
+                mainHandler.postDelayed(callback, delay)
+                val cancel: () -> Unit = { mainHandler.removeCallbacks(callback) }
+                cancel
+            },
+            onTimeout = { generation ->
+                if (!destroyed && generation == sessionGeneration && recognitionRunning.get()) {
+                    recoverStuckSession()
+                }
+            }
+        )
+    }
     @Volatile private var wakeEchoReopenUsed = false
     /** Wake-word mic failures in a row (bounded retry, see KwsMicPolicy). */
     @Volatile private var kwsFailures = 0
@@ -153,6 +169,7 @@ class VoiceAssistantService : Service() {
             followUp = com.voicegeely.app.voice.FollowUpContext(),
             snapshotReader = ::readFollowUpSnapshot,
             speech = VoiceSpeechSink { text ->
+                if (!canPublishSessionResult()) return@VoiceSpeechSink
                 broadcastStatus(text, sherpaReady = asrReady())
                 voiceOverlay.showResult(text)
                 if (voicePreferences.voiceFeedbackEnabled) {
@@ -311,6 +328,13 @@ class VoiceAssistantService : Service() {
             return
         }
 
+        // A native decode may ignore interruption. Do not enter its synchronized engine or
+        // share its front end with another session while that worker is still unwinding.
+        if (!recognitionRunning.get() && recognitionThread?.isAlive == true) {
+            voiceOverlay.showError("Bộ nhận giọng nói đang khôi phục, vui lòng thử lại sau.")
+            return
+        }
+
         if (!::asrEngine.isInitialized) {
             // Still loading after the car started (staged startup).
             val message = "Trợ lý đang khởi động, thử lại sau giây lát."
@@ -333,7 +357,10 @@ class VoiceAssistantService : Service() {
         if (com.voicegeely.app.voice.SessionWatchdogPolicy.sessionStuck(
                 recognitionRunning.get(), sessionStartedAt, android.os.SystemClock.elapsedRealtime()
             )
-        ) recoverStuckSession()
+        ) {
+            recoverStuckSession()
+            return
+        }
 
         if (!recognitionRunning.compareAndSet(false, true)) {
             if (com.voicegeely.app.voice.BargeInPolicy.shouldBargeIn(micState.state)) {
@@ -371,6 +398,7 @@ class VoiceAssistantService : Service() {
         feedbackAudio.play(VoiceFeedbackCue.LISTENING)
         val generation = ++sessionGeneration
         sessionStartedAt = android.os.SystemClock.elapsedRealtime()
+        sessionDeadline.start(generation, com.voicegeely.app.voice.SessionWatchdogPolicy.STUCK_AFTER_MS)
         recognitionThread = thread(name = "THTVoice-Sherpa", start = true) {
             runRecognitionSession(generation)
         }
@@ -378,7 +406,7 @@ class VoiceAssistantService : Service() {
 
     private fun ensureWakeWordListening() {
         if (!serviceReady || !wakeReady || !voicePreferences.wakeWordEnabled) return
-        if (recognitionRunning.get()) return
+        if (recognitionRunning.get() || recognitionThread?.isAlive == true) return
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) return
         if (com.voicegeely.app.kws.KwsMicPolicy.callActive(currentAudioMode())) {
             // Phone call (also via CarPlay / Android Auto): leave the mic to it, check again later.
@@ -613,7 +641,13 @@ class VoiceAssistantService : Service() {
     /** A session that never finished (car or audio call hung): drop it so the key works again. */
     private fun recoverStuckSession() {
         Log.w(TAG, "session_stuck_recovered state=${micState.state} ageMs=${android.os.SystemClock.elapsedRealtime() - sessionStartedAt}")
+        sessionDeadline.cancel()
         sessionGeneration++
+        recognitionRunning.set(false)
+        recognitionThread?.interrupt()
+        val message = "Xử lý quá lâu, phiên nghe đã dừng. Vui lòng thử lại."
+        voiceOverlay.showError(message)
+        broadcastStatus(message, sherpaReady = asrReady())
         offlineTts.interrupt()
         systemTts.interrupt()
         closeRecorder(audioRecord)
@@ -621,11 +655,21 @@ class VoiceAssistantService : Service() {
         reopenForSafetyConfirmation = false
         reopenForWakeEcho = false
         micState.forceIdle()
-        recognitionRunning.set(false)
-        recognitionThread = null
+        audioDucker.release()
+        // Keep the reference until the worker exits: reset/startStream would otherwise wait
+        // forever on the same native recognizer lock, blocking the service's main thread.
+    }
+
+    private fun sessionActive(generation: Long): Boolean =
+        !destroyed && generation == sessionGeneration && recognitionRunning.get()
+
+    private fun canPublishSessionResult(): Boolean {
+        val generation = sessionThreadGeneration.get() ?: return !destroyed
+        return sessionActive(generation)
     }
 
     private fun runRecognitionSession(generation: Long) {
+        sessionThreadGeneration.set(generation)
         var recorder: AudioRecord? = null
         try {
             if (!asrEngine.startStream()) {
@@ -635,9 +679,11 @@ class VoiceAssistantService : Service() {
                 if (!voicePreferences.voiceFeedbackEnabled) feedbackAudio.play(VoiceFeedbackCue.ERROR)
                 return
             }
+            if (!sessionActive(generation)) return
 
             recorder = openMicrophone(forWakeWord = false)
             audioRecord = recorder
+            if (!sessionActive(generation)) return
             if (recorder == null) {
                 val detail = "Không khởi tạo được micrô"
                 voiceOverlay.showError(detail)
@@ -652,15 +698,16 @@ class VoiceAssistantService : Service() {
             val micProbe = com.voicegeely.app.asr.MicCaptureProbe.start(this, Sherpa65mModelSpec.SAMPLE_RATE)
             val frontEnd = micFrontEnd()
             frontEnd.reset()
-            val startedAt = System.currentTimeMillis()
+            val startedAt = android.os.SystemClock.elapsedRealtime()
             val maxListenMs = voicePreferences.maxListenMs
             var lastPartial = ""
             var micTaken = false
             var connectorGraceText: String? = null
             var connectorGraceAt = 0L
 
-            while (recognitionRunning.get() && System.currentTimeMillis() - startedAt < maxListenMs) {
+            while (sessionActive(generation) && android.os.SystemClock.elapsedRealtime() - startedAt < maxListenMs) {
                 val count = recorder.read(pcm, 0, pcm.size)
+                if (!sessionActive(generation)) return
                 if (count < 0) {
                     // IHU629G probe: a phone call (CarPlay too) takes the mic; this recorder then
                     // returns errors and never recovers. Stop instead of spinning until timeout.
@@ -673,6 +720,7 @@ class VoiceAssistantService : Service() {
 
                 val raw = FloatArray(count) { index -> pcm[index] / 32768.0f }
                 val samples = frontEnd.process(raw)
+                if (!sessionActive(generation)) return
                 if (samples.isNotEmpty() && !asrEngine.acceptWaveform(samples)) {
                     val detail = "Bộ nhận giọng nói không nhận được âm thanh"
                     voiceOverlay.showError(detail)
@@ -687,6 +735,7 @@ class VoiceAssistantService : Service() {
                 }
 
                 val partial = asrEngine.partialText()
+                if (!sessionActive(generation)) return
                 if (partial.isNotBlank() && partial != lastPartial) {
                     lastPartial = partial
                     voiceOverlay.updateRecognition(partial, isFinal = false)
@@ -695,7 +744,7 @@ class VoiceAssistantService : Service() {
 
                 if (lastPartial.isNotBlank() && asrEngine.isEndpoint()) {
                     // "mở youtube rồi …": a pause after a joining word is not the end of the command.
-                    val now = System.currentTimeMillis()
+                    val now = android.os.SystemClock.elapsedRealtime()
                     if (com.voicegeely.app.voice.UtteranceContinuation.stopAtEndpoint(lastPartial, connectorGraceText, connectorGraceAt, now)) break
                     if (connectorGraceText != lastPartial) {
                         connectorGraceText = lastPartial
@@ -705,9 +754,13 @@ class VoiceAssistantService : Service() {
                 }
             }
 
-            frontEnd.finish().takeIf { it.isNotEmpty() }?.let { tail -> runCatching { asrEngine.acceptWaveform(tail) } }
+            if (!sessionActive(generation)) return
+            frontEnd.finish().takeIf { it.isNotEmpty() }?.let { tail -> asrEngine.acceptWaveform(tail) }
+            if (!sessionActive(generation)) return
             val result = asrEngine.finishStream()
-            val heardText = result.text.trim().ifBlank { lastPartial.trim() }
+            if (!sessionActive(generation)) return
+            // A blank final result is authoritative; an old partial can be an incomplete command.
+            val heardText = result.text.trim()
             micProbe.finish(lastMicSource, heardText)
             // "Hey Geely" said again at the start is not part of the command (owner report 03/10/2026).
             val onlyWakePhrase = com.voicegeely.app.voice.WakePhraseEcho.isOnlyWakePhrase(heardText)
@@ -743,6 +796,7 @@ class VoiceAssistantService : Service() {
                 if (spokenFeedback && !speakReply(message)) feedbackAudio.play(VoiceFeedbackCue.ERROR)
             }
         } catch (t: Throwable) {
+            if (!sessionActive(generation)) return
             Log.e(TAG, "Offline recognition failed", t)
             val detail = "Lỗi nhận dạng offline: ${t.message.orEmpty()}"
             voiceOverlay.showError(detail)
@@ -753,11 +807,19 @@ class VoiceAssistantService : Service() {
             if (generation != sessionGeneration) {
                 // Abandoned by the watchdog; a newer session owns the mic and the state now.
                 Log.w(TAG, "stale_session_finished generation=$generation")
+                if (recognitionThread === Thread.currentThread()) recognitionThread = null
+                sessionThreadGeneration.remove()
+                mainHandler.post { if (!destroyed) ensureWakeWordListening() }
                 return
             }
-            recognitionRunning.set(false)
             try { asrEngine.reset() } catch (_: Throwable) {}
-            recognitionThread = null
+            if (!sessionActive(generation)) {
+                if (recognitionThread === Thread.currentThread()) recognitionThread = null
+                sessionThreadGeneration.remove()
+                mainHandler.post { if (!destroyed) ensureWakeWordListening() }
+                return
+            }
+            voiceOverlay.finishProcessing()
             micState.endProcessing()
 
             val bargeIn = bargeInRequested
@@ -781,15 +843,27 @@ class VoiceAssistantService : Service() {
                 try { Thread.sleep(if (bargeIn) BARGE_IN_REOPEN_DELAY_MS else SAFETY_REOPEN_DELAY_MS) } catch (_: InterruptedException) {
                     Thread.currentThread().interrupt()
                 }
-                if (serviceReady) handleRecognitionTrigger()
-            } else if (serviceReady) {
-                ensureWakeWordListening()
+            }
+            if (!sessionActive(generation)) {
+                if (recognitionThread === Thread.currentThread()) recognitionThread = null
+                sessionThreadGeneration.remove()
+                mainHandler.post { if (!destroyed) ensureWakeWordListening() }
+                return
+            }
+            sessionDeadline.cancel()
+            recognitionRunning.set(false)
+            recognitionThread = null
+            sessionThreadGeneration.remove()
+            mainHandler.post {
+                if (destroyed || generation != sessionGeneration || !serviceReady) return@post
+                if (shouldReopen) handleRecognitionTrigger() else ensureWakeWordListening()
             }
         }
     }
 
     /** Local-only command path. No Groq/LLM fallback is allowed here. */
     private fun executeRecognizedText(heard: String) {
+        if (!canPublishSessionResult()) return
         val text = com.voicegeely.app.voice.UtteranceContinuation.stripDanglingConnector(heard)
         if (text != heard) Log.i(TAG, "dangling_connector_dropped")
         val confirmation = VoiceConfirmationParser.parse(text)
@@ -968,6 +1042,7 @@ class VoiceAssistantService : Service() {
     }
 
     private fun executeParsedCommand(parsed: ParsedVoiceCommand) {
+        if (!canPublishSessionResult()) return
         try {
             val spokenFeedback = voicePreferences.voiceFeedbackEnabled
             // Bounded (owner report 03/10/2026): a car call or reply that never returns must not
@@ -989,6 +1064,7 @@ class VoiceAssistantService : Service() {
                 commandCoordinator.followUp?.clear()
                 task.cancel(true)
                 worker.interrupt()
+                if (!canPublishSessionResult()) return
                 // Unblocks a reply stuck in playback; the hung thread keeps no hold on the session.
                 offlineTts.interrupt()
                 systemTts.interrupt()
@@ -1001,7 +1077,13 @@ class VoiceAssistantService : Service() {
                 return
             } catch (e: java.util.concurrent.ExecutionException) {
                 throw e.cause ?: e
+            } catch (interrupted: InterruptedException) {
+                task.cancel(true)
+                worker.interrupt()
+                Thread.currentThread().interrupt()
+                return
             }
+            if (!canPublishSessionResult()) return
             lastCommand = parsed.command
             lastCommandSucceeded = execution is com.voicegeely.app.voice.CommandExecutionResult.Confirmed ||
                 execution is com.voicegeely.app.voice.CommandExecutionResult.AcceptedUnverified
@@ -1013,6 +1095,7 @@ class VoiceAssistantService : Service() {
                 feedbackAudio.play(VoiceFeedbackPolicy.forExecution(execution))
             }
         } catch (t: Throwable) {
+            if (!canPublishSessionResult()) return
             Log.e(TAG, "Command execution failed", t)
             val detail = "Không thực hiện được lệnh: ${t.message.orEmpty()}"
             voiceOverlay.showError(detail)
@@ -1050,6 +1133,7 @@ class VoiceAssistantService : Service() {
     }
 
     private fun runStepBounded(step: ParsedVoiceCommand): com.voicegeely.app.voice.CommandExecutionResult {
+        if (!canPublishSessionResult()) return com.voicegeely.app.voice.CommandExecutionResult.Failed("Phiên nghe đã dừng.")
         val task = java.util.concurrent.FutureTask {
             runBlocking { commandCoordinator.handle(step, VoiceResponseMode.SILENT) }
         }
@@ -1064,6 +1148,11 @@ class VoiceAssistantService : Service() {
             com.voicegeely.app.voice.CommandExecutionResult.Failed("Xe chưa phản hồi lệnh.")
         } catch (e: java.util.concurrent.ExecutionException) {
             com.voicegeely.app.voice.CommandExecutionResult.Failed(e.cause?.message ?: "Lỗi không xác định.", e.cause?.javaClass?.name)
+        } catch (interrupted: InterruptedException) {
+            task.cancel(true)
+            worker.interrupt()
+            Thread.currentThread().interrupt()
+            com.voicegeely.app.voice.CommandExecutionResult.Failed("Phiên nghe đã dừng.")
         }
     }
 
@@ -1110,6 +1199,7 @@ class VoiceAssistantService : Service() {
     }
 
     private fun emitSafetyMessage(message: String, cue: VoiceFeedbackCue) {
+        if (!canPublishSessionResult()) return
         broadcastStatus(message, sherpaReady = asrReady())
         if (cue == VoiceFeedbackCue.ERROR) voiceOverlay.showError(message)
         else voiceOverlay.showResult(message)
@@ -1134,6 +1224,7 @@ class VoiceAssistantService : Service() {
     }
 
     private fun broadcastStatus(rawMessage: String, sherpaReady: Boolean) {
+        if (!canPublishSessionResult()) return
         val message = com.voicegeely.app.ui.PublicText.scrub(rawMessage)
         val ttsDetail = ttsDetailForUi()?.let { com.voicegeely.app.ui.PublicText.scrub(it) }
         lastReadiness = com.voicegeely.app.ui.EngineReadiness(sherpaReady, wakeReady, ttsReadyForUi(), ttsDetail)
@@ -1230,6 +1321,7 @@ class VoiceAssistantService : Service() {
     }
 
     private fun speakReply(text: String): Boolean {
+        if (!canPublishSessionResult()) return true
         // Cut short by the voice key: say nothing more, a new listening session follows.
         if (bargeInRequested) return true
         replySpeaking = true
@@ -1466,6 +1558,9 @@ class VoiceAssistantService : Service() {
     }
 
     override fun onDestroy() {
+        sessionDeadline.cancel()
+        sessionGeneration++
+        recognitionThread?.interrupt()
         destroyed = true
         com.voicegeely.app.voice.AirflowDirectionCycler.stop()
         if (instance === this) instance = null
@@ -1550,3 +1645,4 @@ class VoiceAssistantService : Service() {
         fun engineReadiness(): com.voicegeely.app.ui.EngineReadiness? = if (serviceReady) lastReadiness else null
     }
 }
+

@@ -6,7 +6,9 @@ package com.voicegeely.app.voice
  * the session stayed "processing" and every new press was taken as a barge-in on it.
  *
  * - A command gets [COMMAND_TIMEOUT_MS]; after that the driver hears an error and the session ends.
- * - A session older than [STUCK_AFTER_MS] is abandoned when the key is pressed, and a new one starts.
+ * - [SessionDeadline] abandons a session after [STUCK_AFTER_MS] without another key press.
+ * - A native worker that ignores interruption is quarantined until it returns; it cannot publish
+ *   a late result or share the recognizer with the next session.
  */
 object SessionWatchdogPolicy {
     const val COMMAND_TIMEOUT_MS = 15_000L
@@ -19,3 +21,4 @@ object SessionWatchdogPolicy {
     fun sessionStuck(running: Boolean, startedAtMs: Long, nowMs: Long): Boolean =
         running && startedAtMs > 0 && nowMs - startedAtMs > STUCK_AFTER_MS
 }
+
