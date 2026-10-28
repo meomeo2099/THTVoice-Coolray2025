@@ -820,7 +820,6 @@ class VoiceAssistantService : Service() {
                 return
             }
             voiceOverlay.finishProcessing()
-            micState.endProcessing()
 
             val bargeIn = bargeInRequested
             bargeInRequested = false
@@ -851,12 +850,16 @@ class VoiceAssistantService : Service() {
                 return
             }
             sessionDeadline.cancel()
+            // A press during audio cleanup is still a barge-in and must open the next session.
+            val reopenAfterCleanup = shouldReopen || bargeInRequested
+            bargeInRequested = false
+            micState.endProcessing()
             recognitionRunning.set(false)
             recognitionThread = null
             sessionThreadGeneration.remove()
             mainHandler.post {
                 if (destroyed || generation != sessionGeneration || !serviceReady) return@post
-                if (shouldReopen) handleRecognitionTrigger() else ensureWakeWordListening()
+                if (reopenAfterCleanup) handleRecognitionTrigger() else ensureWakeWordListening()
             }
         }
     }
@@ -1214,6 +1217,7 @@ class VoiceAssistantService : Service() {
     }
 
     private fun broadcastRecognition(text: String, isFinal: Boolean) {
+        if (!canPublishSessionResult()) return
         VoiceServiceEventBus.sendBroadcast(
             this,
             Intent(ACTION_RECOGNITION_TEXT).apply {
