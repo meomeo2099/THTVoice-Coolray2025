@@ -78,6 +78,12 @@ class VoiceOverlayController(context: Context) {
         scheduleHide(token, autoHideMs ?: preferences.overlayAutoHideMs)
     }
 
+    fun finishProcessing() {
+        val state = stateMachine.finishProcessing() ?: return
+        val token = render(state)
+        scheduleHide(token, preferences.overlayAutoHideMs)
+    }
+
     fun hide() {
         generation.incrementAndGet()
         stateMachine.hide()
@@ -532,3 +538,4 @@ class VoiceOverlayController(context: Context) {
         private val COLOR_OK = Color.rgb(46, 214, 128)
     }
 }
+

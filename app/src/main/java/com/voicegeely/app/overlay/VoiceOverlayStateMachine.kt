@@ -84,6 +84,12 @@ class VoiceOverlayStateMachine {
     @Synchronized
     fun hide(): VoiceOverlayState = assign(VoiceOverlayPhase.HIDDEN, "", "", "", "")
 
+    /** A completed worker must never leave an unresolved spinner on screen. */
+    @Synchronized
+    fun finishProcessing(): VoiceOverlayState? =
+        if (state.phase == VoiceOverlayPhase.PROCESSING) error("Chưa có kết quả xử lý, vui lòng thử lại.")
+        else null
+
     @Synchronized
     private fun assign(
         phase: VoiceOverlayPhase,
@@ -96,3 +102,4 @@ class VoiceOverlayStateMachine {
         return state
     }
 }
+

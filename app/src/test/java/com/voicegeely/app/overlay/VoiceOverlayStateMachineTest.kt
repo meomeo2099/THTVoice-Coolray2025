@@ -56,4 +56,27 @@ class VoiceOverlayStateMachineTest {
         assertEquals("", hidden.transcript)
         assertEquals("", hidden.result)
     }
+
+    @Test fun finishingUnresolvedProcessingShowsErrorInsteadOfSpinner() {
+        val machine = VoiceOverlayStateMachine()
+        machine.processing("câu nhận sai")
+        val state = machine.finishProcessing()!!
+        assertEquals(VoiceOverlayPhase.ERROR, state.phase)
+        assertEquals("câu nhận sai", state.transcript)
+        assertEquals(null, machine.finishProcessing())
+    }
+
+    @Test fun finishingDoesNotOverwriteResultErrorOrHiddenState() {
+        val machine = VoiceOverlayStateMachine()
+        machine.result("Đã thực hiện")
+        assertEquals(null, machine.finishProcessing())
+        assertEquals("Đã thực hiện", machine.state.result)
+        machine.error("Xe chưa phản hồi")
+        assertEquals(null, machine.finishProcessing())
+        assertEquals("Xe chưa phản hồi", machine.state.result)
+        machine.hide()
+        assertEquals(null, machine.finishProcessing())
+        assertEquals(VoiceOverlayPhase.HIDDEN, machine.state.phase)
+    }
 }
+

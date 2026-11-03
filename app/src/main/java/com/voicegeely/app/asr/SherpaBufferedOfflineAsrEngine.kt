@@ -94,7 +94,7 @@ class SherpaBufferedOfflineAsrEngine(
     @Synchronized
     override fun partialText(): String {
         if (tracker.decodedValid) return endpointText
-        if (!tracker.endpointReached()) return ""
+        if (!tracker.hasSpeechForDecode() || !tracker.endpointReached()) return ""
         decodeAll()
         return endpointText
     }
@@ -107,8 +107,8 @@ class SherpaBufferedOfflineAsrEngine(
 
     @Synchronized
     override fun finishStream(): AsrRecognitionResult {
-        if (!tracker.decodedValid && tracker.totalSamples > 0) decodeAll()
-        val text = endpointText
+        if (!tracker.decodedValid && tracker.hasSpeechForDecode()) decodeAll()
+        val text = if (tracker.hasSpeechForDecode()) endpointText else ""
         if (tracker.resumedCount > 0) android.util.Log.i("THTAsr", "offline_endpoint_resumed count=${tracker.resumedCount}")
         active = false
         tracker.reset()
@@ -138,8 +138,10 @@ class SherpaBufferedOfflineAsrEngine(
             s.acceptWaveform(tracker.audio(), sampleRate)
             r.decode(s)
             r.getResult(s).text.trim()
-        } catch (_: Throwable) {
-            endpointText
+        } catch (t: Throwable) {
+            // An older decode may belong to the words before a pause. Never execute it as
+            // the final command when decoding the completed utterance failed.
+            throw IllegalStateException("Không giải mã được câu lệnh", t)
         } finally {
             try { s?.release() } catch (_: Throwable) {}
         }
@@ -154,3 +156,4 @@ class SherpaBufferedOfflineAsrEngine(
         internal fun rms(samples: FloatArray): Float = OfflineEndpointTracker.rms(samples)
     }
 }
+

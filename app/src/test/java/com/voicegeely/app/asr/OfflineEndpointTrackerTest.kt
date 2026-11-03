@@ -65,4 +65,35 @@ class OfflineEndpointTrackerTest {
         t.feed(silence(2_000)); t.feed(speech(300)); t.feed(silence(3_000))
         assertFalse(t.noSpeechTimedOut())
     }
+
+    @Test fun silenceAtTimeoutMustNeverBeDecodedAsWords() {
+        val t = tracker()
+        t.feed(silence(8_000))
+        assertTrue(t.endpointReached())
+        assertTrue(t.noSpeechTimedOut())
+        assertFalse(t.hasSpeechForDecode())
+    }
+
+    @Test fun shortClickDoesNotTurnSilenceIntoAnUtterance() {
+        val t = tracker()
+        t.feed(speech(100)); t.feed(silence(3_900))
+        assertFalse(t.hasSpeechForDecode())
+        assertTrue(t.noSpeechTimedOut())
+    }
+
+    @Test fun quietBackgroundBelowThresholdIsNotSpeech() {
+        val t = tracker()
+        t.feed(FloatArray(rate * 4) { if (it % 2 == 0) 0.005f else -0.005f })
+        assertFalse(t.hasSpeechForDecode())
+        assertTrue(t.noSpeechTimedOut())
+    }
+
+    @Test fun validSpeechRemainsEligibleUntilReset() {
+        val t = tracker()
+        t.feed(speech(300)); t.feed(silence(500))
+        assertTrue(t.hasSpeechForDecode())
+        t.reset()
+        assertFalse(t.hasSpeechForDecode())
+    }
 }
+
