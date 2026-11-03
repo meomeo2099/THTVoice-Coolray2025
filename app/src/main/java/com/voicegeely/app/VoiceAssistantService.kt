@@ -236,10 +236,8 @@ class VoiceAssistantService : Service() {
         refreshRemoteLicenseIfDue()
         when (intent?.action) {
             ACTION_TRIGGER_RECOGNITION -> handleRecognitionTrigger()
-            ACTION_ECARX_KEY -> {
-                if (VoiceKeyDebounce.shared.accept(android.os.SystemClock.elapsedRealtime())) handleRecognitionTrigger()
-                else Log.i(TAG, "ecarx_key_debounced path=service_start")
-            }
+            ACTION_ECARX_KEY, VoiceKeyActions.ECARX_CASE_VARIANT ->
+                VoiceKeyLauncher.handle(this, intent.action, source = "service_start")
             ACTION_TEST_VOICE -> runVoiceTest()
             ACTION_SETTINGS_CHANGED -> {
                 com.voicegeely.app.voice.AirflowDirectionCycler.defaultMinutes = voicePreferences.airflowCycleMinutes
