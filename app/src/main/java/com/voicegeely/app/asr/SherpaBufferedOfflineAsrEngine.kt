@@ -156,4 +156,3 @@ class SherpaBufferedOfflineAsrEngine(
         internal fun rms(samples: FloatArray): Float = OfflineEndpointTracker.rms(samples)
     }
 }
-

@@ -83,4 +83,3 @@ class VoiceOverlayStateMachineTest {
         assertEquals(VoiceOverlayPhase.HIDDEN, machine.state.phase)
     }
 }
-

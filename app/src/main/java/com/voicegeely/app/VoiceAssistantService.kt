@@ -1651,4 +1651,3 @@ class VoiceAssistantService : Service() {
         fun engineReadiness(): com.voicegeely.app.ui.EngineReadiness? = if (serviceReady) lastReadiness else null
     }
 }
-

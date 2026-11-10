@@ -109,4 +109,3 @@ class VoiceOverlayStateMachine {
         return state
     }
 }
-

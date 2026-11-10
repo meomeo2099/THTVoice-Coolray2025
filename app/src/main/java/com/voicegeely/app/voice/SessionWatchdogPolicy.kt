@@ -21,4 +21,3 @@ object SessionWatchdogPolicy {
     fun sessionStuck(running: Boolean, startedAtMs: Long, nowMs: Long): Boolean =
         running && startedAtMs > 0 && nowMs - startedAtMs > STUCK_AFTER_MS
 }
-
