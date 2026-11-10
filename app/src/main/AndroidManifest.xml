@@ -196,6 +196,19 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name="com.voicegeely.app.VoiceKeyAccessibilityService"
+            android:exported="true"
+            android:label="@string/voice_key_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/voice_key_accessibility" />
+        </service>
+
         <receiver android:name="com.voicegeely.app.BootReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

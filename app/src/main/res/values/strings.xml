@@ -4,4 +4,6 @@
     <string name="screen_credit">Trợ lý giọng nói dành cho xe</string>
     <string name="loading_assistant">Đang khởi động trợ lý giọng nói…</string>
     <string name="assistant_ready">Trợ lý đã sẵn sàng</string>
+    <string name="voice_key_service_label">THT Voice – Nút voice</string>
+    <string name="voice_key_service_description">Nhận nút voice trên vô lăng khi bạn đang dùng ứng dụng khác. Chỉ xử lý phím trợ lý và tìm kiếm để mở nghe lệnh; không đọc nội dung màn hình.</string>
 </resources>

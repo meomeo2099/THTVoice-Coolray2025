@@ -46,6 +46,11 @@ import com.voicegeely.app.update.SafeAppUpdateManager
 import com.voicegeely.app.voice.safety.VehicleSafetyGate
 
 class MainActivity : AppCompatActivity() {
+    private val voiceKeyHandler = VoiceKeyEventHandler()
+
+    override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean =
+        voiceKeyHandler.handle(this, event, "activity_key") || super.dispatchKeyEvent(event)
+
     /** Scale the approved 1920×1080 design to this screen before any view is built. */
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(com.voicegeely.app.ui.ResponsiveContext.wrap(newBase))
@@ -725,6 +730,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        voiceKeyHandler.clear()
         runCatching { VoiceServiceEventBus.unregisterReceiver(serviceReceiver) }
         assistantBinding = null
         homeBinding = null

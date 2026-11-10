@@ -106,8 +106,9 @@ object SettingsScreenView {
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_car, "Nút voice khi dùng Android Auto / CarPlay",
             "Bật: nút voice luôn mở THT Voice. Tắt: khi đang kết nối Android Auto / CarPlay thì nút voice mở trợ lý điện thoại.",
             ThtUi.switch(context, keyAlwaysTht) { keyAlwaysTht = it }))
-        // IHU629G probe: the voice key is a plain (not ordered) broadcast, so other apps also get it.
-        // Choosing THT Voice as the system assistant stops the phone-projection app taking the key.
+        voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_car, "Nhận nút voice khi chạy nền",
+            "Bật THT Voice – Nút voice trong Trợ năng để nhận phím trên vô lăng khi đang dùng app khác.",
+            ThtUi.smallButton(context, null, "Mở cài đặt", ThtUi.SmallStyle.OUTLINE) { openVoiceKeySettings(context) }))
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Đặt THT Voice làm trợ lý mặc định",
             "Nếu bấm nút voice mà hiện thông báo cắm cáp USB: chọn THT Voice ở mục Trợ lý / Nhập liệu giọng nói.",
             ThtUi.smallButton(context, null, "Mở cài đặt", ThtUi.SmallStyle.OUTLINE) { openAssistantSettings(context) }))
@@ -116,7 +117,7 @@ object SettingsScreenView {
             ThtUi.smallButton(context, null, "Quản lý", ThtUi.SmallStyle.OUTLINE) { UserAliasDialog.show(context, voicePreferences) }))
         // Coolray: no vehicle voice-key signal mapping, so no switch for it.
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_car, "Kiểm tra nút voice",
-            "Xem app nào khác cũng nhận nút voice trên vô lăng (thường là app gây thông báo cắm cáp USB).",
+            "Xem trạng thái nhận phím, tín hiệu đã nhận và các app cùng dùng nút voice.",
             ThtUi.smallButton(context, null, "Kiểm tra", ThtUi.SmallStyle.OUTLINE) { showVoiceKeyCheck(context) }))
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Lọc tiếng nhạc khi nghe lệnh",
             "Chỉ bật khi đang phát nhạc hoặc đang đọc phản hồi, không dùng cho từ đánh thức. Tắt nếu micrô nghe kém.",
@@ -229,7 +230,8 @@ object SettingsScreenView {
     private val SPLIT_TOKEN = Regex("[A-Za-z0-9_-]{64}")
 
     private fun showVoiceKeyCheck(context: Context) {
-        val text = com.voicegeely.app.VoiceKeyDiagnostics.format(com.voicegeely.app.VoiceKeyProbe.read(context)) +
+        val text = "Nhận phím khi chạy nền: ${com.voicegeely.app.VoiceKeyAccessibilityService.status(context)}\n\n" +
+            com.voicegeely.app.VoiceKeyDiagnostics.format(com.voicegeely.app.VoiceKeyProbe.read(context)) +
             "\n\nTín hiệu nút voice gần đây:\n" + com.voicegeely.app.VoiceKeySignalLog.format()
         ThtUi.showDialog(context, R.drawable.ic_ui_car, "Kiểm tra nút voice", text,
             secondaryLabel = "Sao chép", onSecondary = {
@@ -237,6 +239,16 @@ object SettingsScreenView {
                 clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("THT Voice - nút voice", text))
                 android.widget.Toast.makeText(context, "Đã sao chép.", android.widget.Toast.LENGTH_SHORT).show()
             })
+    }
+
+    private fun openVoiceKeySettings(context: Context) {
+        val opened = runCatching {
+            context.startActivity(android.content.Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK))
+        }.isSuccess
+        if (!opened) android.widget.Toast.makeText(context,
+            "Không mở được Trợ năng. Vào Cài đặt Android → Trợ năng → THT Voice – Nút voice.",
+            android.widget.Toast.LENGTH_LONG).show()
     }
 
     private fun openAssistantSettings(context: Context) {

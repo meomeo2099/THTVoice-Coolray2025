@@ -18,11 +18,6 @@ import com.voicegeely.app.settings.UserVoicePreferences
 class VoiceKeyReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         recordSignal(intent)
-        if (VoiceKeyActions.isVoiceKey(intent?.action) && yieldToProjection(context)) {
-            // Settings: phone assistant answers the key while Android Auto / CarPlay is connected.
-            Log.i(TAG, "ecarx_key_yield_to_projection")
-            return
-        }
         val handled = VoiceKeyLauncher.handle(context, intent?.action, source = if (isInitialStickyBroadcast) "sticky" else "broadcast")
         // The key is ours (owner report 03/10/2026: the steering-wheel key also opened the phone
         // projection app, which shows "connect your phone with a USB cable"). For an ordered
@@ -50,13 +45,6 @@ class VoiceKeyReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun yieldToProjection(context: Context): Boolean = runCatching {
-        VoiceKeyProjectionPolicy.yieldToProjection(
-            alwaysThtVoice = UserVoicePreferences(context).voiceKeyAlwaysTht,
-            connected = ProjectionDetector.connectedUsb(context)
-        )
-    }.getOrDefault(false)
-
     companion object {
         private const val TAG = "THTVoiceECARX"
     }
@@ -70,6 +58,15 @@ object VoiceKeyLauncher {
     private const val TAG = "THTVoiceECARX"
 
     fun handle(context: Context, incomingAction: String?, source: String): Boolean {
+        if (VoiceKeyActions.isVoiceKey(incomingAction) && runCatching {
+                VoiceKeyProjectionPolicy.yieldToProjection(
+                    alwaysThtVoice = UserVoicePreferences(context).voiceKeyAlwaysTht,
+                    connected = ProjectionDetector.connectedUsb(context)
+                )
+            }.getOrDefault(false)) {
+            Log.i(TAG, "ecarx_key_yield_to_projection path=$source")
+            return false
+        }
         val route = VoiceKeyRoutingPolicy.decide(
             incomingAction = incomingAction,
             expectedAction = VoiceAssistantService.ACTION_ECARX_KEY
