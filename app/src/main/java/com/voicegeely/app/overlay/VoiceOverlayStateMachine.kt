@@ -14,7 +14,14 @@ data class VoiceOverlayState(
     val text: String = "",
     val transcript: String = "",
     val result: String = ""
-)
+) {
+    val popupText: String
+        get() = when (phase) {
+            VoiceOverlayPhase.HIDDEN, VoiceOverlayPhase.LISTENING -> ""
+            VoiceOverlayPhase.PROCESSING -> transcript.ifBlank { title }
+            VoiceOverlayPhase.RESULT, VoiceOverlayPhase.ERROR -> result.ifBlank { title }
+        }
+}
 
 /**
  * Pure state holder for the floating voice UI. Keeping state transitions free

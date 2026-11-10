@@ -692,7 +692,6 @@ class VoiceAssistantService : Service() {
                 return
             }
 
-            voiceOverlay.showListening()
             broadcastStatus("Đang nghe...", sherpaReady = true)
             val pcm = ShortArray(CHUNK_SAMPLES)
             val micProbe = com.voicegeely.app.asr.MicCaptureProbe.start(this, Sherpa65mModelSpec.SAMPLE_RATE)
@@ -701,7 +700,7 @@ class VoiceAssistantService : Service() {
             val startedAt = android.os.SystemClock.elapsedRealtime()
             val maxListenMs = voicePreferences.maxListenMs
             var lastPartial = ""
-            var micTaken = false
+            var captureError: String? = null
             var connectorGraceText: String? = null
             var connectorGraceAt = 0L
 
@@ -712,20 +711,19 @@ class VoiceAssistantService : Service() {
                     // IHU629G probe: a phone call (CarPlay too) takes the mic; this recorder then
                     // returns errors and never recovers. Stop instead of spinning until timeout.
                     Log.w(TAG, "asr_read_error code=$count")
-                    micTaken = true
+                    captureError = "Micrô bị gián đoạn. Bạn thử nói lại nhé."
                     break
                 }
                 if (count == 0) continue
                 micProbe.add(pcm, count)
 
                 val raw = FloatArray(count) { index -> pcm[index] / 32768.0f }
+                voiceOverlay.updateMicLevel(com.voicegeely.app.asr.OfflineEndpointTracker.rms(raw))
                 val samples = frontEnd.process(raw)
                 if (!sessionActive(generation)) return
                 if (samples.isNotEmpty() && !asrEngine.acceptWaveform(samples)) {
-                    val detail = "Bộ nhận giọng nói không nhận được âm thanh"
-                    voiceOverlay.showError(detail)
-                    broadcastStatus(detail, sherpaReady = true)
-                    if (!voicePreferences.voiceFeedbackEnabled) feedbackAudio.play(VoiceFeedbackCue.ERROR)
+                    Log.w(TAG, "asr_input_rejected phase=chunk")
+                    captureError = "Bộ nhận giọng nói không nhận được âm thanh"
                     break
                 }
 
@@ -738,7 +736,6 @@ class VoiceAssistantService : Service() {
                 if (!sessionActive(generation)) return
                 if (partial.isNotBlank() && partial != lastPartial) {
                     lastPartial = partial
-                    voiceOverlay.updateRecognition(partial, isFinal = false)
                     broadcastRecognition(partial, isFinal = false)
                 }
 
@@ -755,12 +752,19 @@ class VoiceAssistantService : Service() {
             }
 
             if (!sessionActive(generation)) return
-            frontEnd.finish().takeIf { it.isNotEmpty() }?.let { tail -> asrEngine.acceptWaveform(tail) }
+            if (captureError == null) {
+                val tail = frontEnd.finish()
+                if (!sessionActive(generation)) return
+                if (tail.isNotEmpty() && !asrEngine.acceptWaveform(tail)) {
+                    Log.w(TAG, "asr_input_rejected phase=tail")
+                    captureError = "Bộ nhận giọng nói không nhận được âm thanh"
+                }
+            }
             if (!sessionActive(generation)) return
-            val result = asrEngine.finishStream()
+            val result = if (captureError == null) asrEngine.finishStream() else null
             if (!sessionActive(generation)) return
-            // A blank final result is authoritative; an old partial can be an incomplete command.
-            val heardText = result.text.trim()
+            // A failed capture or final decode must not dispatch an incomplete command.
+            val heardText = result?.takeIf { it.final && it.detail == null }?.text.orEmpty().trim()
             micProbe.finish(lastMicSource, heardText)
             // "Hey Geely" said again at the start is not part of the command (owner report 03/10/2026).
             val onlyWakePhrase = com.voicegeely.app.voice.WakePhraseEcho.isOnlyWakePhrase(heardText)
@@ -790,7 +794,7 @@ class VoiceAssistantService : Service() {
                 broadcastRecognition(finalText, isFinal = true)
                 executeRecognizedText(finalText)
             } else {
-                val message = if (micTaken) "Micrô đang bận, có thể do cuộc gọi. Thử lại sau." else "Không nghe rõ lệnh"
+                val message = captureError ?: result?.detail ?: "Không nghe rõ lệnh"
                 voiceOverlay.showError(message)
                 broadcastStatus(message, sherpaReady = true)
                 if (spokenFeedback && !speakReply(message)) feedbackAudio.play(VoiceFeedbackCue.ERROR)
