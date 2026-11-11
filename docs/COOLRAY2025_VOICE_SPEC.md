@@ -32,6 +32,16 @@ import com.ecarx.xui.adaptapi.car.base.ICarFunction
 import com.ecarx.xui.adaptapi.FunctionStatus
 
 val car = Car.create(context)                 // ICar
+// BẮT BUỘC trên IHU730P: Car.create() chưa kết nối client Android Car riêng của OEM.
+// Chạy trên worker, gọi connect() kế thừa từ VehicleSignalManager và chờ readiness.
+car.javaClass.getMethod("connect").invoke(car)
+val isConnected = car.javaClass.getMethod("isConnected")
+val propertyManager = car.javaClass.getMethod("getCarPropertyManager")
+val deadline = System.nanoTime() + 5_000_000_000L
+while (isConnected.invoke(car) != true || propertyManager.invoke(car) == null) {
+    check(System.nanoTime() < deadline) { "ECARX service not ready" }
+    Thread.sleep(50) // không chặn main thread/callback kết nối
+}
 val fn: ICarFunction = car.iCarFunction       // getICarFunction()
 
 // Luôn kiểm tra hỗ trợ trước khi thực thi lệnh
@@ -43,6 +53,12 @@ val cur = fn.getFunctionValue(FUNC, ZONE)
 val supported: IntArray = fn.getSupportedFunctionValue(FUNC, ZONE)
 fn.registerFunctionValueWatcher(FUNC, watcher)        // nghe thay đổi để phản hồi TTS
 ```
+
+`VHAL CONNECTED` của app không thay thế readiness trên đối tượng `CarImpl` này.
+THT Voice triển khai bằng `EcarxCarConnection` và giữ cùng một đối tượng cho cả
+vòng đời process: `CarFunctionImpl.getInstance` lưu manager đầu tiên trong singleton.
+Không gọi `getICarFunction()` trước khi kết nối xong. Xem
+`COOLRAY2025_1.0.8_ECARX_CONNECTION.md` cho log và bytecode xác nhận.
 
 ### Quy ước giá trị
 - **Bật / tắt**: `COMMON_VALUE_ON = 1`, `COMMON_VALUE_OFF = 0`.

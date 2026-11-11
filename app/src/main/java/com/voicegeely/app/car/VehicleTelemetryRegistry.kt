@@ -46,6 +46,14 @@ object VehicleTelemetryRegistry {
     @Synchronized
     fun diagnosticFailures(): List<String> = failures.toList()
 
+    @Synchronized
+    fun recordConnection(backend: String, state: String) {
+        val entry = "$backend CONNECT $state"
+        failures.addLast(entry)
+        while (failures.size > 16) failures.removeFirst()
+        runCatching { android.util.Log.i("THTVoiceECARX", entry) }
+    }
+
     /** Numeric API metadata only. Accepted writes are requests, not hardware confirmation. */
     @Synchronized
     fun recordResult(backend: String, operation: String, propertyId: Int, areaId: Int?, outcome: String) {

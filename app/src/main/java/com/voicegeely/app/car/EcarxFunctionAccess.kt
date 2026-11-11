@@ -185,8 +185,16 @@ class EcarxFunctionAccess private constructor(
 
     companion object {
         private const val CAR_CLASS = "com.ecarx.xui.adaptapi.car.Car"
+        // CarFunctionImpl.getInstance stores the first VehicleSignalManager for the whole process.
+        // Reuse that same CarImpl when the voice service restarts; retain application context only.
+        private var processAccess: EcarxFunctionAccess? = null
 
+        @Synchronized
         fun create(context: Context): Result<EcarxFunctionAccess> = runCatching {
+            processAccess?.let { existing ->
+                EcarxCarConnection.awaitConnected(existing.car)
+                return@runCatching existing
+            }
             val carClass = Class.forName(CAR_CLASS)
             val create = carClass.methods.firstOrNull { method ->
                 method.name == "create" &&
@@ -194,13 +202,19 @@ class EcarxFunctionAccess private constructor(
                     Context::class.java.isAssignableFrom(method.parameterTypes[0])
             } ?: error("$CAR_CLASS.create(Context) unavailable")
             val car = create.invoke(null, context.applicationContext) ?: error("Car.create returned null")
+            fromCar(car).also { processAccess = it }
+        }.onFailure { VehicleTelemetryRegistry.recordFailure("ECARX", "CONNECT", null, null, it) }
+
+        /** Shared construction path, also exercised with lifecycle-accurate JVM test doubles. */
+        internal fun fromCar(car: Any): EcarxFunctionAccess {
+            EcarxCarConnection.awaitConnected(car)
             val getCarFunction = car.javaClass.methods.firstOrNull {
                 it.name == "getICarFunction" && it.parameterTypes.isEmpty()
             } ?: error("getICarFunction unavailable on ${car.javaClass.name}")
             val function = getCarFunction.invoke(car) ?: error("getICarFunction returned null")
 
             val methods = function.javaClass.methods
-            EcarxFunctionAccess(
+            return EcarxFunctionAccess(
                 car = car,
                 carFunction = function,
                 supported2 = methods.firstOrNull { it.matches("isFunctionSupported", INT, INT) },
@@ -208,8 +222,8 @@ class EcarxFunctionAccess private constructor(
                 setInt3 = methods.firstOrNull { it.matches("setFunctionValue", INT, INT, INT) },
                 getFloat2 = methods.firstOrNull { it.matches("getCustomizeFunctionValue", INT, INT) },
                 setFloat3 = methods.firstOrNull { it.matches("setCustomizeFunctionValue", INT, INT, FLOAT) }
-            )
-        }.onFailure { VehicleTelemetryRegistry.recordFailure("ECARX", "CONNECT", null, null, it) }
+            ).also { VehicleTelemetryRegistry.recordConnection("ECARX", "READY") }
+        }
 
         fun probe(context: Context): Probe = create(context).fold(
             onSuccess = { it.probe() },
