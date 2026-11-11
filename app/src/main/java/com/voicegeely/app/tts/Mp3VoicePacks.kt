@@ -21,6 +21,7 @@ internal object Mp3VoicePacks {
     private val downloadLock = Any()
 
     data class Pack(val index: Map<String, String>, val clips: Map<String, ByteArray>, val version: String? = null)
+    class LicenseRequired : IllegalStateException("Cần kích hoạt THT Voice để tải gói MP3.")
 
     private fun slug(voice: TtsVoice) = if (voice == TtsVoice.NGOC_HUYEN) "ngoc-huyen" else "diem-trinh"
     private fun packFile(context: Context, voice: TtsVoice): AtomicFile =
@@ -45,7 +46,7 @@ internal object Mp3VoicePacks {
     fun update(context: Context, voice: TtsVoice): String = synchronized(downloadLock) {
         check(LicenseConfig.isConfigured()) { "Chưa cấu hình máy chủ tải giọng." }
         val headers = LicenseManager(context).authHeaders()
-        check(headers.isNotEmpty()) { "Cần kích hoạt THT Voice để tải gói MP3." }
+        if (headers.isEmpty()) throw LicenseRequired()
         val metaUrl = LicenseConfig.endpoint("api/voice/" + slug(voice))
         val metadata = JSONObject(get(metaUrl, 16 * 1024, headers).toString(Charsets.UTF_8))
         val size = metadata.getInt("size")

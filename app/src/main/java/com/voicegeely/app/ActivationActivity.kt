@@ -21,6 +21,12 @@ class ActivationActivity : AppCompatActivity() {
     private lateinit var licenseManager: LicenseManager
     private var binding: ActivationScreenBinding? = null
     private var openingMain = false
+    private val forVoiceDownload: Boolean
+        get() = !com.tht.voice.BuildConfig.LICENSE_GATE_ENABLED && intent.getBooleanExtra(EXTRA_DOWNLOAD_LICENSE, false)
+
+    private fun activationState(): LicenseGateState =
+        if (forVoiceDownload && licenseManager.authHeaders().isEmpty()) LicenseGateState.UNLICENSED
+        else licenseManager.gateState()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,14 +37,14 @@ class ActivationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (::licenseManager.isInitialized && licenseManager.isLicensed()) {
+        if (::licenseManager.isInitialized && activationState() == LicenseGateState.ACTIVE) {
             Log.i(TAG, "activation_resume_license_active")
             openMainUi()
         }
     }
 
     private fun enforceGate() {
-        val gateState = licenseManager.gateState()
+        val gateState = activationState()
         Log.i(TAG, "gate_state=$gateState")
         if (gateState == LicenseGateState.ACTIVE) {
             openMainUi()
@@ -46,10 +52,12 @@ class ActivationActivity : AppCompatActivity() {
         }
 
         // Defense in depth: an invalid license must never leave an already-running Voice core alive.
-        val serviceStopped = runCatching {
-            stopService(Intent(this, VoiceAssistantService::class.java))
-        }.getOrDefault(false)
-        Log.i(TAG, "invalid_license_voice_service_stop_requested result=$serviceStopped")
+        if (!forVoiceDownload) {
+            val serviceStopped = runCatching {
+                stopService(Intent(this, VoiceAssistantService::class.java))
+            }.getOrDefault(false)
+            Log.i(TAG, "invalid_license_voice_service_stop_requested result=$serviceStopped")
+        }
 
         val vinLabel = when (val vin = PlatformVinProviders.create(this).readVin()) {
             is VinReadResult.Available -> {
@@ -72,7 +80,7 @@ class ActivationActivity : AppCompatActivity() {
             onRestore = { restoreLicense() },
             onExit = {
                 Log.i(TAG, "activation_exit_requested")
-                finishAndRemoveTask()
+                if (forVoiceDownload) finish() else finishAndRemoveTask()
             }
         )
         binding = screen
@@ -108,7 +116,7 @@ class ActivationActivity : AppCompatActivity() {
     private fun runLicenseCall(failState: ActivationUiState = ActivationUiState.INVALID_CODE, block: () -> LicenseManager.ActivationResult) {
         Thread {
             val result = block()
-            val finalGate = licenseManager.gateState()
+            val finalGate = activationState()
             Log.i(TAG, "activation_call_finished ok=${result.ok} locked=${result.locked} unlocked=${result.unlocked} gate=$finalGate")
             runOnUiThread {
                 when {
@@ -130,6 +138,10 @@ class ActivationActivity : AppCompatActivity() {
     }
 
     private fun openMainUi() {
+        if (forVoiceDownload) {
+            if (activationState() == LicenseGateState.ACTIVE) finish()
+            return
+        }
         if (openingMain) {
             Log.i(TAG, "open_main_skipped reason=ALREADY_OPENING")
             return
@@ -147,6 +159,7 @@ class ActivationActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val EXTRA_DOWNLOAD_LICENSE = "download_license"
         private const val TAG = "THTVoiceSecurity"
     }
 }

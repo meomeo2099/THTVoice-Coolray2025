@@ -339,6 +339,10 @@ class MainActivity : AppCompatActivity() {
             showDestination(MainDestination.SETTINGS)
         },
         onPreviewVoice = { sendServiceAction(VoiceAssistantService.ACTION_TEST_VOICE, it.name) },
+        onVoiceLicenseRequired = {
+            startActivity(Intent(this, ActivationActivity::class.java)
+                .putExtra(ActivationActivity.EXTRA_DOWNLOAD_LICENSE, true))
+        },
         extraVoiceRows = settingsExtraRows()
     )
 

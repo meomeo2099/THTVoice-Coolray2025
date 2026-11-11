@@ -12,7 +12,13 @@ import com.voicegeely.app.tts.Mp3VoicePacks
 import com.voicegeely.app.ui.ThtUi.dp
 
 internal object Mp3VoiceSettingsRow {
-    fun build(context: Context, initial: TtsVoice, onSelect: (TtsVoice) -> Unit, onPreview: (TtsVoice) -> Unit): View {
+    fun build(
+        context: Context,
+        initial: TtsVoice,
+        onSelect: (TtsVoice) -> Unit,
+        onPreview: (TtsVoice) -> Unit,
+        onLicenseRequired: () -> Unit
+    ): View {
         val voices = listOf(TtsVoice.NGOC_HUYEN, TtsVoice.DIEM_TRINH)
         var selected = initial
         val status = ThtUi.text(context, "Đang đọc gói đã cài…", 14f, ThtUi.TEXT_2)
@@ -52,13 +58,16 @@ internal object Mp3VoiceSettingsRow {
                 updateStatus.visibility = View.VISIBLE
                 updateStatus.text = "Đang tải và kiểm tra gói…"
                 Thread {
-                    val message = runCatching { Mp3VoicePacks.update(context.applicationContext, voice) }
-                        .getOrElse { it.message?.take(120) ?: "Không tải được gói giọng." }
+                    val result = runCatching { Mp3VoicePacks.update(context.applicationContext, voice) }
                     activityHandler.post {
                         loading = false
-                        updateStatus.text = message
+                        val error = result.exceptionOrNull()
+                        updateStatus.text = result.getOrNull() ?: error?.message?.take(120) ?: "Không tải được gói giọng."
                         updateStatus.visibility = if (selected == voice) View.VISIBLE else View.GONE
                         refreshInstalled()
+                        if (root.isAttachedToWindow && selected == voice && error is Mp3VoicePacks.LicenseRequired) {
+                            onLicenseRequired()
+                        }
                     }
                 }.apply { name = "THTVoice-Mp3Update"; isDaemon = true }.start()
             }
