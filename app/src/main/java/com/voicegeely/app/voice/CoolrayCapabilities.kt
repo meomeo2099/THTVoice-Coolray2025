@@ -126,7 +126,7 @@ object CoolrayCapabilities {
     }
 
     fun unsupportedReason(family: Family): String = when (family) {
-        Family.DRIVE_REGEN -> "Xe này không hỗ trợ điều chỉnh chế độ lái hoặc phanh tái sinh bằng giọng nói."
+        Family.DRIVE_REGEN -> "Xe này không có chức năng phanh tái sinh."
         Family.CHARGING -> "Xe này không có chức năng sạc điện."
         Family.HEATING_UNAVAILABLE, Family.STEERING_HEAT -> "Xe này không có trang bị sưởi để thực hiện lệnh."
         Family.FRONT_TRUNK -> "Xe này không có cốp trước."

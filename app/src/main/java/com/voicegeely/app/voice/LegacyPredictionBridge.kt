@@ -22,6 +22,28 @@ object LegacyPredictionBridge {
             is VoiceCommand.Recirculation, is VoiceCommand.Defrost -> "hvac_air"
             is VoiceCommand.FanDirection -> "change_fan_speed"
             is VoiceCommand.HvacEco -> { entities["action"] = if (command.on) "set" else "unset"; "hvac_eco" }
+            // New OEM controls execute only through typed handlers, never an older generic action.
+            is VoiceCommand.HvacAuto -> {
+                entities["family"] = "hvac_auto"; entities["action"] = if (command.on) "set" else "unset"
+                "contract_only_vehicle_command"
+            }
+            is VoiceCommand.SetAutoFanProfile -> {
+                entities["family"] = "hvac_auto_fan_profile"; entities["profile"] = command.profile.name.lowercase()
+                "contract_only_vehicle_command"
+            }
+            is VoiceCommand.OemSwitch -> {
+                entities["family"] = "oem_switch"; entities["feature"] = command.feature.name.lowercase()
+                entities["action"] = if (command.on) "set" else "unset"
+                "contract_only_vehicle_command"
+            }
+            is VoiceCommand.QueryOemSwitch -> {
+                entities["family"] = "oem_switch_query"; entities["feature"] = command.feature.name.lowercase()
+                "contract_only_vehicle_command"
+            }
+            is VoiceCommand.SetSunroofTilt -> {
+                entities["family"] = "sunroof_tilt"; entities["action"] = if (command.on) "set" else "unset"
+                "contract_only_vehicle_command"
+            }
             is VoiceCommand.HvacAirflowAutoCycle -> { entities["action"] = if (command.on) "set" else "unset"; "hvac_airflow_auto_cycle" }
             is VoiceCommand.SetDriveMode -> { entities["mode"] = command.mode.name.lowercase(); "drive_mode" }
             is VoiceCommand.SetRegenLevel -> { entities["level"] = command.level.name.lowercase(); "regen_level" }

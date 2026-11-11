@@ -40,4 +40,13 @@ class CoolrayOemIntegrationTest {
             assertFalse(phrase, VoiceParseChain.parse(phrase)?.command is VoiceCommand.SetDriveMode)
         }
     }
+    @Test fun legacyBridgeKeepsNewCommandsInTypedOnlyContract() {
+        for (command in listOf(VoiceCommand.HvacAuto(true), VoiceCommand.SetAutoFanProfile(AutoFanProfile.QUIET),
+            VoiceCommand.OemSwitch(OemFeature.AUTO_HOLD, true), VoiceCommand.QueryOemSwitch(OemFeature.AUTO_HOLD), VoiceCommand.SetSunroofTilt(true))) {
+            val payload = LegacyPredictionBridge.toPayload(ParsedVoiceCommand("test", "test", command))
+            assertEquals("contract_only_vehicle_command", payload.intent)
+            assertTrue(payload.entities.containsKey("family"))
+            assertFalse(payload.entities.containsKey("propertyId"))
+        }
+    }
 }
