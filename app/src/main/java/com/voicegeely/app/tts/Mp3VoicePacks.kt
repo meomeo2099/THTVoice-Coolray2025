@@ -69,7 +69,7 @@ internal object Mp3VoicePacks {
         if (currentIsValid) {
             return@synchronized "Gói giọng đã là bản mới nhất."
         }
-        val zip = get("$metaUrl/file?sha256=$sha", size, headers)
+        val zip = get("$metaUrl/file?sha256=$sha", size, headers, allowAssetRedirect = true)
         require(zip.size == size) { "Gói giọng tải về chưa đầy đủ." }
         val actual = MessageDigest.getInstance("SHA-256").digest(zip).joinToString("") { "%02x".format(it.toInt() and 255) }
         require(actual == sha) { "Mã kiểm tra gói giọng không khớp." }
@@ -90,7 +90,12 @@ internal object Mp3VoicePacks {
         "Đã cài gói giọng MP3."
     }
 
-    private fun get(address: String, limit: Int, headers: Map<String, String>): ByteArray {
+    private fun get(
+        address: String,
+        limit: Int,
+        headers: Map<String, String>,
+        allowAssetRedirect: Boolean = false
+    ): ByteArray {
         val url = URL(address)
         require(url.protocol == "https" && url.userInfo == null) { "Đường dẫn tải giọng không hợp lệ." }
         val connection = url.openConnection() as HttpURLConnection
@@ -101,8 +106,18 @@ internal object Mp3VoicePacks {
             connection.instanceFollowRedirects = false
             headers.forEach { (name, value) -> connection.setRequestProperty(name, value) }
             val code = connection.responseCode
+            if (code == HttpURLConnection.HTTP_MOVED_TEMP && allowAssetRedirect) {
+                val asset = runCatching { URL(connection.getHeaderField("Location")) }.getOrNull()
+                require(asset != null && asset.protocol == "https" && asset.userInfo == null &&
+                    asset.port in listOf(-1, 443) &&
+                    asset.host in setOf("release-assets.githubusercontent.com", "objects.githubusercontent.com")) {
+                    "Đường dẫn tệp MP3 từ máy chủ không hợp lệ."
+                }
+                return get(asset.toExternalForm(), limit, emptyMap())
+            }
             check(code != 401) { "License chưa có quyền tải gói MP3." }
             check(code != 404) { "Máy chủ chưa có gói MP3 cho giọng này." }
+            check(code != 503) { "Máy chủ chưa cấu hình kho gói MP3." }
             check(code == 200) { "Máy chủ tải giọng trả mã $code." }
             connection.inputStream.use { bounded(it, limit) }
         } finally {

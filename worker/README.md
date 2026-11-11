@@ -156,7 +156,7 @@ Workflow **Release candidate APK** (bật `publish`) tự đính kèm gói giọ
 
 Nút **Tải gói** dùng `GET /api/voice/ngoc-huyen` hoặc `GET /api/voice/diem-trinh`, sau đó tải tệp bằng cùng license qua `/file?sha256=…`. Gói đã tải được lưu trên đầu xe để phát ngoại tuyến.
 
-Worker mặc định đọc release `voice-mp3-r5` của `meomeo2099/THTVoice-Coolray2025`. Có thể đặt `MP3_GITHUB_REPO` và `MP3_RELEASE_TAG` để đổi nguồn. Khi repo MP3 là riêng tư, dùng `MP3_GITHUB_TOKEN` với quyền Contents Read trên repo đó, hoặc cấp quyền đọc tương ứng cho `GITHUB_TOKEN` hiện có. Đặt token dưới dạng secret trên Worker. Máy chủ dùng `GITHUB_REPO` hiện có cho OTA và Kokoro.
+Worker mặc định đọc release `voice-mp3-packs` của `meomeo2099/THTVoice-Coolray2025`. Có thể đặt `MP3_GITHUB_REPO` và `MP3_RELEASE_TAG` để đổi nguồn. Khi repo MP3 là riêng tư, dùng `MP3_GITHUB_TOKEN` với quyền Contents Read trên repo đó, hoặc cấp quyền đọc tương ứng cho `GITHUB_TOKEN` hiện có. Đặt token dưới dạng secret trên Worker. Máy chủ dùng `GITHUB_REPO` hiện có cho OTA và Kokoro.
 
 Muốn dùng R2 thay cho GitHub thì bỏ dấu `#` ở khối `[[r2_buckets]]` trong `wrangler.toml`, tải tệp lên R2 và đăng ký trong trang quản trị (**Công cụ** → **Gói giọng đọc**).
 

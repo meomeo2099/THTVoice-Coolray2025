@@ -514,7 +514,7 @@ test('MP3 downloads use the Coolray release and require a license on both routes
       return new Response('zip');
     }
     assert.equal(new Headers(init.headers).get('authorization'), 'Bearer test-contents-token');
-    if (url.endsWith('/repos/owner/coolray/releases/tags/voice-mp3-r5')) {
+    if (url.endsWith('/repos/owner/coolray/releases/tags/voice-mp3-packs')) {
       return Response.json({ assets: [
         { id: 5, name: 'THTVoice-MP3-ngoc-huyen-r5.zip', state: 'uploaded', size: 3, digest: 'sha256:' + sha },
         { id: 7, name: 'THTVoice-MP3-diem-trinh-r5.zip', state: 'uploaded', size: 3, digest: 'sha256:' + 'b'.repeat(64) },

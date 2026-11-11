@@ -241,7 +241,7 @@ export async function handleMp3Voice(request, env, url, now, voice, download) {
     return json(400, { ok: false, message: 'SHA-256 không hợp lệ.' });
   }
   const repo = env.MP3_GITHUB_REPO || 'meomeo2099/THTVoice-Coolray2025';
-  const tag = env.MP3_RELEASE_TAG || 'voice-mp3-r5';
+  const tag = env.MP3_RELEASE_TAG || 'voice-mp3-packs';
   const credentials = { GITHUB_TOKEN: env.MP3_GITHUB_TOKEN || env.GITHUB_TOKEN };
   const github = `${GH}/repos/${repo}/releases`;
   const unavailable = () => json(502, { ok: false, message: 'Máy chủ không tải được gói giọng MP3.' });
