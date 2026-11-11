@@ -41,8 +41,40 @@ class VehicleTelemetryRegistryTest {
         val snapshot = VehicleTelemetryRegistry.snapshot()
 
         assertEquals(VehicleTelemetryState.DEGRADED, snapshot.state)
-        assertEquals("Có lỗi I/O", snapshot.uiLabel)
+        assertEquals("Thiếu quyền truy cập xe", snapshot.uiLabel)
         assertEquals("SecurityException", snapshot.detail)
+    }
+
+    @Test
+    fun retainsUnderlyingFailureAfterSuccessfulIo() {
+        VehicleTelemetryRegistry.resetForTest()
+        VehicleTelemetryRegistry.recordFailure("ECARX", "GET_INT", 0x10020100, 0,
+            java.lang.reflect.InvocationTargetException(SecurityException("Access denied")))
+        VehicleTelemetryRegistry.markIoSuccess()
+
+        assertEquals(VehicleTelemetryState.CONNECTED, VehicleTelemetryRegistry.snapshot().state)
+        assertEquals(listOf("ECARX GET_INT property=0x10020100 area=0 SecurityException: Access denied"),
+            VehicleTelemetryRegistry.diagnosticFailures())
+    }
+
+    @Test
+    fun diagnosticHistoryIsBoundedAndClearedByReset() {
+        VehicleTelemetryRegistry.resetForTest()
+        repeat(20) { index ->
+            VehicleTelemetryRegistry.recordFailure("VHAL", "GET_$index", null, null,
+                IllegalStateException("Unavailable\nRetry"))
+        }
+        val failures = VehicleTelemetryRegistry.diagnosticFailures()
+        assertEquals(16, failures.size)
+        assertEquals("VHAL GET_4 IllegalStateException: Unavailable Retry", failures.first())
+        VehicleTelemetryRegistry.resetForTest()
+        assertEquals(emptyList<String>(), VehicleTelemetryRegistry.diagnosticFailures())
+    }
+
+    @Test
+    fun missingRuntimeApiHasSpecificLabel() {
+        VehicleTelemetryRegistry.markIoFailure("NoSuchMethodError")
+        assertEquals("API xe không tương thích", VehicleTelemetryRegistry.snapshot().uiLabel)
     }
 
     @Test

@@ -348,6 +348,14 @@ class MainActivity : AppCompatActivity() {
 
     /** Extra rows in "Thiết lập giọng nói": the downloadable voice pack (when not bundled). */
     private fun settingsExtraRows(): List<View> = listOfNotNull(
+        com.voicegeely.app.ui.ThtUi.settingRow(
+            this, com.tht.voice.R.drawable.ic_ui_car, "Kết nối xe",
+            "Xem quyền truy cập và lỗi kết nối điều hòa, kính hoặc dữ liệu xe.",
+            com.voicegeely.app.ui.ThtUi.smallButton(this, null, "Chẩn đoán",
+                com.voicegeely.app.ui.ThtUi.SmallStyle.OUTLINE) {
+                com.voicegeely.app.ui.VehicleConnectionDiagnostics.show(this)
+            }
+        ),
         if (!com.voicegeely.app.voice.BackgroundLaunchPolicy.isXiaomi()) null else com.voicegeely.app.ui.ThtUi.settingRow(
             this,
             com.tht.voice.R.drawable.ic_ui_apps,

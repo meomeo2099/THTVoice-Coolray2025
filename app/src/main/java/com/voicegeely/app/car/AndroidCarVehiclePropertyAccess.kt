@@ -26,7 +26,9 @@ class AndroidCarVehiclePropertyAccess private constructor(
     } catch (t: Throwable) { traceFailure("GET_FLOAT", propertyId, areaId, t); Float.NaN }
 
     override fun getIntRange(propertyId: Int, areaId: Int): VehicleIntRange? = try {
-        val config = propertyManager.getCarPropertyConfig(propertyId)
+        // The shipped Android 9 CarPropertyManager exposes getPropertyList(), not
+        // getCarPropertyConfig(). The latter links successfully against SDK 32 only.
+        val config = propertyManager.propertyList.firstOrNull { it.propertyId == propertyId }
         if (config == null) {
             traceRange(propertyId, areaId, null, null, "NO_CONFIG")
             null
@@ -85,6 +87,7 @@ class AndroidCarVehiclePropertyAccess private constructor(
     }
     private fun traceFailure(op: String, propertyId: Int, areaId: Int, error: Throwable, requestedValue: Any? = null, writeSeq: Long = VehicleDebugTrace.writeSequence()) {
         VehicleTelemetryRegistry.markIoFailure(error.javaClass.simpleName)
+        VehicleTelemetryRegistry.recordFailure("VHAL", op, propertyId, areaId, error)
         val valuePart = requestedValue?.let { " value=$it" }.orEmpty()
         Log.w(TAG, "trace=${VehicleDebugTrace.currentTraceId() ?: 0L} scope=${VehicleDebugTrace.currentScope() ?: "NONE"} writeSeq=$writeSeq op=$op property=$propertyId area=$areaId$valuePart result=FAILED status=${failureStatus(error)} type=${error.javaClass.simpleName}")
     }
@@ -93,6 +96,7 @@ class AndroidCarVehiclePropertyAccess private constructor(
     }
     private fun traceRangeFailure(propertyId: Int, areaId: Int, error: Throwable) {
         VehicleTelemetryRegistry.markIoFailure(error.javaClass.simpleName)
+        VehicleTelemetryRegistry.recordFailure("VHAL", "GET_RANGE", propertyId, areaId, error)
         Log.w(TAG, "trace=${VehicleDebugTrace.currentTraceId() ?: 0L} scope=${VehicleDebugTrace.currentScope() ?: "NONE"} writeSeq=${VehicleDebugTrace.writeSequence()} op=GET_RANGE property=$propertyId area=$areaId result=FAILED status=${failureStatus(error)} type=${error.javaClass.simpleName}")
     }
     private fun failureStatus(error: Throwable) = if (error is SecurityException) "SECURITY_DENIED" else "BACKEND_ERROR"
@@ -145,6 +149,7 @@ class AndroidCarVehiclePropertyAccess private constructor(
                 VehicleTelemetryRegistry.markConnected(); Log.i(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=OK"); AndroidCarVehiclePropertyAccess(connected, manager)
             } catch (t: Throwable) {
                 VehicleTelemetryRegistry.markUnavailable(t.javaClass.simpleName)
+                VehicleTelemetryRegistry.recordFailure("VHAL", "CONNECT", null, null, t)
                 Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=FAILED status=${if (t is SecurityException) "SECURITY_DENIED" else "BACKEND_ERROR"} type=${t.javaClass.simpleName}")
                 try { car?.disconnect() } catch (_: Throwable) {}; null
             }

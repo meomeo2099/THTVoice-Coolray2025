@@ -15,7 +15,11 @@ data class VehicleTelemetrySnapshot(
     val uiLabel: String
         get() = when (state) {
             VehicleTelemetryState.CONNECTED -> "Đã kết nối"
-            VehicleTelemetryState.DEGRADED -> "Có lỗi I/O"
+            VehicleTelemetryState.DEGRADED -> when (detail) {
+                "SecurityException" -> "Thiếu quyền truy cập xe"
+                "NoSuchMethodError", "NoClassDefFoundError" -> "API xe không tương thích"
+                else -> "Có lỗi I/O"
+            }
             VehicleTelemetryState.DISCONNECTED -> "Đã ngắt kết nối"
             VehicleTelemetryState.UNAVAILABLE -> "Chưa có telemetry"
         }
@@ -29,6 +33,7 @@ data class VehicleTelemetrySnapshot(
  * or vehicle property values.
  */
 object VehicleTelemetryRegistry {
+    private val failures = java.util.ArrayDeque<String>()
     @Volatile
     private var current = VehicleTelemetrySnapshot(
         state = VehicleTelemetryState.UNAVAILABLE,
@@ -37,6 +42,19 @@ object VehicleTelemetryRegistry {
     )
 
     fun snapshot(): VehicleTelemetrySnapshot = current
+
+    @Synchronized
+    fun diagnosticFailures(): List<String> = failures.toList()
+
+    /** Retains failure metadata even when a later successful read changes the status. */
+    @Synchronized
+    fun recordFailure(backend: String, operation: String, propertyId: Int?, areaId: Int?, error: Throwable) {
+        val cause = (error as? java.lang.reflect.InvocationTargetException)?.targetException ?: error
+        val location = propertyId?.let { " property=0x${it.toString(16)} area=$areaId" }.orEmpty()
+        val message = cause.message.orEmpty().replace(Regex("[\\r\\n]+"), " ").take(240)
+        failures.addLast("$backend $operation$location ${cause.javaClass.simpleName}: $message")
+        while (failures.size > 16) failures.removeFirst()
+    }
 
     @Synchronized
     fun markConnected(nowMs: Long = System.currentTimeMillis()) {
@@ -85,6 +103,7 @@ object VehicleTelemetryRegistry {
 
     @Synchronized
     fun resetForTest() {
+        failures.clear()
         current = VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.UNAVAILABLE,
             detail = "NOT_INITIALIZED",

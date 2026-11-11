@@ -94,8 +94,9 @@ class AssistantScreenBinding(
         row("asr", state.asrReady)
         row("kws", state.kwsReady)
         row("mic", state.phase != AssistantRuntimePhase.ERROR, readyText = micLabel(state.phase), notReady = "Kiểm tra")
-        val vhal = VehicleTelemetryRegistry.snapshot().uiLabel
-        row("vhal", !vhal.contains("chưa", ignoreCase = true) && !vhal.contains("không", ignoreCase = true), readyText = vhal, notReady = vhal)
+        val vehicle = VehicleTelemetryRegistry.snapshot()
+        row("vhal", vehicle.state == com.voicegeely.app.car.VehicleTelemetryState.CONNECTED,
+            readyText = vehicle.uiLabel, notReady = vehicle.uiLabel)
         row("tts", state.ttsReady)
     }
 
@@ -290,6 +291,11 @@ object AssistantScreenView {
             systemRows[key] = value to dotView
             systemCard.addView(ThtUi.horizontal(context).apply {
                 setPadding(dp(context, 12), dp(context, 8), dp(context, 12), dp(context, 8))
+                if (key == "vhal") {
+                    minimumHeight = dp(context, 48)
+                    contentDescription = "Kết nối xe. Chạm để xem chẩn đoán."
+                    setOnClickListener { VehicleConnectionDiagnostics.show(context) }
+                }
                 background = ThtUi.panel(context, Color.rgb(8, 22, 40), Color.rgb(20, 40, 62), 10f)
                 addView(ThtUi.icon(context, iconRes, ThtUi.ACCENT, 22))
                 addView(ThtUi.text(context, title, 15f, Color.WHITE, maxLines = 1),

@@ -98,14 +98,16 @@ class EcarxFunctionAccess private constructor(
                 is Enum<*> -> status.name.equals("active", ignoreCase = true)
                 else -> status.toString().equals("active", ignoreCase = true)
             }
-        } catch (_: Throwable) {
+        } catch (error: Throwable) {
+            VehicleTelemetryRegistry.recordFailure("ECARX", "IS_SUPPORTED", functionId, zone, error)
             null
         }
     }
 
     override fun getInt(functionId: Int, zone: Int): Int? = try {
         (getInt2?.invoke(carFunction, functionId, zone) as? Number)?.toInt()
-    } catch (_: Throwable) {
+    } catch (error: Throwable) {
+        VehicleTelemetryRegistry.recordFailure("ECARX", "GET_INT", functionId, zone, error)
         null
     }
 
@@ -114,7 +116,8 @@ class EcarxFunctionAccess private constructor(
 
     override fun getFloat(functionId: Int, zone: Int): Float? = try {
         (getFloat2?.invoke(carFunction, functionId, zone) as? Number)?.toFloat()?.takeIf { it.isFinite() }
-    } catch (_: Throwable) {
+    } catch (error: Throwable) {
+        VehicleTelemetryRegistry.recordFailure("ECARX", "GET_FLOAT", functionId, zone, error)
         null
     }
 
@@ -131,17 +134,26 @@ class EcarxFunctionAccess private constructor(
             is Number -> r.toInt() != 0
             else -> false
         }
-    } catch (_: Throwable) { false }
+    } catch (error: Throwable) {
+        VehicleTelemetryRegistry.recordFailure("ECARX", "SEND_MCU", propertyId, null, error)
+        false
+    }
 
     override fun getIntByProp(propertyId: Int, area: Int): Int? = try {
         val two = carMethod("getIntByPropID", INT, INT)
         val one = carMethod("getIntByPropID", INT)
         ((two?.invoke(car, propertyId, area) ?: one?.invoke(car, propertyId)) as? Number)?.toInt()
-    } catch (_: Throwable) { null }
+    } catch (error: Throwable) {
+        VehicleTelemetryRegistry.recordFailure("ECARX", "GET_MCU_INT", propertyId, area, error)
+        null
+    }
 
     override fun getBytesByProp(propertyId: Int): ByteArray? = try {
         carMethod("getBytesByPropID", INT)?.invoke(car, propertyId) as? ByteArray
-    } catch (_: Throwable) { null }
+    } catch (error: Throwable) {
+        VehicleTelemetryRegistry.recordFailure("ECARX", "GET_MCU_BYTES", propertyId, null, error)
+        null
+    }
 
     private fun invokeBoolean(method: Method?, vararg args: Any): Boolean {
         if (method == null) return false
@@ -151,7 +163,9 @@ class EcarxFunctionAccess private constructor(
                 is Number -> result.toInt() != 0
                 else -> false
             }
-        } catch (_: Throwable) {
+        } catch (error: Throwable) {
+            VehicleTelemetryRegistry.recordFailure("ECARX", method.name,
+                args.getOrNull(0) as? Int, args.getOrNull(1) as? Int, error)
             false
         }
     }
@@ -182,7 +196,7 @@ class EcarxFunctionAccess private constructor(
                 getFloat2 = methods.firstOrNull { it.matches("getCustomizeFunctionValue", INT, INT) },
                 setFloat3 = methods.firstOrNull { it.matches("setCustomizeFunctionValue", INT, INT, FLOAT) }
             )
-        }
+        }.onFailure { VehicleTelemetryRegistry.recordFailure("ECARX", "CONNECT", null, null, it) }
 
         fun probe(context: Context): Probe = create(context).fold(
             onSuccess = { it.probe() },
