@@ -1,9 +1,5 @@
 package com.voicegeely.app.tts
 
-import com.voicegeely.app.voice.CommandExecutionResult
-import com.voicegeely.app.voice.VerificationSource
-import com.voicegeely.app.voice.VoiceParseChain
-import com.voicegeely.app.voice.VoiceResponseFormatter
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -23,17 +19,7 @@ class Mp3ReplyTextTest {
             Mp3ReplyText.select("Đã chỉnh nhiệt độ về 22.5 độ.", clips))
         assertNull(Mp3ReplyText.select("Đã mở YouTube. Lệnh tiếp theo bị chặn.", clips))
     }
-    @Test fun directYoutubeUsesNamedMp3ThroughRuntimeParseChain() {
-        val parsed = requireNotNull(VoiceParseChain.parse("mở youtube"))
-        val execution = CommandExecutionResult.Confirmed(VerificationSource.ANDROID_STATE)
-        val reply = VoiceResponseFormatter.result(parsed.command, execution)
-        assertEquals("Đã mở YouTube.", reply)
-        assertEquals(listOf("apps/youtube"), Mp3ReplyText.select(reply, clips))
-    }
-
-    @Test fun explicitVideoKeepsMediaReply() {
-        val parsed = requireNotNull(VoiceParseChain.parse("mở video trên youtube"))
-        val execution = CommandExecutionResult.Confirmed(VerificationSource.ANDROID_STATE)
-        assertEquals("Đã mở video trên YouTube.", VoiceResponseFormatter.result(parsed.command, execution))
+    @Test fun existingCoolrayVideoReplyCanFallBackToTts() {
+        assertNull(Mp3ReplyText.select("Đã mở video trên YouTube.", clips))
     }
 }

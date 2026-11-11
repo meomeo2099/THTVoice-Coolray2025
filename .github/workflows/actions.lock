@@ -17,6 +17,7 @@ workflows:
     '.github/workflows/release-candidate.yml':
         - 'actions/checkout@v4'
         - 'actions/setup-java@v5'
+        - 'actions/setup-python@v5'
         - 'actions/upload-artifact@v4'
         - 'gradle/actions@v4'
     '.github/workflows/tts-probe.yml':

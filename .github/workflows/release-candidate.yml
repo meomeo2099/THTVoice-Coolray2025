@@ -115,6 +115,11 @@ jobs:
         with:
           gradle-version: '8.13'
 
+      - name: Set up Python for offline voice models
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Stage full-offline runtime and models
         shell: bash
         run: |
