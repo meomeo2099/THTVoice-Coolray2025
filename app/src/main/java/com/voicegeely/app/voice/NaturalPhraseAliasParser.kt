@@ -1,5 +1,7 @@
 package com.voicegeely.app.voice
 
+import com.voicegeely.app.car.CoolrayProperties
+
 /**
  * Full-utterance aliases for natural phrasing found in the reference voice dataset
  * (docs/reference/voice/VOICE_PHRASES.csv) that the family parsers miss.
@@ -38,8 +40,10 @@ object NaturalPhraseAliasParser {
     private val rules: List<Pair<Regex, VoiceCommand>> = listOf(
         "(?:bật|mở) (?:lạnh|mát|lốc lạnh)|làm (?:mát|lạnh) xe(?: giúp tôi)?|kích hoạt (?:điều hòa|lốc lạnh)" to VoiceCommand.AcPower(true),
         "tắt (?:lạnh|mát|lốc lạnh)|ngắt lốc lạnh|(?:ngừng|ngưng) điều hòa(?: xe)?" to VoiceCommand.AcPower(false),
-        "(?:giảm|hạ)(?: thêm)? 1 độ|hạ giúp tôi nhiệt độ(?: nhé)?|chỉnh nhiệt độ thấp hơn|chỉnh nhiệt xuống|tăng độ mát" to VoiceCommand.AdjustTemperature(-1f),
-        "tăng(?: thêm)? 1 độ|chỉnh nhiệt độ cao hơn|chỉnh nhiệt lên|nâng độ lên|(?:cho )?ấm thêm(?: chút)?|tăng độ ấm" to VoiceCommand.AdjustTemperature(1f),
+        "(?:giảm|hạ)(?: thêm)? 1 độ" to VoiceCommand.AdjustTemperature(-1f),
+        "tăng(?: thêm)? 1 độ" to VoiceCommand.AdjustTemperature(1f),
+        "hạ giúp tôi nhiệt độ(?: nhé)?|chỉnh nhiệt độ thấp hơn|chỉnh nhiệt xuống|tăng độ mát" to VoiceCommand.AdjustTemperature(-CoolrayProperties.HVAC_TEMP_STEP),
+        "chỉnh nhiệt độ cao hơn|chỉnh nhiệt lên|nâng độ lên|(?:cho )?ấm thêm(?: chút)?|tăng độ ấm" to VoiceCommand.AdjustTemperature(CoolrayProperties.HVAC_TEMP_STEP),
         "nhiệt độ (?:nhỏ nhất|mát nhất|thấp nhất)|bật max lạnh|(?:bật )?(?:chế độ )?làm (?:mát|lạnh) nhanh" to VoiceCommand.TemperatureLow,
         "nhiệt độ (?:lớn nhất|ấm nhất|cao nhất)|(?:sưởi ấm|làm ấm|làm nóng) nhanh" to VoiceCommand.TemperatureHigh,
         "(?:(?:chỉnh|đặt|để|set) )?(?:tốc độ gió|quạt(?: số| mức)?|gió(?: số)?|mức quạt) (?:to nhất|lớn nhất|cực đại)" to VoiceCommand.SetFanSpeed(8),
@@ -116,8 +120,8 @@ object NaturalPhraseAliasParser {
         rules.firstOrNull { (regex, _) -> regex.matches(t) }?.let { return it.second }
         return when {
             acOnUp.matches(t) -> VoiceCommand.AcPower(true)
-            tempDown.matches(t) -> VoiceCommand.AdjustTemperature(-1f)
-            tempUp.matches(t) -> VoiceCommand.AdjustTemperature(1f)
+            tempDown.matches(t) -> VoiceCommand.AdjustTemperature(-CoolrayProperties.HVAC_TEMP_STEP)
+            tempUp.matches(t) -> VoiceCommand.AdjustTemperature(CoolrayProperties.HVAC_TEMP_STEP)
             coldest.matches(t) -> VoiceCommand.TemperatureLow
             hottest.matches(t) -> VoiceCommand.TemperatureHigh
             fanMax.matches(t) -> VoiceCommand.SetFanSpeed(8)

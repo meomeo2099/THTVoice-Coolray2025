@@ -114,7 +114,7 @@ Cột *Hàm* là hằng số ECARX AdaptAPI. *Giá trị* `+n` = FUNC_ID + n. M�
 | `ac.auto` | "điều hòa tự động" | `HVAC_FUNC_AUTO` (268501504) | ALL | ON |
 | `ac.max_cool` | "lạnh tối đa", "làm mát nhanh" | `HVAC_FUNC_AC_MAX` (268502016) | ALL | ON |
 | `ac.temp_set` | "để 24 độ", "nhiệt độ 22" | `HVAC_FUNC_TEMP` (268828928), **setCustomizeFunctionValue** | ROW_1_LEFT / RIGHT / ALL | float 16–32 |
-| `ac.temp_up` / `down` | "tăng/giảm nhiệt độ", "nóng quá", "lạnh quá" | `HVAC_FUNC_TEMP` | như trên | hiện tại ± 1 (đọc `HVAC_FUNC_TEMP_STEP`) |
+| `ac.temp_up` / `down` | "tăng/giảm nhiệt độ", "nóng quá", "lạnh quá" | `HVAC_FUNC_TEMP` | như trên | mặc định hiện tại ± 0,5 °C; khi nêu rõ số độ thì dùng số đó |
 | `ac.temp_driver` / `passenger` | "bên lái 22 độ", "bên phụ 25" | `HVAC_FUNC_TEMP` | ROW_1_LEFT / ROW_1_RIGHT | float |
 | `ac.dual` | "đồng bộ nhiệt độ" / "tách vùng" | `HVAC_FUNC_TEMP_DUAL` (268829952) | ALL | OFF (đồng bộ) / ON |
 | `ac.fan_set` | "gió số 3" | `HVAC_FUNC_FAN_SPEED` (268566784) | ALL | +1…+7 |

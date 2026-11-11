@@ -26,7 +26,7 @@ class FollowUpContextTest {
 
     @Test fun stepFollowsPreviousAdjustment() {
         assertEquals(VoiceCommand.AdjustTemperature(2f), ctx(VoiceCommand.AdjustTemperature(-2f)).cmd("tăng nữa"))
-        assertEquals(VoiceCommand.AdjustTemperature(-1f), ctx(VoiceCommand.SetTemperature(22f)).cmd("giảm nữa"))
+        assertEquals(VoiceCommand.AdjustTemperature(-0.5f), ctx(VoiceCommand.SetTemperature(22f)).cmd("giảm nữa"))
         assertEquals(VoiceCommand.AdjustFanSpeed(2), ctx(VoiceCommand.AdjustFanSpeed(2)).cmd("tăng nữa"))
     }
 
@@ -37,10 +37,10 @@ class FollowUpContextTest {
 
     @Test fun thermalWordsOnlyForTemperature() {
         val t = ctx(VoiceCommand.SetTemperature(24f))
-        assertEquals(VoiceCommand.AdjustTemperature(-1f), t.cmd("mát nữa"))
-        assertEquals(VoiceCommand.AdjustTemperature(-1f), t.cmd("vẫn còn nóng quá"))
-        assertEquals(VoiceCommand.AdjustTemperature(1f), t.cmd("ấm hơn chút nữa"))
-        assertEquals(VoiceCommand.AdjustTemperature(1f), t.cmd("lạnh quá"))
+        assertEquals(VoiceCommand.AdjustTemperature(-0.5f), t.cmd("mát nữa"))
+        assertEquals(VoiceCommand.AdjustTemperature(-0.5f), t.cmd("vẫn còn nóng quá"))
+        assertEquals(VoiceCommand.AdjustTemperature(0.5f), t.cmd("ấm hơn chút nữa"))
+        assertEquals(VoiceCommand.AdjustTemperature(0.5f), t.cmd("lạnh quá"))
         val f = ctx(VoiceCommand.AdjustFanSpeed(1))
         assertNull(f.cmd("mát nữa"))
         assertNull(f.cmd("nóng quá"))

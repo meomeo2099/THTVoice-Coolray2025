@@ -10,7 +10,7 @@ class OwnerAsrSlipRegressionTest {
 
     @Test
     fun climateVerbs() {
-        assertEquals(VoiceCommand.AdjustTemperature(2.0f), cmd("tanh nhiệt độ"))
+        assertEquals(VoiceCommand.AdjustTemperature(0.5f), cmd("tanh nhiệt độ"))
         assertEquals(VoiceCommand.AcPower(true, HvacPowerTarget.COMBINED), cmd("bạc điều hoà"))
         assertEquals(VoiceCommand.AcPower(false, HvacPowerTarget.COMBINED), cmd("tác điều hoà"))
         assertEquals(VoiceCommand.AdjustFanSpeed(1), cmd("tan gió"))

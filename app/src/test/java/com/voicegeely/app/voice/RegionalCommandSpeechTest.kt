@@ -116,8 +116,8 @@ class RegionalCommandSpeechTest {
         for (t in listOf("nàm nại", "làm lại", "thêm nần nữa"))
             assertEquals(t, VoiceCommand.AdjustFanSpeed(1), fan.resolve(t, 10)?.command)
         val temp = ctx(VoiceCommand.SetTemperature(24f))
-        assertEquals(VoiceCommand.AdjustTemperature(1f), temp.resolve("vẫn còn nạnh quá", 10)?.command)
-        assertEquals(VoiceCommand.AdjustTemperature(-1f), temp.resolve("lóng quá", 10)?.command)
+        assertEquals(VoiceCommand.AdjustTemperature(0.5f), temp.resolve("vẫn còn nạnh quá", 10)?.command)
+        assertEquals(VoiceCommand.AdjustTemperature(-0.5f), temp.resolve("lóng quá", 10)?.command)
     }
 
     @Test fun teachAndMultiRegional() {

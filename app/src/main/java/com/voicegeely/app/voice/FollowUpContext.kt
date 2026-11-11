@@ -110,7 +110,8 @@ class FollowUpContext(private val ttlMs: Long = TTL_MS) {
             (command as? VoiceCommand.AdjustFanSpeed)?.delta?.let { kotlin.math.abs(it) }?.takeIf { it in 1..3 } ?: 1
 
         private fun temperatureStep(command: VoiceCommand): Float =
-            (command as? VoiceCommand.AdjustTemperature)?.deltaCelsius?.let { kotlin.math.abs(it) }?.takeIf { it in 0.5f..3f } ?: 1f
+            (command as? VoiceCommand.AdjustTemperature)?.deltaCelsius?.let { kotlin.math.abs(it) }?.takeIf { it in 0.5f..3f }
+                ?: com.voicegeely.app.car.CoolrayProperties.HVAC_TEMP_STEP
 
         private val MORE_WORDS = "tăng|to|lớn|mạnh|lên|cao"
         private val LESS_WORDS = "giảm|bớt|nhỏ|yếu|xuống|thấp|hạ"

@@ -53,6 +53,7 @@ THT Voice bản Coolray: trợ lý điều khiển/trạng thái xe Geely Coolra
 - Mơ hồ -> `NeedClarification`, không đoán thao tác xe.
 
 ### HVAC bắt buộc
+- Lệnh tăng/giảm nhiệt độ không nêu số mặc định **0,5 °C mỗi lần**, đúng một nấc OEM. Alias và câu nói tiếp sau setpoint dùng cùng bước mặc định. Khi người dùng nêu rõ số độ hoặc lặp lại một mức điều chỉnh đã chỉ định, giữ đúng số đó.
 - `20`, `hai mươi`, `20 độ` -> 20°C.
 - `22`, `hai hai` trong ngữ cảnh HVAC -> 22°C.
 - `cao nhất`, `tối đa`, explicit `hi` -> HI.

@@ -24,6 +24,8 @@ Mọi giá trị ở trạng thái **REFERENCE**: có trong cấu hình của ch
 Capture thực tế ngày 11/11/2026 xác nhận điều hoà dùng **area 0x75 = 117**, nhiệt độ **area 0x31 = 49 / 0x44 = 68, 16–32 °C**,
 quạt **1–7**; các mã kính `591405227`, đèn, ghế, cốp và REF-WIDGET **không có** trên đầu xe 2025 nên không dùng.
 
+Lệnh tăng/giảm nhiệt độ không nêu số dùng bước 0,5 °C, theo xác nhận của chủ xe ngày 11/11/2026. Ví dụ 24 → 24,5 °C. Khi nói rõ số độ, trợ lý dùng đúng số đã chỉ định.
+
 ## Đã bật cho giọng nói
 
 | Nhóm | Đường | Mã | Zone / area | Giá trị |

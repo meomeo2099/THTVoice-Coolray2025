@@ -1,5 +1,7 @@
 package com.voicegeely.app.voice
 
+import com.voicegeely.app.car.CoolrayProperties
+
 /** Deterministic local parser for high-confidence vehicle and Android commands. */
 object VoiceCommandParser {
     private const val CRACK_PERCENT = 10
@@ -115,8 +117,8 @@ object VoiceCommandParser {
         }
         val amount = values.firstOrNull { it in 1..5 }?.toFloat()?.let { if (amountHalf.containsMatchIn(text)) it + 0.5f else it }
         return when {
-            increase.containsMatchIn(text) -> VoiceCommand.AdjustTemperature(amount ?: 2f)
-            decrease.containsMatchIn(text) -> VoiceCommand.AdjustTemperature(-(amount ?: 2f))
+            increase.containsMatchIn(text) -> VoiceCommand.AdjustTemperature(amount ?: CoolrayProperties.HVAC_TEMP_STEP)
+            decrease.containsMatchIn(text) -> VoiceCommand.AdjustTemperature(-(amount ?: CoolrayProperties.HVAC_TEMP_STEP))
             else -> null
         }
     }

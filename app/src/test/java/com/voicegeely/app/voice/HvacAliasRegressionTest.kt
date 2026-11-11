@@ -48,9 +48,9 @@ class HvacAliasRegressionTest {
     }
 
     @Test fun naturalTemperatureAdjustmentAliasesKeepDirectionAndAmount() {
-        assertEquals(VoiceCommand.AdjustTemperature(2f), VoiceCommandParser.parse("ấm lên")?.command)
+        assertEquals(VoiceCommand.AdjustTemperature(0.5f), VoiceCommandParser.parse("ấm lên")?.command)
         assertEquals(VoiceCommand.AdjustTemperature(1f), VoiceCommandParser.parse("nóng lên một độ")?.command)
-        assertEquals(VoiceCommand.AdjustTemperature(-2f), VoiceCommandParser.parse("mát xuống")?.command)
+        assertEquals(VoiceCommand.AdjustTemperature(-0.5f), VoiceCommandParser.parse("mát xuống")?.command)
         assertEquals(VoiceCommand.AdjustTemperature(-3f), VoiceCommandParser.parse("lạnh xuống ba độ")?.command)
     }
 }

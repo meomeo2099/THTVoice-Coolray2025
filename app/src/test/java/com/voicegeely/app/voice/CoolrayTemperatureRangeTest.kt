@@ -26,6 +26,23 @@ class CoolrayTemperatureRangeTest {
         assertEquals(VoiceCommand.AdjustTemperature(1.5f), cmd("tăng nhiệt độ 1 độ rưỡi"))
     }
 
+    @Test fun defaultAdjustmentUsesOneOemHalfDegreeStep() {
+        listOf("tăng nhiệt độ", "ấm lên", "chỉnh nhiệt độ cao hơn", "tăng nhiệt")
+            .forEach { assertEquals(it, VoiceCommand.AdjustTemperature(0.5f), cmd(it)) }
+        listOf("giảm nhiệt độ", "mát xuống", "hạ giúp tôi nhiệt độ", "giảm nhiệt")
+            .forEach { assertEquals(it, VoiceCommand.AdjustTemperature(-0.5f), cmd(it)) }
+        assertEquals(VoiceCommand.AdjustTemperature(1f), cmd("tăng nhiệt độ một độ"))
+        assertEquals(VoiceCommand.AdjustTemperature(-2f), cmd("giảm nhiệt độ hai độ"))
+    }
+
+    @Test fun defaultUpAndDownWriteHalfDegreeOnCar() = runBlocking {
+        val car = Fake(24f)
+        val executor = HvacVoiceCommandExecutor(car, waitForReadback = {})
+        executor.execute(requireNotNull(cmd("tăng nhiệt độ")))
+        executor.execute(requireNotNull(cmd("giảm nhiệt độ")))
+        assertEquals(listOf(24.5f, 24f), car.writes)
+    }
+
     @Test fun executorWritesReferenceEndpointsAndRejectsOutOfRange() = runBlocking {
         val high = Fake(20f)
         assertTrue(HvacVoiceCommandExecutor(high, waitForReadback = {}).execute(VoiceCommand.TemperatureHigh) is CommandExecutionResult.Confirmed)
