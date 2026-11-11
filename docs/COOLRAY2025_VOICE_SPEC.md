@@ -1165,7 +1165,7 @@ Tạo tự động từ `AdapterAPI.jar` trên xe. *Giá trị* ghi dạng `TÊN
 | `HVAC_DEFROSTER` | `0x13200504` | đọc/ghi |
 | `HVAC_DUAL_ON` | `0x15200509` | đọc/ghi |
 | `HVAC_FAN_DIRECTION` | `0x15400501` | đọc/ghi |
-| `HVAC_FAN_SPEED` | `0x15400500` | đọc/ghi · vùng 75: 1–7 |
+| `HVAC_FAN_SPEED` | `0x15400500` | đọc/ghi · vùng `0x75` = 117: 1–7 |
 | `HVAC_MAX_AC_ON` | `0x15200506` | đọc/ghi |
 | `HVAC_MAX_DEFROST_ON` | `0x15200507` | đọc/ghi |
 | `HVAC_POWER_ON` | `0x15200510` | đọc/ghi |
