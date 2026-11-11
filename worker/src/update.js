@@ -4,6 +4,8 @@ import { json, requireLicense } from './license.js';
 import { latestReleaseInfo } from './notice.js';
 
 const GH = 'https://api.github.com';
+const MP3_MAX_BYTES = 8 * 1024 * 1024;
+const MP3_ASSET_HOSTS = new Set(['release-assets.githubusercontent.com', 'objects.githubusercontent.com']);
 
 function ghHeaders(env, accept = 'application/vnd.github+json') {
   return {
@@ -227,4 +229,65 @@ export async function handleModelFile(request, env, url, now) {
   return new Response(object.body, {
     headers: { 'content-type': 'application/zip', 'content-length': String(object.size), 'cache-control': 'no-store' },
   });
+}
+
+// MP3 packs have their own release. APK and Kokoro continue to use GITHUB_REPO.
+export async function handleMp3Voice(request, env, url, now, voice, download) {
+  if (!(await requireLicense(request, env, now))) {
+    return json(401, { ok: false, code: 'unlicensed', message: 'License không hợp lệ.' });
+  }
+  const requestedSha = url.searchParams.get('sha256') || '';
+  if (download && !/^[0-9a-f]{64}$/.test(requestedSha)) {
+    return json(400, { ok: false, message: 'SHA-256 không hợp lệ.' });
+  }
+  const repo = env.MP3_GITHUB_REPO || 'meomeo2099/THTVoice-Coolray2025';
+  const tag = env.MP3_RELEASE_TAG || 'voice-mp3-r5';
+  const credentials = { GITHUB_TOKEN: env.MP3_GITHUB_TOKEN || env.GITHUB_TOKEN };
+  const github = `${GH}/repos/${repo}/releases`;
+  const unavailable = () => json(502, { ok: false, message: 'Máy chủ không tải được gói giọng MP3.' });
+
+  try {
+    const release = await fetch(`${github}/tags/${encodeURIComponent(tag)}`, {
+      headers: ghHeaders(credentials), redirect: 'manual',
+    });
+    if (release.status === 404) return json(404, { ok: false, message: 'Chưa tìm thấy bản phát hành MP3.' });
+    if (!release.ok) return unavailable();
+    const name = new RegExp(`^THTVoice-MP3-${voice}-r([1-9][0-9]{0,8})\\.zip$`);
+    const { assets = [] } = await release.json();
+    const packs = [];
+    for (const asset of assets) {
+      const version = name.exec(asset.name)?.[1];
+      const sha = /^sha256:([0-9a-f]{64})$/i.exec(asset.digest || '')?.[1]?.toLowerCase();
+      if (version && sha && asset.state === 'uploaded' && Number.isSafeInteger(asset.id) && asset.id > 0 &&
+          Number.isInteger(asset.size) && asset.size > 0 && asset.size <= MP3_MAX_BYTES) {
+        packs.push({ asset, version: Number(version), sha });
+      }
+    }
+    packs.sort((a, b) => b.version - a.version);
+    const pack = download ? packs.find(p => p.sha === requestedSha) : packs[0];
+    if (!pack) return json(404, { ok: false, message: 'Chưa có gói MP3 phù hợp.' });
+    if (!download) {
+      return json(200, {
+        schema: 1, version: `r${pack.version}`, sha256: pack.sha, size: pack.asset.size,
+        url: `${url.origin}/api/voice/${voice}/file?sha256=${pack.sha}`,
+      });
+    }
+
+    let response = await fetch(`${github}/assets/${pack.asset.id}`, {
+      headers: ghHeaders(credentials, 'application/octet-stream'), redirect: 'manual',
+    });
+    if (response.status === 302) {
+      const target = new URL(response.headers.get('location') || '');
+      if (target.protocol !== 'https:' || target.username || target.password || target.port ||
+          !MP3_ASSET_HOSTS.has(target.hostname)) return unavailable();
+      // The GitHub bearer token is scoped to the API call. Never forward it to a CDN.
+      response = await fetch(target.href, { headers: {}, redirect: 'manual' });
+    }
+    if (response.status !== 200 || !response.body) return unavailable();
+    return new Response(response.body, {
+      headers: { 'content-type': 'application/zip', 'content-length': String(pack.asset.size), 'cache-control': 'no-store' },
+    });
+  } catch {
+    return unavailable();
+  }
 }

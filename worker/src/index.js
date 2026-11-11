@@ -2,7 +2,7 @@
 import { handleAdminApi } from './admin.js';
 import { ADMIN_HTML, ADMIN_JS } from './admin-page.js';
 import { handleRestore, handleStatus, handleUnlock, handleVerify, json } from './license.js';
-import { fetchReleaseInfo, handleModel, handleModelFile, handleUpdate, handleUpdateApk } from './update.js';
+import { fetchReleaseInfo, handleModel, handleModelFile, handleMp3Voice, handleUpdate, handleUpdateApk } from './update.js';
 import { latestReleaseInfo } from './notice.js';
 import { handleLite } from './lite-page.js';
 
@@ -54,6 +54,8 @@ export async function route(request, env, now = Date.now()) {
   if (pathname === '/api/update/apk' && method === 'GET') return handleUpdateApk(request, env, url, now);
   if (pathname === '/api/model' && method === 'GET') return handleModel(request, env, url, now);
   if (pathname === '/api/model/file' && method === 'GET') return handleModelFile(request, env, url, now);
+  const mp3 = /^\/api\/voice\/(ngoc-huyen|diem-trinh)(\/file)?$/.exec(pathname);
+  if (mp3 && method === 'GET') return handleMp3Voice(request, env, url, now, mp3[1], Boolean(mp3[2]));
   if (pathname === '/api/stt' || pathname === '/api/llm') {
     return json(410, { ok: false, code: 'gone', message: 'THT Voice chạy offline; máy chủ không còn dịch vụ này.' });
   }

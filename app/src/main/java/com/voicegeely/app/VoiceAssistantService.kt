@@ -29,7 +29,10 @@ import com.voicegeely.app.kws.VoiceMicStateMachine
 import com.voicegeely.app.overlay.VoiceOverlayController
 import com.voicegeely.app.security.LicenseManager
 import com.voicegeely.app.settings.MediaAppSettings
+import com.voicegeely.app.settings.TtsVoice
 import com.voicegeely.app.settings.UserVoicePreferences
+import com.voicegeely.app.tts.Mp3ReplyPlayer
+import com.voicegeely.app.tts.Mp3VoicePacks
 import com.voicegeely.app.tts.SherpaOfflineTtsEngine
 import com.voicegeely.app.voice.AndroidSystemActionBackend
 import com.voicegeely.app.voice.MediaPreferenceResolver
@@ -73,6 +76,7 @@ class VoiceAssistantService : Service() {
     @Volatile private var lastCommandSucceeded = false
     /** Voice key pressed while a command was being handled/answered: cut the reply, listen again. */
     @Volatile private var bargeInRequested = false
+    private lateinit var mp3Reply: Mp3ReplyPlayer
     private lateinit var offlineTts: SherpaOfflineTtsEngine
     private lateinit var systemTts: com.voicegeely.app.tts.SystemTtsFallback
     private lateinit var asrEngine: SherpaStreamingAsrEngine
@@ -87,6 +91,7 @@ class VoiceAssistantService : Service() {
     private val micState = VoiceMicStateMachine()
 
     private val recognitionRunning = AtomicBoolean(false)
+    private val voiceTestRunning = AtomicBoolean(false)
     private val wakeWordRunning = AtomicBoolean(false)
     @Volatile private var audioRecord: AudioRecord? = null
     @Volatile private var wakeAudioRecord: AudioRecord? = null
@@ -149,6 +154,7 @@ class VoiceAssistantService : Service() {
         voicePreferences = UserVoicePreferences(this)
         feedbackAudio = VoiceFeedbackAudio(com.voicegeely.app.tts.MutedSpeechGuard(com.voicegeely.app.tts.AndroidMutedSpeechAudio(this)), this)
         audioDucker = com.voicegeely.app.tts.AssistantAudioDucker(this)
+        mp3Reply = Mp3ReplyPlayer(this)
         offlineTts = SherpaOfflineTtsEngine(this)
         systemTts = com.voicegeely.app.tts.SystemTtsFallback(
             this, com.voicegeely.app.tts.MutedSpeechGuard(com.voicegeely.app.tts.AndroidMutedSpeechAudio(this))
@@ -225,6 +231,7 @@ class VoiceAssistantService : Service() {
             }
             // The voice is the heaviest model and is only needed for the first reply: load it last.
             if (destroyed) return@Thread
+            Mp3VoicePacks.load(this, voicePreferences.ttsVoice)
             val ttsInit = offlineTts.initialize(voicePreferences.ttsVoice)
             Log.i(
                 TAG,
@@ -255,7 +262,10 @@ class VoiceAssistantService : Service() {
             ACTION_TRIGGER_RECOGNITION -> handleRecognitionTrigger()
             ACTION_ECARX_KEY, VoiceKeyActions.ECARX_CASE_VARIANT ->
                 VoiceKeyLauncher.handle(this, intent.action, source = "service_start")
-            ACTION_TEST_VOICE -> runVoiceTest()
+            ACTION_TEST_VOICE -> {
+                val voice = TtsVoice.values().find { it.name == intent.getStringExtra(EXTRA_TTS_TEST_VOICE) }
+                runVoiceTest(voice ?: voicePreferences.ttsVoice)
+            }
             ACTION_SETTINGS_CHANGED -> {
                 com.voicegeely.app.voice.AirflowDirectionCycler.defaultMinutes = voicePreferences.airflowCycleMinutes
                 refreshWakeWordState()
@@ -263,6 +273,7 @@ class VoiceAssistantService : Service() {
                 Thread {
                     android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)
                     val ttsState = if (voicePreferences.voiceFeedbackEnabled) {
+                        Mp3VoicePacks.load(this, voicePreferences.ttsVoice)
                         offlineTts.initialize(voicePreferences.ttsVoice)
                     } else null
                     val detail = when {
@@ -365,6 +376,7 @@ class VoiceAssistantService : Service() {
                 // Owner decision 01/10/2026: pressing again while the assistant answers stops the
                 // reply and opens the mic for a new command (the running command still finishes).
                 bargeInRequested = true
+                mp3Reply.interrupt()
                 offlineTts.interrupt()
                 systemTts.interrupt()
                 Log.i(TAG, "barge_in state=${micState.state}")
@@ -375,6 +387,7 @@ class VoiceAssistantService : Service() {
             return
         }
 
+        mp3Reply.interrupt()
         stopWakeWordListening(waitForRelease = true)
         if (!micState.beginAsr()) {
             recognitionRunning.set(false)
@@ -646,6 +659,7 @@ class VoiceAssistantService : Service() {
         val message = "Xử lý quá lâu, phiên nghe đã dừng. Vui lòng thử lại."
         voiceOverlay.showError(message)
         broadcastStatus(message, sherpaReady = asrReady())
+        mp3Reply.interrupt()
         offlineTts.interrupt()
         systemTts.interrupt()
         closeRecorder(audioRecord)
@@ -1071,6 +1085,7 @@ class VoiceAssistantService : Service() {
                 worker.interrupt()
                 if (!canPublishSessionResult()) return
                 // Unblocks a reply stuck in playback; the hung thread keeps no hold on the session.
+                mp3Reply.interrupt()
                 offlineTts.interrupt()
                 systemTts.interrupt()
                 lastCommand = parsed.command
@@ -1332,7 +1347,11 @@ class VoiceAssistantService : Service() {
         if (bargeInRequested) return true
         replySpeaking = true
         try {
-            if (offlineTts.speak(text, voicePreferences.ttsVoice)) return true
+            val voice = voicePreferences.ttsVoice
+            val generation = sessionThreadGeneration.get()
+            val cancelled = { bargeInRequested || destroyed || (generation != null && !sessionActive(generation)) }
+            if (mp3Reply.speak(text, voice, cancelled) || cancelled()) return true
+            if (offlineTts.speak(text, voice) || cancelled()) return true
             return systemTts.speak(text)
         } finally {
             replySpeaking = false
@@ -1342,34 +1361,45 @@ class VoiceAssistantService : Service() {
     /** True while a reply is being read; a mic opened then (barge-in) gets the echo canceller. */
     @Volatile private var replySpeaking = false
 
-    private fun ttsReadyForUi(): Boolean = offlineTts.isReady || systemTts.isReady
+    private fun ttsReadyForUi(): Boolean =
+        Mp3VoicePacks.isReady(voicePreferences.ttsVoice) || offlineTts.isReady || systemTts.isReady
 
     private fun ttsDetailForUi(): String? = when {
+        Mp3VoicePacks.isReady(voicePreferences.ttsVoice) -> "Gói giọng MP3 đã sẵn sàng"
         offlineTts.isReady -> offlineTts.lastDetail
         systemTts.isReady -> "Đang dùng giọng hệ thống (giọng đọc THT: ${offlineTts.lastDetail ?: "chưa sẵn sàng"})"
         else -> offlineTts.lastDetail ?: systemTts.detail
     }
 
     /** "Thử giọng" from Settings: speak a sample and report exactly what worked. */
-    private fun runVoiceTest() {
+    private fun runVoiceTest(voice: TtsVoice) {
+        if (recognitionRunning.get() || !voiceTestRunning.compareAndSet(false, true)) return
+        val generation = sessionGeneration
+        val cancelled = { destroyed || recognitionRunning.get() || generation != sessionGeneration }
         Thread {
-            // Only words in the packaged Kokoro lexicon (brand words "THT Voice" were dropped and the reply sounded cut).
-            val sample = "Tôi là trợ lý của bạn, sẵn sàng nhận lệnh."
-            val kokoroInit = offlineTts.initialize(voicePreferences.ttsVoice)
-            val kokoroOk = kokoroInit.ready && offlineTts.speak(sample, voicePreferences.ttsVoice)
-            val kokoroText = if (kokoroOk) "Giọng đọc THT: đọc được" else "Giọng đọc THT: ${offlineTts.lastDetail ?: kokoroInit.detail ?: "không đọc được"}"
-            val systemOk = !kokoroOk && systemTts.speak(sample)
-            val systemText = when {
-                kokoroOk -> "Giọng hệ thống: không cần dùng"
-                systemOk -> "Giọng hệ thống: đọc được (đang dùng dự phòng)"
-                else -> "Giọng hệ thống: ${systemTts.detail}"
+            try {
+                val sample = "Trợ lý đang sẵn sàng, bạn cứ nói lệnh."
+                val mp3Ok = mp3Reply.speak(sample, voice, cancelled)
+                if (cancelled()) return@Thread
+                val kokoroOk = !mp3Ok && offlineTts.speak(sample, voice)
+                if (cancelled()) return@Thread
+                val systemOk = !mp3Ok && !kokoroOk && systemTts.speak(sample)
+                if (cancelled()) return@Thread
+                val detail = when {
+                    mp3Ok -> "Đã phát từ gói giọng MP3."
+                    kokoroOk -> "Đã phát bằng giọng đọc THT dự phòng."
+                    systemOk -> "Đã phát bằng giọng hệ thống dự phòng."
+                    else -> "Chưa phát được giọng. Kiểm tra gói đã cài và âm lượng."
+                }
+                val ok = mp3Ok || kokoroOk || systemOk
+                VoiceServiceEventBus.sendBroadcast(this, Intent(ACTION_TTS_TEST_RESULT).apply {
+                    putExtra(EXTRA_TTS_TEST_OK, ok)
+                    putExtra(EXTRA_TTS_TEST_DETAIL, detail)
+                })
+                broadcastStatus(detail, sherpaReady = asrReady())
+            } finally {
+                voiceTestRunning.set(false)
             }
-            Log.i(TAG, "voice_test kokoro=$kokoroOk system=$systemOk")
-            VoiceServiceEventBus.sendBroadcast(this, Intent(ACTION_TTS_TEST_RESULT).apply {
-                putExtra(EXTRA_TTS_TEST_OK, kokoroOk || systemOk)
-                putExtra(EXTRA_TTS_TEST_DETAIL, com.voicegeely.app.ui.PublicText.scrub("$kokoroText\n$systemText"))
-            })
-            broadcastStatus(if (kokoroOk || systemOk) "Thử giọng: đọc được" else "Thử giọng: không đọc được", sherpaReady = asrReady())
         }.apply { name = "THTVoice-VoiceTest"; isDaemon = true }.start()
     }
 
@@ -1589,6 +1619,7 @@ class VoiceAssistantService : Service() {
         voiceOverlay.close()
         try { wakeWordEngine.close() } catch (_: Throwable) {}
         if (::asrEngine.isInitialized) try { asrEngine.close() } catch (_: Throwable) {}
+        if (::mp3Reply.isInitialized) mp3Reply.interrupt()
         try { offlineTts.close() } catch (_: Throwable) {}
         try { systemTts.close() } catch (_: Throwable) {}
         try { audioDucker.release() } catch (_: Throwable) {}
@@ -1613,6 +1644,7 @@ class VoiceAssistantService : Service() {
         const val EXTRA_TTS_READY = "tts_ready"
         const val EXTRA_TTS_DETAIL = "tts_detail"
         const val ACTION_TEST_VOICE = "com.tht.voice.action.TEST_VOICE"
+        const val EXTRA_TTS_TEST_VOICE = "tts_test_voice"
         const val ACTION_TTS_TEST_RESULT = "com.tht.voice.action.TTS_TEST_RESULT"
         const val EXTRA_TTS_TEST_OK = "tts_test_ok"
         const val EXTRA_TTS_TEST_DETAIL = "tts_test_detail"

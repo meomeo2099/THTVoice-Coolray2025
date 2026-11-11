@@ -338,22 +338,12 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Đã khôi phục mặc định", Toast.LENGTH_SHORT).show()
             showDestination(MainDestination.SETTINGS)
         },
+        onPreviewVoice = { sendServiceAction(VoiceAssistantService.ACTION_TEST_VOICE, it.name) },
         extraVoiceRows = settingsExtraRows()
     )
 
     /** Extra rows in "Thiết lập giọng nói": the downloadable voice pack (when not bundled). */
     private fun settingsExtraRows(): List<View> = listOfNotNull(
-        com.voicegeely.app.ui.ThtUi.settingRow(
-            this,
-            com.tht.voice.R.drawable.ic_ui_volume,
-            "Thử giọng trợ lý",
-            "Đọc một câu mẫu và cho biết giọng nào đang hoạt động.",
-            com.voicegeely.app.ui.ThtUi.smallButton(this, com.tht.voice.R.drawable.ic_ui_play, "Thử giọng",
-                com.voicegeely.app.ui.ThtUi.SmallStyle.PRIMARY) {
-                Toast.makeText(this, "Đang thử giọng...", Toast.LENGTH_SHORT).show()
-                sendServiceAction(VoiceAssistantService.ACTION_TEST_VOICE)
-            }.apply { minHeight = dp(44); setPadding(dp(16), dp(10), dp(16), dp(10)) }
-        ),
         if (!com.voicegeely.app.voice.BackgroundLaunchPolicy.isXiaomi()) null else com.voicegeely.app.ui.ThtUi.settingRow(
             this,
             com.tht.voice.R.drawable.ic_ui_apps,
@@ -557,8 +547,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendServiceAction(action: String) {
-        val intent = Intent(this, VoiceAssistantService::class.java).apply { this.action = action }
+    private fun sendServiceAction(action: String, previewVoice: String? = null) {
+        val intent = Intent(this, VoiceAssistantService::class.java).apply {
+            this.action = action
+            if (previewVoice != null) putExtra(VoiceAssistantService.EXTRA_TTS_TEST_VOICE, previewVoice)
+        }
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent) else startService(intent)
         } catch (t: Throwable) {

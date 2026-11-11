@@ -29,6 +29,7 @@ object SettingsScreenView {
         mediaSettings: MediaAppSettings,
         onSaved: () -> Unit,
         onRestored: () -> Unit,
+        onPreviewVoice: (TtsVoice) -> Unit,
         extraVoiceRows: List<View> = emptyList()
     ): View {
         val spec = ResponsiveContext.spec(context)
@@ -136,9 +137,7 @@ object SettingsScreenView {
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_headphones, "Lưu sẵn câu trả lời",
             "Câu đã đọc được lưu để lần sau trả lời nhanh hơn (tối đa 24 MB, đang dùng ${"%.1f".format(cacheMb)} MB). Tắt thì xoá hết và luôn tạo giọng mới.",
             ThtUi.switch(context, phraseCache) { phraseCache = it }))
-        val voices = listOf(TtsVoice.NGOC_HUYEN, TtsVoice.DIEM_TRINH)
-        voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_headphones, "Giọng trợ lý", "Giọng đọc offline dùng để phản hồi.",
-            ThtUi.segmented(context, listOf("Ngọc Huyền", "Diễm Trinh"), voices.indexOf(ttsVoice).coerceAtLeast(0), 110) { ttsVoice = voices[it] }))
+        voice.row(Mp3VoiceSettingsRow.build(context, ttsVoice, onSelect = { ttsVoice = it }, onPreview = onPreviewVoice))
         extraVoiceRows.forEach { voice.row(it) }
         val sensitivities = MicSensitivity.values().toList()
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_wave, "Độ nhạy mic", "Điều chỉnh độ nhạy nhận diện giọng nói.",

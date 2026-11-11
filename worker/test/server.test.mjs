@@ -497,6 +497,50 @@ test('voice pack is found by its own release tag, beyond the latest-20 window', 
   }
 });
 
+test('MP3 downloads use the Coolray release and require a license on both routes', async (t) => {
+  const env = await makeEnv();
+  const c = client(env);
+  const r = await verify(c, await newCode(c));
+  const headers = { 'x-tht-request': DEVICE, 'x-tht-license': r.json.activation_code };
+  env.GITHUB_REPO = 'owner/ota';
+  env.MP3_GITHUB_REPO = 'owner/coolray';
+  env.MP3_GITHUB_TOKEN = 'test-contents-token';
+  const sha = 'a'.repeat(64);
+  const cdn = 'https://release-assets.githubusercontent.com/signed/test';
+  const fetchMock = t.mock.method(globalThis, 'fetch', async (input, init) => {
+    const url = String(input);
+    if (url === cdn) {
+      assert.equal(new Headers(init.headers).get('authorization'), null);
+      return new Response('zip');
+    }
+    assert.equal(new Headers(init.headers).get('authorization'), 'Bearer test-contents-token');
+    if (url.endsWith('/repos/owner/coolray/releases/tags/voice-mp3-r5')) {
+      return Response.json({ assets: [
+        { id: 5, name: 'THTVoice-MP3-ngoc-huyen-r5.zip', state: 'uploaded', size: 3, digest: 'sha256:' + sha },
+        { id: 7, name: 'THTVoice-MP3-diem-trinh-r5.zip', state: 'uploaded', size: 3, digest: 'sha256:' + 'b'.repeat(64) },
+      ] });
+    }
+    assert.ok(url.endsWith('/repos/owner/coolray/releases/assets/5'));
+    assert.equal(init.redirect, 'manual');
+    return new Response(null, { status: 302, headers: { location: cdn } });
+  });
+  const path = '/api/voice/ngoc-huyen';
+  assert.equal((await c.call('GET', path)).status, 401);
+  assert.equal((await c.call('GET', path + '/file?sha256=' + sha)).status, 401);
+  assert.equal(fetchMock.mock.callCount(), 0);
+  const meta = await c.call('GET', path, { headers });
+  assert.deepEqual(meta.json, {
+    schema: 1, version: 'r5', sha256: sha, size: 3,
+    url: 'https://lic.example.dev' + path + '/file?sha256=' + sha,
+  });
+  assert.equal((await c.call('GET', path + '/file?sha256=' + 'b'.repeat(64), { headers })).status, 404);
+  assert.equal((await c.call('GET', path + '/file?sha256=bad', { headers })).status, 400);
+  const file = await c.call('GET', path + '/file?sha256=' + sha, { headers });
+  assert.equal(file.status, 200);
+  assert.equal(file.text, 'zip');
+  assert.equal(file.headers.get('cache-control'), 'no-store');
+});
+
 test('VIN read statistics per device: ok, miss with reason, change', async () => {
   const env = await makeEnv();
   const c = client(env);
