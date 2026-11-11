@@ -36,7 +36,7 @@ class CoolrayRouterTest {
             setOf(
                 VehicleStatusQuery.SPEED, VehicleStatusQuery.GEAR, VehicleStatusQuery.CLIMATE_TEMPERATURE, VehicleStatusQuery.FAN_SPEED,
                 VehicleStatusQuery.FUEL_LEVEL, VehicleStatusQuery.ODOMETER, VehicleStatusQuery.OUTSIDE_TEMPERATURE,
-                VehicleStatusQuery.BATTERY_VOLTAGE, VehicleStatusQuery.CAR_SUMMARY
+                VehicleStatusQuery.BATTERY_VOLTAGE, VehicleStatusQuery.CAR_SUMMARY, VehicleStatusQuery.RANGE, VehicleStatusQuery.DRIVE_MODE
             ),
             allowed
         )
@@ -80,7 +80,7 @@ class CoolrayRouterTest {
         val port = FakeEcarxPort()
         val router = VehicleCommandRouter(FakeCoolray(), waitForReadback = {}, ecarx = port)
         router.execute(VoiceCommand.Window(setOf(WindowTarget.FRONT_LEFT), WindowOperation.OPEN))
-        router.execute(VoiceCommand.SeatClimate(SeatClimateKind.HEAT, setOf(SeatTarget.DRIVER), level = 1))
+        router.execute(VoiceCommand.SeatClimate(SeatClimateKind.VENT, setOf(SeatTarget.DRIVER), level = 1))
         router.execute(VoiceCommand.FogLight(true))
         assertEquals(com.voicegeely.app.car.Coolray2025Functions.BCM_FUNC_WINDOW_POS, port.floatWrites.single().first)
         assertEquals(2, port.intWrites.size)

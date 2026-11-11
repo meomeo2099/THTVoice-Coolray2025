@@ -22,6 +22,11 @@ sealed class VoiceCommand {
     data class FanDirection(val directions: Set<FanDirectionTarget>) : VoiceCommand()
     /** HVAC Eco (air-conditioning economy). Not the drive-mode Eco. REFERENCE/UNVERIFIED. */
     data class HvacEco(val on: Boolean) : VoiceCommand()
+    data class HvacAuto(val on: Boolean) : VoiceCommand()
+    data class SetAutoFanProfile(val profile: AutoFanProfile) : VoiceCommand()
+    data class OemSwitch(val feature: OemFeature, val on: Boolean) : VoiceCommand()
+    data class QueryOemSwitch(val feature: OemFeature) : VoiceCommand()
+    data class SetSunroofTilt(val on: Boolean) : VoiceCommand()
     /** Automatic airflow cycle (tự động đảo gió). Not recirculation. REFERENCE/UNVERIFIED. */
     /**
      * [periodicMinutes] null: the car's own automatic airflow cycle. Non-null (with on = true):
@@ -190,6 +195,10 @@ enum class ChargeControlAction { STOP, RESTART, START_NOW }
 enum class DefrostZone { FRONT, REAR }
 enum class FanDirectionTarget { FACE, FEET, WINDSHIELD }
 enum class DriveMode { ECO, COMFORT, SPORT }
+enum class AutoFanProfile { QUIET, NORMAL, STRONG }
+enum class OemFeature(val label: String) {
+    DAYTIME_LIGHTS("đèn ban ngày"), START_STOP("Start/Stop"), AUTO_HOLD("Auto Hold"), ESC_SPORT("ESC Sport")
+}
 enum class RegenLevel { LOW, MEDIUM, HIGH }
 enum class BrakePedalFeel { COMFORT, SPORT }
 enum class AmbientColor { RED, GREEN, BLUE, WHITE, YELLOW, PURPLE, PINK, ORANGE, CYAN }

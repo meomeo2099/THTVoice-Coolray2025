@@ -22,7 +22,9 @@ class EcarxHvacPropertyAccess(
 
     override fun getIntProperty(propertyId: Int, areaId: Int): Int {
         val function = integerFunction(propertyId, areaId) ?: return vhal.getIntProperty(propertyId, areaId)
-        return F.levelOf(function, oem.getInt(function, 0))?.takeIf { it in 1..7 } ?: -1
+        // Lunaris Sensors observes front-row fan/direction at zone1; commands use global zone0.
+        return F.levelOf(function, oem.getInt(function, F.ZONE_ROW_1_LEFT))?.takeIf { it in 1..7 }
+            ?: F.levelOf(function, oem.getInt(function, F.GLOBAL))?.takeIf { it in 1..7 } ?: -1
     }
 
     override fun getIntPropertyOrNull(propertyId: Int, areaId: Int): Int? =

@@ -30,6 +30,8 @@ class VehicleStatusQueryExecutor(
                 VehicleStatusQuery.ODOMETER -> readOdometer()
                 VehicleStatusQuery.OUTSIDE_TEMPERATURE -> readOutsideTemperature()
                 VehicleStatusQuery.BATTERY_VOLTAGE -> readBatteryVoltage()
+                VehicleStatusQuery.RANGE -> readRange()
+                VehicleStatusQuery.DRIVE_MODE -> readDriveMode()
                 VehicleStatusQuery.CAR_SUMMARY -> readCarSummary()
                 else -> CommandExecutionResult.Rejected("Xe này chưa hỗ trợ đọc thông tin đó.")
             }
@@ -74,14 +76,26 @@ class VehicleStatusQueryExecutor(
 
     /** FUEL_LEVEL (ml) / INFO_FUEL_CAPACITY (ml) → percent; FUEL_LEVEL_LOW adds a warning. */
     private fun fuelPercent(): Int? {
-        val level = number(CoolrayProperties.FUEL_LEVEL) ?: return null
-        val capacity = number(CoolrayProperties.FUEL_CAPACITY)?.takeIf { it > 0f } ?: return null
-        return (level / capacity * 100f).roundToInt().takeIf { it in 0..100 }
+        val level = number(CoolrayProperties.FUEL_LEVEL)
+        val capacity = number(CoolrayProperties.FUEL_CAPACITY)?.takeIf { it > 0f }
+        if (level != null && capacity != null) {
+            (level / capacity * 100f).roundToInt().takeIf { it in 0..100 }?.let { return it }
+        }
+        return mcuFuelPercent()
     }
 
-    /** Litres left from the vendor MCU property INFO_ID_REMAINING_OIL (1 byte), when the car reports it. */
-    private fun fuelLitres(): Int? = (try { ecarx?.getBytesByProp(F.INFO_ID_REMAINING_FUEL) } catch (_: Throwable) { null })
-        ?.takeIf { it.size == 1 }?.let { it[0].toInt() and 0xFF }?.takeIf { it in 1..120 }
+    /** The byte carries percent, as decoded by Lunaris Sensors; do not announce it as litres. */
+    private fun mcuFuelPercent(): Int? = (try { ecarx?.getBytesByProp(F.INFO_ID_REMAINING_FUEL) } catch (_: Throwable) { null })
+        ?.takeIf { it.size == 1 }?.let { it[0].toInt() and 0xFF }?.takeIf { it in 0..100 }
+
+    private fun fuelLitres(): Float? {
+        val levelMl = number(CoolrayProperties.FUEL_LEVEL)?.takeIf { it in 0f..120_000f }
+        if (levelMl != null) return levelMl / 1000f
+        val percent = mcuFuelPercent()
+        val capacityMl = number(CoolrayProperties.FUEL_CAPACITY)?.takeIf { it in 10_000f..120_000f }
+        if (percent != null && capacityMl != null) return percent * capacityMl / 100_000f
+        return null
+    }
 
     /** 12 V battery: vendor MCU property INFO_ID_VPOWERINFO_BATTERY_VOL, bytes [volts, tenths]. */
     private fun readBatteryVoltage(): CommandExecutionResult {
@@ -95,7 +109,7 @@ class VehicleStatusQueryExecutor(
     }
 
     private fun readFuelLevel(): CommandExecutionResult {
-        val litres = fuelLitres()
+        val litres = fuelLitres()?.let(::formatFloat)
         val percent = fuelPercent()
         val low = try {
             vehicle.getBoolPropertyOrNull(CoolrayProperties.FUEL_LEVEL_LOW, CoolrayProperties.GLOBAL_AREA)
@@ -112,9 +126,25 @@ class VehicleStatusQueryExecutor(
     }
 
     private fun readOdometer(): CommandExecutionResult {
-        val km = number(CoolrayProperties.ODOMETER) ?: return unavailable("ODO")
+        val km = number(CoolrayProperties.ODOMETER) ?: sensor(F.SENSOR_TYPE_ODOMETER, 0f..10_000_000f) ?: return unavailable("ODO")
         return confirmed("Tổng quãng đường xe đã đi là ${km.roundToInt()} ki lô mét")
     }
+
+    private fun readRange(): CommandExecutionResult {
+        val km = sensor(F.SENSOR_TYPE_FUEL_REMAIN_RANGE, 0f..3000f) ?: return unavailable("quãng đường còn lại")
+        return confirmed("Quãng đường còn lại theo xe là ${km.roundToInt()} ki lô mét")
+    }
+
+    private fun readDriveMode(): CommandExecutionResult {
+        val value = try { ecarx?.getInt(F.DM_FUNC_DRIVE_MODE_SELECT, F.GLOBAL) } catch (_: Throwable) { null }
+        val mode = when (F.levelOf(F.DM_FUNC_DRIVE_MODE_SELECT, value)) {
+            1 -> "tiết kiệm"; 2 -> "thoải mái"; 3 -> "thể thao"; else -> return unavailable("chế độ lái")
+        }
+        return confirmed("Xe đang ở chế độ lái $mode")
+    }
+
+    private fun sensor(id: Int, range: ClosedFloatingPointRange<Float>): Float? =
+        (try { ecarx?.getSensorLatestValue(id) } catch (_: Throwable) { null })?.takeIf { it.isFinite() && it in range }
 
     private fun readOutsideTemperature(): CommandExecutionResult {
         val c = try {
@@ -131,12 +161,13 @@ class VehicleStatusQueryExecutor(
         val port = ecarx
         if (port != null) {
             val positions = WindowVoiceCommandExecutor.ALL_ZONES.associateWith { zone ->
-                (try { port.getFloat(F.BCM_FUNC_WINDOW_CURRENT_POS, zone) } catch (_: Throwable) { null })
-                    ?.takeIf { it.isFinite() && it in 0f..100f }
+                WindowVoiceCommandExecutor.readPosition(port, zone)?.toFloat()
             }.filterValues { it != null }
             if (positions.isNotEmpty()) {
                 val open = positions.filterValues { (it ?: 0f) > WINDOW_OPEN_MIN }.keys.map { WindowVoiceCommandExecutor.zoneName(it) }
-                parts += if (open.isEmpty()) "Kính đóng hết" else "Đang mở ${open.joinToString(" và ")}"
+                if (open.isNotEmpty()) parts += "Đang mở ${open.joinToString(" và ")}"
+                else if (positions.size == WindowVoiceCommandExecutor.ALL_ZONES.size) parts += "Kính đóng hết"
+                if (positions.size < WindowVoiceCommandExecutor.ALL_ZONES.size) parts += "Chưa đọc đủ trạng thái các kính"
             }
         }
         if (parts.isEmpty()) return unavailable("tình trạng xe")

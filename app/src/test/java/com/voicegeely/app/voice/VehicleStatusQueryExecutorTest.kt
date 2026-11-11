@@ -66,25 +66,23 @@ class VehicleStatusQueryExecutorTest {
         fun say(q: VehicleStatusQuery) = runBlocking {
             (VehicleStatusQueryExecutor(fake).execute(VoiceCommand.QueryVehicleStatus(q)) as CommandExecutionResult.Confirmed).actualValue
         }
-        assertEquals("Bình xăng còn 60 phần trăm", say(VehicleStatusQuery.FUEL_LEVEL))
+        assertEquals("Bình xăng còn 60 phần trăm, khoảng 30 lít", say(VehicleStatusQuery.FUEL_LEVEL))
         assertEquals("Tổng quãng đường xe đã đi là 12346 ki lô mét", say(VehicleStatusQuery.ODOMETER))
         assertEquals("Nhiệt độ ngoài trời là 31 độ", say(VehicleStatusQuery.OUTSIDE_TEMPERATURE))
         assertEquals(0, fake.writeCount)
     }
 
     @Test
-    fun fuelLowFlagIsSpokenAndMissingCapacityIsNotGuessed() = runBlocking {
+    fun fuelLowFlagAndKnownMillilitresAreSpokenWithoutGuessingPercent() = runBlocking {
         val low = FakeVehicle(
             floatValues = mutableMapOf(Pair(CoolrayProperties.FUEL_LEVEL, 0) to 4000f, Pair(CoolrayProperties.FUEL_CAPACITY, 0) to 50000f),
             boolValues = mutableMapOf(Pair(CoolrayProperties.FUEL_LEVEL_LOW, 0) to true)
         )
         val r = VehicleStatusQueryExecutor(low).execute(VoiceCommand.QueryVehicleStatus(VehicleStatusQuery.FUEL_LEVEL))
-        assertEquals("Bình xăng còn 8 phần trăm, xăng sắp hết", (r as CommandExecutionResult.Confirmed).actualValue)
+        assertEquals("Bình xăng còn 8 phần trăm, khoảng 4 lít, xăng sắp hết", (r as CommandExecutionResult.Confirmed).actualValue)
         val noCapacity = FakeVehicle(floatValues = mutableMapOf(Pair(CoolrayProperties.FUEL_LEVEL, 0) to 4000f))
-        assertTrue(
-            VehicleStatusQueryExecutor(noCapacity).execute(VoiceCommand.QueryVehicleStatus(VehicleStatusQuery.FUEL_LEVEL))
-                is CommandExecutionResult.Rejected
-        )
+        val litresOnly = VehicleStatusQueryExecutor(noCapacity).execute(VoiceCommand.QueryVehicleStatus(VehicleStatusQuery.FUEL_LEVEL)) as CommandExecutionResult.Confirmed
+        assertEquals("Bình xăng còn khoảng 4 lít", litresOnly.actualValue)
     }
 
     @Test

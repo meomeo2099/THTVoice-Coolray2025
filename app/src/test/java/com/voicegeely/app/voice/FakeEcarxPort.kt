@@ -34,6 +34,9 @@ class FakeEcarxPort(
     val mcuWrites = mutableListOf<Pair<Int, ByteArray>>()
     val props = mutableMapOf<Int, Int>()
     val byteProps = mutableMapOf<Int, ByteArray>()
+    val sensors = mutableMapOf<Int, Float>()
+    val sensorReads = mutableListOf<Int>()
+    override fun getSensorLatestValue(sensorId: Int): Float? { sensorReads += sensorId; return sensors[sensorId] }
     override fun sendBytesToMcu(propertyId: Int, bytes: ByteArray): Boolean {
         val ok = mcuAccepts ?: return false
         mcuWrites += propertyId to bytes

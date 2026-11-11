@@ -22,6 +22,11 @@ object VoiceResponseFormatter {
         is VoiceCommand.Defrost -> defrostAck(command)
         is VoiceCommand.FanDirection -> "Đang chỉnh hướng gió ${fanDirectionText(command.directions)}."
         is VoiceCommand.HvacEco -> if (command.on) "Đang bật điều hòa tiết kiệm." else "Đang tắt điều hòa tiết kiệm."
+        is VoiceCommand.HvacAuto -> "Đang ${if (command.on) "bật" else "tắt"} AUTO điều hòa."
+        is VoiceCommand.SetAutoFanProfile -> "Đang chỉnh chế độ quạt điều hòa tự động."
+        is VoiceCommand.OemSwitch -> "Đang ${if (command.on) "bật" else "tắt"} ${command.feature.label}."
+        is VoiceCommand.QueryOemSwitch -> "Đang đọc trạng thái ${command.feature.label}."
+        is VoiceCommand.SetSunroofTilt -> "Đang ${if (command.on) "mở" else "đóng"} nghiêng cửa sổ trời."
         is VoiceCommand.HvacAirflowAutoCycle -> when {
             command.periodicMinutes != null && command.on -> "Đang bật đảo hướng gió định kỳ."
             command.periodicMinutes != null -> "Đang tắt đảo hướng gió."
@@ -105,6 +110,11 @@ object VoiceResponseFormatter {
         is VoiceCommand.Defrost -> defrostConfirmed(command)
         is VoiceCommand.FanDirection -> "Đã chỉnh hướng gió ${fanDirectionText(command.directions)}."
         is VoiceCommand.HvacEco -> if (command.on) "Đã bật điều hòa tiết kiệm." else "Đã tắt điều hòa tiết kiệm."
+        is VoiceCommand.HvacAuto -> "Đã ${if (command.on) "bật" else "tắt"} AUTO điều hòa."
+        is VoiceCommand.SetAutoFanProfile -> "Đã chỉnh quạt tự động sang ${when (command.profile) { AutoFanProfile.QUIET -> "êm"; AutoFanProfile.NORMAL -> "bình thường"; AutoFanProfile.STRONG -> "mạnh" }}."
+        is VoiceCommand.OemSwitch -> "Đã ${if (command.on) "bật" else "tắt"} ${command.feature.label}."
+        is VoiceCommand.QueryOemSwitch -> execution.actualValue?.let { "$it." } ?: "Không đọc được trạng thái ${command.feature.label}."
+        is VoiceCommand.SetSunroofTilt -> "Đã ${if (command.on) "mở" else "đóng"} nghiêng cửa sổ trời."
         is VoiceCommand.HvacAirflowAutoCycle -> when {
             command.periodicMinutes != null && command.on ->
                 "Đã bật đảo hướng gió ${execution.actualValue ?: "định kỳ"}, luân phiên vào mặt và xuống chân."
@@ -178,6 +188,11 @@ object VoiceResponseFormatter {
             is VoiceCommand.Defrost -> "điều khiển sấy kính"
             is VoiceCommand.FanDirection -> "điều chỉnh hướng gió"
             is VoiceCommand.HvacEco -> if (command.on) "bật điều hòa tiết kiệm" else "tắt điều hòa tiết kiệm"
+            is VoiceCommand.HvacAuto -> "đổi AUTO điều hòa"
+            is VoiceCommand.SetAutoFanProfile -> "chỉnh quạt điều hòa tự động"
+            is VoiceCommand.OemSwitch -> "đổi trạng thái ${command.feature.label}"
+            is VoiceCommand.QueryOemSwitch -> "đọc trạng thái ${command.feature.label}"
+            is VoiceCommand.SetSunroofTilt -> "điều khiển độ nghiêng cửa sổ trời"
             is VoiceCommand.HvacAirflowAutoCycle -> when {
                 command.periodicMinutes != null -> if (command.on) "bật đảo hướng gió định kỳ" else "tắt đảo hướng gió"
                 command.on -> "bật tự động đảo gió"

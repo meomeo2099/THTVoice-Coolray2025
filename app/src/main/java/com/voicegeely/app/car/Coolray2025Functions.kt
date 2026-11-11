@@ -20,6 +20,16 @@ package com.voicegeely.app.car
 object Coolray2025Functions {
     const val OFF = 0
     const val ON = 1
+    const val GLOBAL = 0
+    // IVehicle / IDriveMode: present in the car's AdaptAPI and invoked by Lunaris X50.
+    const val SETTING_FUNC_ENGINE_STOP_START = 0x20020100
+    const val SETTING_FUNC_ESC_SPORT_MODE = 0x20020300
+    const val SETTING_FUNC_LAMP_DAYTIME_RUNNING_LIGHT = 0x20040800
+    const val SETTING_FUNC_AUTO_HOLD = 0x20060400
+    const val DM_FUNC_DRIVE_MODE_SELECT = 0x22010100
+    // ISensor identifiers, never written through ICarFunction or VHAL.
+    const val SENSOR_TYPE_ODOMETER = 0x00100700
+    const val SENSOR_TYPE_FUEL_REMAIN_RANGE = 0x00100800
 
     /** Enumerated value `functionId + n` (AdaptAPI convention), e.g. seat heating level 2. */
     fun level(functionId: Int, n: Int): Int = if (n <= 0) OFF else functionId + n
@@ -75,13 +85,14 @@ object Coolray2025Functions {
     /** Per-window position state (0..100 %), read with CarImpl.getIntByPropID(prop, BCM_FUNC_WINDOW_POS). */
     const val INFO_ID_WINDOW_SUNSHADE = 678428828 // 0x2870009C INFO_ID_WINDOW_ROLLSHADE
     const val INFO_ID_WINDOW_SUNROOF = 678428827 // 0x2870009B
+    const val INFO_ID_WINDOW_SUNROOF_TILT = 0x287000A1
     const val INFO_ID_WINDOW_FL = 678428829 // 0x2870009D
     const val INFO_ID_WINDOW_FR = 678428830
     const val INFO_ID_WINDOW_RL = 678428831
     const val INFO_ID_WINDOW_RR = 678428832
     /** 12 V battery voltage: bytes [volts, tenths]. */
     const val INFO_ID_BATTERY_VOLTAGE = 678428900 // INFO_ID_VPOWERINFO_BATTERY_VOL
-    /** Fuel remaining in litres: 1 byte. */
+    /** Fuel percentage 0..100: 1 byte; litres require the vehicle's known tank capacity. */
     const val INFO_ID_REMAINING_FUEL = 678429191 // INFO_ID_REMAINING_OIL
 
     fun windowStateProp(groupIndex: Int): Int? = when (groupIndex) {
@@ -104,6 +115,7 @@ object Coolray2025Functions {
     const val HVAC_FUNC_AC = 0x10010300
     const val HVAC_FUNC_AC_MAX = 0x10010400
     const val HVAC_FUNC_FAN_SPEED = 0x10020100
+    const val HVAC_FUNC_AUTO_FAN_SETTING = 0x10020200
     const val HVAC_FUNC_CIRCULATION = 0x10030100
     const val HVAC_FUNC_DEFROST_FRONT = 0x10040100
     const val HVAC_FUNC_DEFROST_FRONT_MAX = 0x10040200
@@ -111,6 +123,7 @@ object Coolray2025Functions {
     const val HVAC_FUNC_TEMP = 0x10060100
     const val HVAC_FUNC_TEMP_DUAL = 0x10060500
     const val HVAC_FUNC_BLOWING_MODE = 0x10070100
+    const val HVAC_FUNC_ECO_SWITCH = 0x10080100
     /** Seat ventilation, zone ROW_1_LEFT / ROW_1_RIGHT, value OFF or level(…, 1..3). */
     const val HVAC_FUNC_SEAT_VENTILATION = 268763392
     /** Seat heating, zone ROW_1_LEFT / ROW_1_RIGHT, value OFF or level(…, 1..3). */

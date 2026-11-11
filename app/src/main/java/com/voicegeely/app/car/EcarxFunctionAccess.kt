@@ -29,6 +29,8 @@ interface EcarxFunctionPort {
     fun getIntByProp(propertyId: Int, area: Int): Int? = null
     /** `CarImpl.getBytesByPropID(prop)`; null when unavailable. */
     fun getBytesByProp(propertyId: Int): ByteArray? = null
+    /** Read-only ISensor identifier; distinct from ICarFunction and VHAL properties. */
+    fun getSensorLatestValue(sensorId: Int): Float? = null
 }
 
 /** In-memory port used when the car connection is a mock (development without a head unit). */
@@ -147,9 +149,21 @@ class EcarxFunctionAccess private constructor(
     }
 
     override fun getIntByProp(propertyId: Int, area: Int): Int? = try {
-        val two = carMethod("getIntByPropID", INT, INT)
-        val one = carMethod("getIntByPropID", INT)
-        ((two?.invoke(car, propertyId, area) ?: one?.invoke(car, propertyId)) as? Number)?.toInt()
+        // Vendor byteToInt returns -1 for null but zero for an empty array. Preserve unknown
+        // instead, so a failed read cannot report a closed window or completed actuator.
+        val bytesTwo = carMethod("getBytesByPropID", INT, INT)
+        val bytesOne = carMethod("getBytesByPropID", INT)
+        if (bytesTwo != null || bytesOne != null) {
+            val bytes = (if (bytesTwo != null) bytesTwo.invoke(car, propertyId, area)
+                else bytesOne?.invoke(car, propertyId)) as? ByteArray
+            bytes?.takeIf { it.size in 1..4 }?.foldIndexed(0) { index, value, byte ->
+                value or ((byte.toInt() and 0xFF) shl (index * 8))
+            }
+        } else {
+            val two = carMethod("getIntByPropID", INT, INT)
+            val one = carMethod("getIntByPropID", INT)
+            ((two?.invoke(car, propertyId, area) ?: one?.invoke(car, propertyId)) as? Number)?.toInt()
+        }
     } catch (error: Throwable) {
         VehicleTelemetryRegistry.recordFailure("ECARX", "GET_MCU_INT", propertyId, area, error)
         null
@@ -159,6 +173,16 @@ class EcarxFunctionAccess private constructor(
         carMethod("getBytesByPropID", INT)?.invoke(car, propertyId) as? ByteArray
     } catch (error: Throwable) {
         VehicleTelemetryRegistry.recordFailure("ECARX", "GET_MCU_BYTES", propertyId, null, error)
+        null
+    }
+
+    override fun getSensorLatestValue(sensorId: Int): Float? = try {
+        val sensor = carMethod("getSensorManager")?.invoke(car) ?: error("ECARX sensor manager unavailable")
+        val getter = sensor.javaClass.methods.firstOrNull { it.matches("getSensorLatestValue", INT) }
+            ?: error("ISensor.getSensorLatestValue unavailable")
+        (getter.invoke(sensor, sensorId) as? Number)?.toFloat()?.takeIf { it.isFinite() }
+    } catch (error: Throwable) {
+        VehicleTelemetryRegistry.recordFailure("ECARX", "GET_SENSOR", sensorId, null, error)
         null
     }
 

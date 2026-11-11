@@ -35,8 +35,8 @@ Nguồn: phân tích một gói phần mềm cộng đồng cho cùng nền tả
 | Dữ liệu | Nguồn | Giải mã |
 |---|---|---|
 | Điện áp ắc quy 12 V | `INFO_ID_VPOWERINFO_BATTERY_VOL` 0x287000E4 | bytes `[vôn, phần mười]` |
-| Xăng còn (lít) | `INFO_ID_REMAINING_OIL` 0x28700207 | 1 byte |
-| Tốc độ / số / ODO / % xăng / khoá điện | AdaptAPI `ISensor` 1048832 / 2097664 / 1050368 / 1050624 / 2097408 | |
+| Xăng còn (%) | `INFO_ID_REMAINING_OIL` 0x28700207 | 1 byte 0..100; chỉ quy đổi lít khi biết dung tích bình |
+| Tốc độ / số / ODO / quãng đường còn lại / khoá điện | AdaptAPI `ISensor` 1048832 / 2097664 / 1050368 / 1050624 / 2097408 | |
 | Phím CarPlay | `INFO_ID_CARPLAY_KEY_ID/VALUE` | chỉ khi CarPlay đang kết nối |
 
 ## Không dùng

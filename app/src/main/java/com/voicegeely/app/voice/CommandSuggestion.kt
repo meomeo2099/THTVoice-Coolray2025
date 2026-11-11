@@ -127,18 +127,20 @@ object CommandCatalog {
         "bật điều hòa", "tắt điều hòa", "tăng nhiệt độ", "giảm nhiệt độ", "nhiệt độ cao nhất", "nhiệt độ thấp nhất",
         "tăng quạt", "giảm quạt", "quạt mức 3", "gió vào mặt", "gió xuống chân", "lấy gió trong", "lấy gió ngoài",
         "sấy kính trước", "sấy kính sau", "sấy gương", "bật điều hòa tiết kiệm", "tắt điều hòa tiết kiệm",
+        "bật điều hòa tự động", "tắt điều hòa tự động", "chỉnh quạt tự động sang êm",
         // Windows / doors.
         "mở tất cả kính", "đóng tất cả kính", "mở kính lái", "đóng kính lái", "mở kính phụ", "đóng kính phụ",
-        "mở kính sau", "đóng kính sau", "hé kính", "khóa cửa", "mở khóa cửa", "mở cốp sau",
+        "mở kính sau", "đóng kính sau", "hé kính", "nghiêng cửa sổ trời",
         // Driving.
         "chế độ lái eco", "chế độ lái sport", "chế độ lái comfort",
+        "bật auto hold", "tắt auto hold", "bật start stop", "tắt start stop", "bật đèn ban ngày", "tắt đèn ban ngày",
         // Media.
         "mở nhạc", "tạm dừng nhạc", "tiếp tục phát", "bài tiếp theo", "bài trước", "tăng âm lượng", "giảm âm lượng",
         "tắt tiếng", "bật tiếng", "mở youtube", "mở spotify", "mở zing mp3",
         // Navigation / apps / screen.
         "mở bản đồ", "mở google maps", "về màn hình chính", "màn hình đen",
         // Questions.
-        "pin còn bao nhiêu", "quãng đường còn lại", "mấy giờ rồi", "hôm nay thứ mấy", "nhiệt độ ngoài xe",
+        "bình xăng còn bao nhiêu", "quãng đường còn lại", "mấy giờ rồi", "hôm nay thứ mấy", "nhiệt độ ngoài xe",
         "nhiệt độ trong xe", "tốc độ bao nhiêu", "tình trạng xe"
     )
 }

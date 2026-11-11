@@ -24,12 +24,14 @@ object SafetyPolicy {
         is VoiceCommand.SetHeadlightHeight,
         is VoiceCommand.SetIntelligentHighBeam,
         is VoiceCommand.OpenSceneScreen -> SafetyRequirement.PARKED_ONLY
+        is VoiceCommand.OemSwitch -> SafetyRequirement.PARKED_ONLY
 
         is VoiceCommand.ScreenBlackout ->
             if (command.on) SafetyRequirement.PARKED_ONLY else SafetyRequirement.SAFE
 
         is VoiceCommand.Window,
         is VoiceCommand.Sunroof,
+        is VoiceCommand.SetSunroofTilt,
         is VoiceCommand.ExteriorLight,
         is VoiceCommand.FogLight,
         is VoiceCommand.SetDriveMode,

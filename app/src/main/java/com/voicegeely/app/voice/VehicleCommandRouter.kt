@@ -31,6 +31,7 @@ class VehicleCommandRouter(
     private val seats = body?.let { SeatClimateVoiceCommandExecutor(it, waitForReadback) }
     private val steering = SteeringWheelHeatVoiceCommandExecutor(vehicle, waitForReadback)
     private val status = VehicleStatusQueryExecutor(vehicle, body)
+    private val oem = body?.let { CoolrayOemCommandExecutor(it, waitForReadback) }
 
     override suspend fun execute(command: VoiceCommand): CommandExecutionResult {
         if (!headUnitSupported && command !is VoiceCommand.QueryVehicleStatus) {
@@ -45,13 +46,20 @@ class VehicleCommandRouter(
 
     private suspend fun route(command: VoiceCommand): CommandExecutionResult = when (command) {
         is VoiceCommand.Window -> windows?.execute(command) ?: noBody()
-        is VoiceCommand.Sunroof -> sunroof?.execute(command) ?: noBody()
+        is VoiceCommand.Sunroof,
+        is VoiceCommand.SetSunroofTilt -> sunroof?.execute(command) ?: noBody()
         is VoiceCommand.CabinLight,
         is VoiceCommand.ExteriorLight,
         is VoiceCommand.FogLight -> lights?.execute(command) ?: noBody()
         is VoiceCommand.SeatClimate -> seats?.execute(command) ?: noBody()
         is VoiceCommand.SteeringWheelHeat -> steering.execute(command)
         is VoiceCommand.QueryVehicleStatus -> status.execute(command)
+        is VoiceCommand.SetDriveMode,
+        is VoiceCommand.HvacEco,
+        is VoiceCommand.HvacAuto,
+        is VoiceCommand.SetAutoFanProfile,
+        is VoiceCommand.OemSwitch,
+        is VoiceCommand.QueryOemSwitch -> oem?.execute(command) ?: noBody()
         is VoiceCommand.SetTemperature,
         is VoiceCommand.AdjustTemperature,
         VoiceCommand.TemperatureHigh,
@@ -63,7 +71,6 @@ class VehicleCommandRouter(
         is VoiceCommand.MaxAc,
         is VoiceCommand.Defrost,
         is VoiceCommand.FanDirection,
-        is VoiceCommand.HvacEco,
         is VoiceCommand.HvacAirflowAutoCycle -> hvac.execute(command)
         else -> CommandExecutionResult.Rejected("Lệnh này không thuộc nhóm điều khiển xe.")
     }

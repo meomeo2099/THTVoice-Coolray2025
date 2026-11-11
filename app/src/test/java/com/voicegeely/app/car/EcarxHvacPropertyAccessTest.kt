@@ -70,4 +70,11 @@ class EcarxHvacPropertyAccessTest {
     @Test fun unrelatedNullableReadPreservesBackendUnknown() {
         assertNull(EcarxHvacPropertyAccess(StaleVhal(), FakeEcarxPort()).getIntPropertyOrNull(P.GEAR, 0))
     }
+    @Test fun fanStateUsesFrontRowZoneBeforeGlobalFallback() {
+        val port = FakeEcarxPort().apply {
+            ints[F.HVAC_FUNC_FAN_SPEED to 0] = F.HVAC_FUNC_FAN_SPEED + 1
+            ints[F.HVAC_FUNC_FAN_SPEED to 1] = F.HVAC_FUNC_FAN_SPEED + 4
+        }
+        assertEquals(4, EcarxHvacPropertyAccess(StaleVhal(), port).getIntPropertyOrNull(P.HVAC_FAN_SPEED, P.HVAC_AREA))
+    }
 }

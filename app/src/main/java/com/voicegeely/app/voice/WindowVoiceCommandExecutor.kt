@@ -83,15 +83,7 @@ class WindowVoiceCommandExecutor(
         } else CommandExecutionResult.Rejected("Xe không nhận lệnh dừng kính.")
     }
 
-    private fun position(zone: Int): Int? {
-        groupIndex(zone)?.let(F::windowStateProp)?.let { prop ->
-            (try { port.getIntByProp(prop, F.BCM_FUNC_WINDOW_POS) } catch (_: Throwable) { null })
-                ?.takeIf { it in 0..100 }?.let { return it }
-        }
-        support.readInt(F.BCM_FUNC_WINDOW_CURRENT_POS, zone)?.takeIf { it in 0..100 }?.let { return it }
-        return (support.readFloat(F.BCM_FUNC_WINDOW_CURRENT_POS, zone) ?: support.readFloat(F.BCM_FUNC_WINDOW_POS, zone))
-            ?.takeIf { it in 0f..100f }?.roundToInt()
-    }
+    private fun position(zone: Int): Int? = readPosition(port, zone)
 
     private fun groupIndex(zone: Int): Int? = when (zone) {
         F.WINDOW_ROW_1_LEFT -> F.GROUP_FL
@@ -123,6 +115,20 @@ class WindowVoiceCommandExecutor(
     private data class ZoneResult(val zone: Int, val accepted: Boolean, val confirmed: Boolean, val moved: Boolean, val actual: Int?)
 
     companion object {
+        /** Shared by command verification and read-only status; prefer actual MCU position. */
+        fun readPosition(port: EcarxFunctionPort, zone: Int): Int? {
+            val prop = when (zone) {
+                F.WINDOW_ROW_1_LEFT -> F.INFO_ID_WINDOW_FL
+                F.WINDOW_ROW_1_RIGHT -> F.INFO_ID_WINDOW_FR
+                F.WINDOW_ROW_2_LEFT -> F.INFO_ID_WINDOW_RL
+                F.WINDOW_ROW_2_RIGHT -> F.INFO_ID_WINDOW_RR
+                else -> return null
+            }
+            (try { port.getIntByProp(prop, F.BCM_FUNC_WINDOW_POS) } catch (_: Throwable) { null })?.takeIf { it in 0..100 }?.let { return it }
+            (try { port.getInt(F.BCM_FUNC_WINDOW_CURRENT_POS, zone) } catch (_: Throwable) { null })?.takeIf { it in 0..100 }?.let { return it }
+            return (try { port.getFloat(F.BCM_FUNC_WINDOW_CURRENT_POS, zone) ?: port.getFloat(F.BCM_FUNC_WINDOW_POS, zone) } catch (_: Throwable) { null })
+                ?.takeIf { it.isFinite() && it in 0f..100f }?.roundToInt()
+        }
         const val TOLERANCE = 3
         val VERIFY_DELAYS = longArrayOf(300L, 600L, 900L, 1200L, 1500L)
         val ALL_ZONES: Set<Int> = linkedSetOf(F.WINDOW_ROW_1_LEFT, F.WINDOW_ROW_1_RIGHT, F.WINDOW_ROW_2_LEFT, F.WINDOW_ROW_2_RIGHT)

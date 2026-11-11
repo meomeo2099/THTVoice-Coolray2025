@@ -1,6 +1,6 @@
 # Coolray 2025 — bảng thuộc tính xe (SX11-LA / IHU730P)
 
-Nguồn duy nhất: dữ liệu lấy trực tiếp từ đầu xe Coolray 2025 của chủ repo
+Nguồn nền tảng: dữ liệu lấy trực tiếp từ đầu xe Coolray 2025 của chủ repo
 (`getprop`, `dumpsys car_service`, `/system/framework/AdapterAPI.jar`, 20/10/2026).
 Mọi giá trị ở trạng thái **REFERENCE**: có trong cấu hình của chính đầu xe, nhưng chưa ghi + đọc lại bằng giọng nói trên xe.
 
@@ -17,7 +17,7 @@ Mọi giá trị ở trạng thái **REFERENCE**: có trong cấu hình của ch
 
 ## Hai đường điều khiển
 
-1. **VHAL chuẩn (`CarPropertyManager`)**: điều hoà, sưởi vô lăng, đọc trạng thái. Hằng số trong `car/CoolrayProperties.kt`.
+1. **VHAL chuẩn (`CarPropertyManager`)**: catalog cấu hình điều hoà và đọc trạng thái; runtime điều hoà dùng OEM facade từ 1.0.7. Sưởi bị loại theo trang bị chủ xe. Hằng số trong `car/CoolrayProperties.kt`.
 2. **ECARX AdaptAPI 1.1.18.9 (`ICarFunction`)**: kính, cửa sổ trời, sưởi/thông gió ghế, đèn. Hằng số trong `car/Coolray2025Functions.kt`,
    truy cập bằng reflection qua `car/EcarxFunctionAccess.kt`. Trước mỗi lệnh gọi `isFunctionSupported`, sau lệnh đọc lại.
 
@@ -26,32 +26,34 @@ quạt **1–7**; các mã kính `591405227`, đèn, ghế, cốp và REF-WIDGET
 
 Lệnh tăng/giảm nhiệt độ không nêu số dùng bước 0,5 °C, theo xác nhận của chủ xe ngày 11/11/2026. Ví dụ 24 → 24,5 °C. Khi nói rõ số độ, trợ lý dùng đúng số đã chỉ định.
 
-## Đã bật cho giọng nói
+## Routing hiện tại (1.0.9)
 
-| Nhóm | Đường | Mã | Zone / area | Giá trị |
-|---|---|---|---|---|
-| Nguồn điều hoà | VHAL | 354419984 `HVAC_POWER_ON` | 117 (`0x75`) | bool |
-| A/C | VHAL | 354419973 `HVAC_AC_ON` | 117 (`0x75`) | bool |
-| Lạnh nhanh | VHAL | 354419974 `HVAC_MAX_AC_ON` | 117 (`0x75`) | bool |
-| Lấy gió trong/ngoài | VHAL | 354419976 `HVAC_RECIRC_ON` | 117 (`0x75`) | bool, true = gió trong |
-| Nhiệt độ | VHAL | 358614275 `HVAC_TEMPERATURE_SET` | 49 (`0x31`, lái), 68 (`0x44`, phụ) | float 16..32, bước 0,5 |
-| Quạt | VHAL | 356517120 `HVAC_FAN_SPEED` | 117 (`0x75`) | 1..7; "mạnh nhất" = 7; "tắt quạt" = tắt nguồn điều hoà |
-| Hướng gió | VHAL | 356517121 `HVAC_FAN_DIRECTION` | 117 (`0x75`) | bitmask 1 mặt / 2 chân / 4 kính |
-| Sấy kính trước / sau | VHAL | 320865540 `HVAC_DEFROSTER` | 1 / 2 | bool |
-| Sưởi vô lăng | VHAL | 289408269 `HVAC_STEERING_WHEEL_HEAT` | 0 | -2..2; bật = 2, tắt = 0 |
-| Kính cửa | AdaptAPI | `BCM_FUNC_WINDOW_POS` 553845504 (customize %) | 16 / 32 / 256 / 512 | 0..100; dự phòng `BCM_FUNC_WINDOW` ON/OFF; dừng = `+1` |
-| Cửa sổ trời (kính) | AdaptAPI | như trên | 4 (`WINDOW_ROOF_TOP`) | 0..100 |
-| Rèm che nắng | — | không có actuator rõ zone | — | từ chối, không ghi |
-| Sưởi ghế | AdaptAPI | `HVAC_FUNC_SEAT_HEATING` 268763648 | 1 lái / 4 phụ | 0 hoặc `ID + 1..3` |
-| Thông gió ghế | AdaptAPI | `HVAC_FUNC_SEAT_VENTILATION` 268763392 | 1 / 4 | 0 hoặc `ID + 1..3` |
-| Đèn trong xe | AdaptAPI | `BCM_FUNC_LIGHT_READING_LIGHT` 553980672 | ALL | ON/OFF |
-| Đèn chiếu gần / định vị | AdaptAPI | `BCM_FUNC_LIGHT_DIPPED_BEAM` 553976064 / `BCM_FUNC_LIGHT_FRONT_POSITION_LAMPS` 553977856 | ALL | ON/OFF |
-| Đèn sương mù | AdaptAPI | `BCM_FUNC_LIGHT_FRONT_FOG_LAMPS` 553976832 | ALL | ON/OFF |
+Chi tiết 47 action tham khảo, nguồn bytecode, giá trị/zone và câu mẫu ở
+[COOLRAY2025_LUNARIS_COMMAND_MATRIX.md](COOLRAY2025_LUNARIS_COMMAND_MATRIX.md).
+Mọi route vẫn REFERENCE/UNVERIFIED về phần cứng; kiểm tra hỗ trợ và đọc lại ở runtime.
 
-Đọc trạng thái: tốc độ (`PERF_VEHICLE_SPEED`), số (`CURRENT_GEAR`), nhiệt độ/quạt điều hoà, mức xăng
-(`FUEL_LEVEL` ÷ `INFO_FUEL_CAPACITY`, kèm `FUEL_LEVEL_LOW`), ODO (`PERF_ODOMETER`), nhiệt độ ngoài trời
-(`ENV_OUTSIDE_TEMPERATURE`), "tình trạng xe" (xăng + kính qua AdaptAPI). Quãng đường còn lại, tiêu hao, nước làm mát,
-ắc quy, áp suất lốp, bảo dưỡng: đầu xe không có thuộc tính chuẩn → trả lời "chưa hỗ trợ".
+| Nhóm | Backend / mã | Zone / giá trị |
+| --- | --- | --- |
+| Nguồn/AUTO/A/C/lạnh nhanh | ICarFunction `0x10010100` / `0x10010200` / `0x10010300` / `0x10010400` | global0; 1/0 |
+| Nhiệt độ | customize `0x10060100` | 1 lái / 4 phụ; 16..32 bước0,5 |
+| Quạt | function `0x10020100` | đặt global0, đọc hàng ghế trước1 rồi fallback0; enum +1..+7 |
+| Hướng gió | function `0x10070100` | đặt0, đọc1/0; enum +1..+7 |
+| Lấy gió | function `0x10030100` | global0; +1 trong / +2 ngoài |
+| Khử mờ kính trước / sấy sau | function `0x10040100` / `0x10040300` | global0; 1/0 |
+| ECO điều hoà / quạt AUTO | `0x10080100` / `0x10020200` | global0; bool / +1 êm,+2 thường,+3 mạnh |
+| Kính / mái / rèm | MCU `0x287000A2`, 8byte | index0..3 kính,4 mái,6 rèm;0..100,-1 giữ nguyên |
+| Nghiêng mái | function `0x21030400` | global0;1/0; đọc MCU `0x287000A1` |
+| Chế độ lái | function `0x22010100` | global0;+1 ECO,+2 Comfort,+3 Sport |
+| DRL / StartStop / AutoHold / ESC Sport | `0x20040800` / `0x20020100` / `0x20060400` / `0x20020300` | global0;1/0; yêu cầu xe đỗ/P |
+| Thông gió ghế | function `0x10050100` | 1/4;0 hoặc enum+1..+3; chỉ khi có trang bị |
+| Đèn đọc sách/chiếu gần/định vị/sương mù | các IBcm function có sẵn trong Coolray2025Functions | giữ route hiện có |
+| Sưởi ghế/vô lăng/vòi phun/kính điện trở | không route | loại theo yêu cầu chủ xe |
+
+Đọc tốc độ, số, mức xăng/dung tích, ODO và nhiệt độ ngoài trời từ VHAL có cấu hình.
+Điện áp ắc quy đọc MCU `0x287000E4`; ODO fallback sensor `0x00100700`, quãng đường còn lại sensor
+`0x00100800`, chế độ lái đọc ICarFunction. Xăng MCU `0x28700207` là phần trăm, không phải lít;
+VHAL FUEL_LEVEL có đơn vị ml. Không nói kính đóng hết nếu chưa đọc đủ bốn kính.
+Các bảng dưới giữ lại catalog VHAL gốc và không đồng nghĩa mọi property được route để ghi.
 
 ## Toàn bộ thuộc tính VHAL chuẩn trên đầu xe
 

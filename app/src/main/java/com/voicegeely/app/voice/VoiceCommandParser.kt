@@ -56,6 +56,7 @@ object VoiceCommandParser {
     private val mediaProviderNames = "youtube music|yt music|youtube vanced|vanced|revanced|re vanced|morphe|youtube|you tube|smart ?tube|spotify|zing mp3|zing"
 
     fun parse(text: String): ParsedVoiceCommand? {
+        CoolrayOemCommandParser.parse(text)?.let { return it }
         val normalized = VoiceTextNormalizer.normalize(text)
         if (normalized.isBlank()) return null
         MaxAcCommandParser.parse(text)?.let { return it }
@@ -325,8 +326,15 @@ object VoiceCommandParser {
         return amps.takeIf { it in 5..32 }?.let { VoiceCommand.SetChargeCurrentLimit(it) }
     }
 
+    private val driveModeRequest = Regex(
+        "^(?:hãy |vui lòng )?(?:(?:chuyển|đổi|bật|mở|đặt)(?: sang| về)? )?" +
+            "(?:chế độ(?: lái)?|drive mode) (?:eco|tiết kiệm|comfort|thoải mái|tiêu chuẩn|standard|sport|thể thao|dynamic)" +
+            "(?: giúp tôi)?(?: nhé| đi)?$|^(?:eco|comfort|sport) mode$"
+    )
+
     private fun parseDriving(text: String): VoiceCommand? {
         if (Regex("chế độ lái|drive mode|chế độ eco|chế độ comfort|chế độ sport|eco mode|sport mode").containsMatchIn(text)) {
+            if (!driveModeRequest.matches(text)) return null
             return when {
                 Regex("eco|tiết kiệm").containsMatchIn(text) -> VoiceCommand.SetDriveMode(DriveMode.ECO)
                 Regex("comfort|thoải mái|tiêu chuẩn|standard").containsMatchIn(text) -> VoiceCommand.SetDriveMode(DriveMode.COMFORT)

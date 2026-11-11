@@ -20,11 +20,18 @@ class EcarxCarConnectionTest {
         fun disconnect() { disconnects++; connected = false; managerReady = false }
     }
     class Car : SignalManager() {
+        var bytes: ByteArray? = null
+        fun getBytesByPropID(property: Int, area: Int): ByteArray? = bytes
+        fun getIntByPropID(property: Int, area: Int) = if (bytes == null) -1 else 0 // empty payload default
+        fun getSensorManager() = Sensor()
         fun getICarFunction(): Function {
             check(connected && managerReady) { "ICar called before OEM service ready" }
             events += "function"
             return Function()
         }
+    }
+    class Sensor {
+        fun getSensorLatestValue(sensor: Int): Float = if (sensor == 0x00100800) 321f else Float.NaN
     }
     class Function {
         fun setFunctionValue(function: Int, zone: Int, value: Int) = true
@@ -73,5 +80,16 @@ class EcarxCarConnectionTest {
             assertTrue(Thread.currentThread().isInterrupted)
             assertEquals(1, car.disconnects)
         } finally { Thread.interrupted() }
+    }
+    @Test fun missingOrEmptyMcuBytesMustNotBecomeClosedWindowZero() {
+        val car = Car().apply { connected = true; managerReady = true }
+        val port = EcarxFunctionAccess.fromCar(car)
+        assertNull(port.getIntByProp(0x2870009d, 0x21030300))
+        car.bytes = byteArrayOf()
+        assertNull(port.getIntByProp(0x2870009d, 0x21030300))
+        car.bytes = byteArrayOf(50)
+        assertEquals(50, port.getIntByProp(0x2870009d, 0x21030300))
+        assertEquals(321f, port.getSensorLatestValue(0x00100800))
+        assertNull(port.getSensorLatestValue(123))
     }
 }

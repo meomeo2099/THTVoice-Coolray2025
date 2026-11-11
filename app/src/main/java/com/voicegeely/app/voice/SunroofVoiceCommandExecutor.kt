@@ -21,6 +21,12 @@ class SunroofVoiceCommandExecutor(
     private val support = EcarxCommandSupport(port, waitForReadback, VERIFY_DELAYS)
 
     override suspend fun execute(command: VoiceCommand): CommandExecutionResult {
+        if (command is VoiceCommand.SetSunroofTilt) {
+            val trace = VehicleDebugTrace.beginCommand("SUNROOF:TILT")
+            return try { setTilt(command.on) }
+            catch (error: Throwable) { CommandExecutionResult.Failed(error.message ?: "Lỗi điều khiển độ nghiêng cửa sổ trời.", error.javaClass.name) }
+            finally { VehicleDebugTrace.endCommand(trace) }
+        }
         if (command !is VoiceCommand.Sunroof) return CommandExecutionResult.Rejected("Lệnh này không thuộc nhóm cửa sổ trời.")
         val traceId = VehicleDebugTrace.beginCommand("SUNROOF:${command.part.name}:${command.operation.name}")
         return try {
@@ -31,6 +37,10 @@ class SunroofVoiceCommandExecutor(
                     ?: return CommandExecutionResult.Rejected("Phần trăm cửa sổ trời phải từ 0 đến 100.")
                 WindowOperation.STOP -> return if (command.part == SunroofPart.GLASS) stop()
                     else CommandExecutionResult.Rejected("Chưa hỗ trợ dừng rèm che nắng.")
+            }
+            if (command.part == SunroofPart.GLASS && target == 0 && tiltState() == F.ON) {
+                val closed = setTilt(false)
+                if (closed !is CommandExecutionResult.Confirmed) return closed
             }
             when (command.part) {
                 SunroofPart.GLASS -> moveTo(F.GROUP_SUNROOF, target, "cửa sổ trời", glassFallback = true)
@@ -49,6 +59,7 @@ class SunroofVoiceCommandExecutor(
         var accepted = try { port.sendBytesToMcu(F.INFO_ID_WINDOW_GROUP, F.windowGroupPayload(group, target)) } catch (_: Throwable) { false }
         if (!accepted && glassFallback) {
             accepted = try { port.setFloat(F.BCM_FUNC_WINDOW_POS, ZONE, target.toFloat()) } catch (_: Throwable) { false }
+            if (!accepted) accepted = try { port.setInt(F.BCM_FUNC_WINDOW_POS, ZONE, target) } catch (_: Throwable) { false }
             if (!accepted && (target == 0 || target == 100)) {
                 accepted = try { port.setInt(F.BCM_FUNC_WINDOW, ZONE, if (target == 100) F.ON else F.OFF) } catch (_: Throwable) { false }
             }
@@ -81,8 +92,19 @@ class SunroofVoiceCommandExecutor(
                 ?.takeIf { it in 0..100 }?.let { return it }
         }
         if (!glassFallback) return null
+        support.readInt(F.BCM_FUNC_WINDOW_CURRENT_POS, ZONE)?.takeIf { it in 0..100 }?.let { return it }
         return (support.readFloat(F.BCM_FUNC_WINDOW_CURRENT_POS, ZONE) ?: support.readFloat(F.BCM_FUNC_WINDOW_POS, ZONE))
             ?.takeIf { it in 0f..100f }?.roundToInt()
+    }
+
+    private fun tiltState(): Int? =
+        (try { port.getIntByProp(F.INFO_ID_WINDOW_SUNROOF_TILT, F.BCM_FUNC_WINDOW_POS) } catch (_: Throwable) { null })?.takeIf { it in 0..1 }
+            ?: support.readInt(F.BCM_FUNC_SUNROOF_TILT, F.GLOBAL)?.takeIf { it in 0..1 }
+
+    private fun setTilt(on: Boolean): CommandExecutionResult {
+        if (port.isSupported(F.BCM_FUNC_SUNROOF_TILT, F.GLOBAL) != true) return CommandExecutionResult.Rejected(EcarxCommandSupport.NOT_ACTIVE)
+        return support.writeIntVerify(F.BCM_FUNC_SUNROOF_TILT, F.GLOBAL, if (on) F.ON else F.OFF,
+            "nghiêng cửa sổ trời", state = ::tiltState)
     }
 
     companion object {

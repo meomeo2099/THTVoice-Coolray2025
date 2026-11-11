@@ -28,4 +28,5 @@ class DeferredEcarxFunctionPort(
     override fun sendBytesToMcu(propertyId: Int, bytes: ByteArray): Boolean = port()?.sendBytesToMcu(propertyId, bytes) ?: false
     override fun getIntByProp(propertyId: Int, area: Int): Int? = port()?.getIntByProp(propertyId, area)
     override fun getBytesByProp(propertyId: Int): ByteArray? = port()?.getBytesByProp(propertyId)
+    override fun getSensorLatestValue(sensorId: Int): Float? = port()?.getSensorLatestValue(sensorId)
 }

@@ -7,6 +7,8 @@ name: Release candidate APK
 # (docs/phase11/RELEASE_PLAN.md), so the update is live as soon as the run is green.
 
 on:
+  push:
+    branches: [test/coolray2025-voice-20261111]
   workflow_dispatch:
     inputs:
       version_code:
@@ -56,8 +58,8 @@ jobs:
       - name: Pick version and gate it
         shell: bash
         env:
-          IN_CODE: ${{ inputs.version_code }}
-          IN_NAME: ${{ inputs.version_name }}
+          IN_CODE: ${{ inputs.version_code || '10' }}
+          IN_NAME: ${{ inputs.version_name || '1.0.9' }}
         run: |
           set -euo pipefail
           read -r code name < <(bash scripts/release/next-version.sh "$IN_CODE" "$IN_NAME")
