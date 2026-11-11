@@ -37,9 +37,10 @@ object CoolrayProperties {
     const val NIGHT_MODE = 287310855 // 0x11200407 NIGHT_MODE
 
     // ---------------------------------------------------------------------
-    // HVAC — every HVAC property on this head unit uses area 75, temperature uses 31 / 44.
+    // CarPropertyConfig prints decimal area IDs. HAL dump prints the same IDs in hex:
+    // 0x75 = 117, 0x31 = 49, 0x44 = 68 (physical car capture 2026-11-11).
     // ---------------------------------------------------------------------
-    const val HVAC_AREA = 75
+    const val HVAC_AREA = 0x75
 
     const val HVAC_POWER = 354419984 // 0x15200510 HVAC_POWER_ON
     const val HVAC_POWER_AREA = HVAC_AREA
@@ -57,21 +58,21 @@ object CoolrayProperties {
     const val HVAC_MAX_DEFROST = 354419975 // 0x15200507 HVAC_MAX_DEFROST_ON
     const val HVAC_MAX_DEFROST_AREA = HVAC_AREA
 
-    /** HVAC_TEMPERATURE_SET 0x15600503, float °C. Areas from the dump: 31 (driver side), 44 (passenger side). */
+    /** HVAC_TEMPERATURE_SET 0x15600503, float °C. Driver area 0x31 (49), passenger 0x44 (68). */
     const val HVAC_TEMP_SET = 358614275
-    const val HVAC_TEMP_AREA = 31
-    const val HVAC_TEMP_AREA_PASSENGER = 44
+    const val HVAC_TEMP_AREA = 0x31
+    const val HVAC_TEMP_AREA_PASSENGER = 0x44
     const val HVAC_MIN_TEMP = 16.0f
     const val HVAC_MAX_TEMP = 32.0f
     const val HVAC_TEMP_STEP = 0.5f
 
-    /** HVAC_FAN_SPEED 0x15400500, area 75, int 1..7 (dump min/max). */
+    /** HVAC_FAN_SPEED 0x15400500, area 0x75 (117), int 1..7 (dump min/max). */
     const val HVAC_FAN_SPEED = 356517120
     const val HVAC_FAN_AREA = HVAC_AREA
     const val HVAC_MIN_FAN = 1
     const val HVAC_MAX_FAN = 7
 
-    /** HVAC_FAN_DIRECTION 0x15400501, area 75, AOSP bitmask 1 face / 2 floor / 4 defrost. */
+    /** HVAC_FAN_DIRECTION 0x15400501, area 0x75 (117), AOSP bitmask 1 face / 2 floor / 4 defrost. */
     const val HVAC_FAN_DIRECTION = 356517121
     const val HVAC_FAN_DIRECTION_AREA = HVAC_AREA
     const val HVAC_DIRECTION_FACE = 1

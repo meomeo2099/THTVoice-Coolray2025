@@ -79,6 +79,9 @@ class VoiceAssistantService : Service() {
     private lateinit var mp3Reply: Mp3ReplyPlayer
     private lateinit var offlineTts: SherpaOfflineTtsEngine
     private lateinit var systemTts: com.voicegeely.app.tts.SystemTtsFallback
+    private val boundedReply = com.voicegeely.app.tts.BoundedVoiceReply(
+        onFailure = { Log.w(TAG, "reply_worker status=$it") }
+    )
     private lateinit var asrEngine: SherpaStreamingAsrEngine
     @Volatile private var destroyed = false
     private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
@@ -103,6 +106,7 @@ class VoiceAssistantService : Service() {
     /** Bumped for every listening session; a session abandoned by the watchdog must not touch the next one. */
     @Volatile private var sessionGeneration = 0L
     @Volatile private var sessionStartedAt = 0L
+    @Volatile private var sessionPhase = "IDLE"
     private val sessionThreadGeneration = InheritableThreadLocal<Long>()
     private val sessionDeadline by lazy {
         com.voicegeely.app.voice.SessionDeadline(
@@ -409,6 +413,7 @@ class VoiceAssistantService : Service() {
         feedbackAudio.play(VoiceFeedbackCue.LISTENING)
         val generation = ++sessionGeneration
         sessionStartedAt = android.os.SystemClock.elapsedRealtime()
+        sessionPhase = "ASR_CAPTURE"
         sessionDeadline.start(generation, com.voicegeely.app.voice.SessionWatchdogPolicy.STUCK_AFTER_MS)
         recognitionThread = thread(name = "THTVoice-Sherpa", start = true) {
             runRecognitionSession(generation)
@@ -651,7 +656,7 @@ class VoiceAssistantService : Service() {
     @SuppressLint("MissingPermission")
     /** A session that never finished (car or audio call hung): drop it so the key works again. */
     private fun recoverStuckSession() {
-        Log.w(TAG, "session_stuck_recovered state=${micState.state} ageMs=${android.os.SystemClock.elapsedRealtime() - sessionStartedAt}")
+        Log.w(TAG, "session_stuck_recovered state=${micState.state} phase=$sessionPhase ageMs=${android.os.SystemClock.elapsedRealtime() - sessionStartedAt}")
         sessionDeadline.cancel()
         sessionGeneration++
         recognitionRunning.set(false)
@@ -773,6 +778,7 @@ class VoiceAssistantService : Service() {
                 }
             }
             if (!sessionActive(generation)) return
+            sessionPhase = "ASR_DECODE"
             val result = if (captureError == null) asrEngine.finishStream() else null
             if (!sessionActive(generation)) return
             // A failed capture or final decode must not dispatch an incomplete command.
@@ -787,6 +793,7 @@ class VoiceAssistantService : Service() {
             closeRecorder(recorder)
             recorder = null
             micState.beginProcessing()
+            sessionPhase = "COMMAND_OR_REPLY"
             // End cue only when spoken feedback is off (owner request 30/09/2026): with voice
             // feedback on, the start beep plus the spoken result is enough.
             val spokenFeedback = voicePreferences.voiceFeedbackEnabled
@@ -828,6 +835,7 @@ class VoiceAssistantService : Service() {
                 mainHandler.post { if (!destroyed) ensureWakeWordListening() }
                 return
             }
+            sessionPhase = "ASR_RESET"
             try { asrEngine.reset() } catch (_: Throwable) {}
             if (!sessionActive(generation)) {
                 if (recognitionThread === Thread.currentThread()) recognitionThread = null
@@ -846,7 +854,9 @@ class VoiceAssistantService : Service() {
             if (!wakeEcho) wakeEchoReopenUsed = false
             if (!(shouldReopen && serviceReady)) {
                 // Let the last sound finish, then bring the music back up.
+                sessionPhase = "FEEDBACK_CLEANUP"
                 feedbackAudio.awaitIdle()
+                sessionPhase = "AUDIO_FOCUS_RELEASE"
                 audioDucker.release()
                 // "Tạm dừng nhạc" in pause mode: the player would resume on focus return, so pause again.
                 if (com.voicegeely.app.tts.MusicFocusPolicy.repauseAfterRelease(sessionPausesMusic, lastCommand, lastCommandSucceeded)) {
@@ -870,6 +880,7 @@ class VoiceAssistantService : Service() {
             val reopenAfterCleanup = shouldReopen || bargeInRequested
             bargeInRequested = false
             micState.endProcessing()
+            sessionPhase = "IDLE"
             recognitionRunning.set(false)
             recognitionThread = null
             sessionThreadGeneration.remove()
@@ -1104,6 +1115,7 @@ class VoiceAssistantService : Service() {
                 return
             }
             if (!canPublishSessionResult()) return
+            Log.i(TAG, "vehicle_command_result command=${parsed.command} result=$execution")
             lastCommand = parsed.command
             lastCommandSucceeded = execution is com.voicegeely.app.voice.CommandExecutionResult.Confirmed ||
                 execution is com.voicegeely.app.voice.CommandExecutionResult.AcceptedUnverified
@@ -1345,16 +1357,19 @@ class VoiceAssistantService : Service() {
         if (!canPublishSessionResult()) return true
         // Cut short by the voice key: say nothing more, a new listening session follows.
         if (bargeInRequested) return true
-        replySpeaking = true
-        try {
-            val voice = voicePreferences.ttsVoice
-            val generation = sessionThreadGeneration.get()
-            val cancelled = { bargeInRequested || destroyed || (generation != null && !sessionActive(generation)) }
-            if (mp3Reply.speak(text, voice, cancelled) || cancelled()) return true
-            if (offlineTts.speak(text, voice) || cancelled()) return true
-            return systemTts.speak(text)
-        } finally {
-            replySpeaking = false
+        val voice = voicePreferences.ttsVoice
+        val generation = sessionThreadGeneration.get()
+        return boundedReply.speak { timedOut ->
+            val cancelled = { timedOut() || bargeInRequested || destroyed || (generation != null && !sessionActive(generation)) }
+            if (cancelled()) return@speak true
+            replySpeaking = true
+            try {
+                if (mp3Reply.speak(text, voice, cancelled) || cancelled()) true
+                else if (offlineTts.speak(text, voice) || cancelled()) true
+                else systemTts.speak(text)
+            } finally {
+                replySpeaking = false
+            }
         }
     }
 
@@ -1459,7 +1474,12 @@ class VoiceAssistantService : Service() {
         safetyGate = VehicleSafetyGate(access)
         val headUnit = CoolrayHeadUnit.detect()
         Log.i(TAG, "Coolray head unit: ${headUnit ?: "not detected (vehicle writes blocked)"}")
-        val ecarx = if (access != null && headUnit != null) ecarxPort() else null
+        val ecarx = if (access != null && headUnit != null) {
+            com.voicegeely.app.car.DeferredEcarxFunctionPort(
+                connect = ::ecarxPort,
+                clock = { android.os.SystemClock.elapsedRealtime() }
+            )
+        } else null
         return VoiceCommandRouter(
             headUnitSupported = headUnit != null,
             ecarx = ecarx,
@@ -1620,6 +1640,7 @@ class VoiceAssistantService : Service() {
         try { wakeWordEngine.close() } catch (_: Throwable) {}
         if (::asrEngine.isInitialized) try { asrEngine.close() } catch (_: Throwable) {}
         if (::mp3Reply.isInitialized) mp3Reply.interrupt()
+        boundedReply.close()
         try { offlineTts.close() } catch (_: Throwable) {}
         try { systemTts.close() } catch (_: Throwable) {}
         try { audioDucker.release() } catch (_: Throwable) {}

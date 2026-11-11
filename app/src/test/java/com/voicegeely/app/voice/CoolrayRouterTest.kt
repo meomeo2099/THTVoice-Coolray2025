@@ -96,13 +96,15 @@ class CoolrayRouterTest {
     }
 
     @Test fun coolray2025_hvac_uses_head_unit_areas() {
-        assertEquals(75, CoolrayProperties.HVAC_POWER_AREA)
-        assertEquals(75, CoolrayProperties.HVAC_AC_AREA)
-        assertEquals(75, CoolrayProperties.HVAC_FAN_AREA)
+        // Decimal keys in the physical car's CarPropertyConfig, 2026-11-11.
+        assertEquals(117, CoolrayProperties.HVAC_POWER_AREA)
+        assertEquals(117, CoolrayProperties.HVAC_AC_AREA)
+        assertEquals(117, CoolrayProperties.HVAC_FAN_AREA)
         assertEquals(356517121, CoolrayProperties.HVAC_FAN_DIRECTION)
-        assertEquals(75, CoolrayProperties.HVAC_FAN_DIRECTION_AREA)
+        assertEquals(117, CoolrayProperties.HVAC_FAN_DIRECTION_AREA)
         assertEquals(7, CoolrayProperties.HVAC_MAX_FAN)
-        assertEquals(31, CoolrayProperties.HVAC_TEMP_AREA)
+        assertEquals(49, CoolrayProperties.HVAC_TEMP_AREA)
+        assertEquals(68, CoolrayProperties.HVAC_TEMP_AREA_PASSENGER)
         assertEquals(320865540, CoolrayProperties.HVAC_DEFROSTER)
         assertEquals(1, CoolrayProperties.HVAC_DEFROST_FRONT_AREA)
         assertEquals(2, CoolrayProperties.HVAC_DEFROST_REAR_AREA)

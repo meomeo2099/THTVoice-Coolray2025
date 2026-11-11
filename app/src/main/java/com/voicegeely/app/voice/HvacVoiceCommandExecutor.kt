@@ -5,7 +5,7 @@ import com.voicegeely.app.car.VehicleDebugTrace
 import com.voicegeely.app.car.VehiclePropertyAccess
 import kotlin.math.abs
 
-/** Coolray 2025 HVAC executor (standard VHAL, area 75 / temperature areas 31 & 44). REFERENCE. */
+/** Coolray 2025 HVAC executor (standard VHAL, area 0x75 (117) / temperature areas 0x31 (49) & 0x44 (68)). REFERENCE. */
 class HvacVoiceCommandExecutor(
     private val vehicle: VehiclePropertyAccess,
     private val waitForReadback: (Long) -> Unit = { Thread.sleep(it) },
@@ -131,7 +131,7 @@ class HvacVoiceCommandExecutor(
         return writeAndVerifyInt(CoolrayProperties.HVAC_FAN_SPEED, CoolrayProperties.HVAC_FAN_AREA, level, "Xe không chấp nhận mức quạt $level.") { "mức $it" }
     }
 
-    // Coolray 2025 recirculation: HVAC_RECIRC_ON 354419976 area 75 (true = gió trong).
+    // Coolray 2025 recirculation: HVAC_RECIRC_ON 354419976 area 0x75 (117) (true = gió trong).
     private fun setRecirculation(enabled: Boolean): CommandExecutionResult = writeAndVerifyBool(
         CoolrayProperties.HVAC_RECIRC,
         CoolrayProperties.HVAC_RECIRC_AREA,

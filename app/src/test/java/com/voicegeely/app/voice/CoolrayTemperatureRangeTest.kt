@@ -8,7 +8,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** Coolray 2025 setpoint range 16..32 °C (HVAC_TEMPERATURE_SET config, areas 31/44), 0.5 steps. */
+/** Coolray 2025 setpoint range 16..32 °C (HVAC_TEMPERATURE_SET config, areas 0x31 (49) / 0x44 (68)), 0.5 steps. */
 class CoolrayTemperatureRangeTest {
     private fun cmd(text: String) = VoiceParseChain.parse(text)?.command
 

@@ -21,20 +21,20 @@ Mọi giá trị ở trạng thái **REFERENCE**: có trong cấu hình của ch
 2. **ECARX AdaptAPI 1.1.18.9 (`ICarFunction`)**: kính, cửa sổ trời, sưởi/thông gió ghế, đèn. Hằng số trong `car/Coolray2025Functions.kt`,
    truy cập bằng reflection qua `car/EcarxFunctionAccess.kt`. Trước mỗi lệnh gọi `isFunctionSupported`, sau lệnh đọc lại.
 
-Khác bản Coolray cũ (IHU624G/IHU689G): điều hoà dùng **area 75** (không phải 5/117), nhiệt độ **area 31/44, 16–32 °C**,
+Capture thực tế ngày 11/11/2026 xác nhận điều hoà dùng **area 0x75 = 117**, nhiệt độ **area 0x31 = 49 / 0x44 = 68, 16–32 °C**,
 quạt **1–7**; các mã kính `591405227`, đèn, ghế, cốp và REF-WIDGET **không có** trên đầu xe 2025 nên không dùng.
 
 ## Đã bật cho giọng nói
 
 | Nhóm | Đường | Mã | Zone / area | Giá trị |
 |---|---|---|---|---|
-| Nguồn điều hoà | VHAL | 354419984 `HVAC_POWER_ON` | 75 | bool |
-| A/C | VHAL | 354419973 `HVAC_AC_ON` | 75 | bool |
-| Lạnh nhanh | VHAL | 354419974 `HVAC_MAX_AC_ON` | 75 | bool |
-| Lấy gió trong/ngoài | VHAL | 354419976 `HVAC_RECIRC_ON` | 75 | bool, true = gió trong |
-| Nhiệt độ | VHAL | 358614275 `HVAC_TEMPERATURE_SET` | 31 (lái), 44 (phụ) | float 16..32, bước 0,5 |
-| Quạt | VHAL | 356517120 `HVAC_FAN_SPEED` | 75 | 1..7; "mạnh nhất" = 7; "tắt quạt" = tắt nguồn điều hoà |
-| Hướng gió | VHAL | 356517121 `HVAC_FAN_DIRECTION` | 75 | bitmask 1 mặt / 2 chân / 4 kính |
+| Nguồn điều hoà | VHAL | 354419984 `HVAC_POWER_ON` | 117 (`0x75`) | bool |
+| A/C | VHAL | 354419973 `HVAC_AC_ON` | 117 (`0x75`) | bool |
+| Lạnh nhanh | VHAL | 354419974 `HVAC_MAX_AC_ON` | 117 (`0x75`) | bool |
+| Lấy gió trong/ngoài | VHAL | 354419976 `HVAC_RECIRC_ON` | 117 (`0x75`) | bool, true = gió trong |
+| Nhiệt độ | VHAL | 358614275 `HVAC_TEMPERATURE_SET` | 49 (`0x31`, lái), 68 (`0x44`, phụ) | float 16..32, bước 0,5 |
+| Quạt | VHAL | 356517120 `HVAC_FAN_SPEED` | 117 (`0x75`) | 1..7; "mạnh nhất" = 7; "tắt quạt" = tắt nguồn điều hoà |
+| Hướng gió | VHAL | 356517121 `HVAC_FAN_DIRECTION` | 117 (`0x75`) | bitmask 1 mặt / 2 chân / 4 kính |
 | Sấy kính trước / sau | VHAL | 320865540 `HVAC_DEFROSTER` | 1 / 2 | bool |
 | Sưởi vô lăng | VHAL | 289408269 `HVAC_STEERING_WHEEL_HEAT` | 0 | -2..2; bật = 2, tắt = 0 |
 | Kính cửa | AdaptAPI | `BCM_FUNC_WINDOW_POS` 553845504 (customize %) | 16 / 32 / 256 / 512 | 0..100; dự phòng `BCM_FUNC_WINDOW` ON/OFF; dừng = `+1` |
@@ -96,15 +96,15 @@ Thuộc tính riêng ECARX (`0x287xxxxx`, kiểu BYTES) không liệt kê ở đ
 | `OBD2_FREEZE_FRAME_INFO` | 299896066 (`0x11e00d02`) | đọc | 0 (global) |
 | `OBD2_FREEZE_FRAME_CLEAR` | 299896067 (`0x11e00d03`) | ghi | 0 (global) |
 | `HVAC_DEFROSTER` | 320865540 (`0x13200504`) | đọc/ghi | 1: 0..0; 2: 0..0 |
-| `HVAC_AC_ON` | 354419973 (`0x15200505`) | đọc/ghi | 75: 0..0 |
-| `HVAC_MAX_AC_ON` | 354419974 (`0x15200506`) | đọc/ghi | 75: 0..0 |
-| `HVAC_MAX_DEFROST_ON` | 354419975 (`0x15200507`) | đọc/ghi | 75: 0..0 |
-| `HVAC_RECIRC_ON` | 354419976 (`0x15200508`) | đọc/ghi | 75: 0..0 |
-| `HVAC_DUAL_ON` | 354419977 (`0x15200509`) | đọc/ghi | 75: 0..0 |
-| `HVAC_AUTO_ON` | 354419978 (`0x1520050a`) | đọc/ghi | 75: 0..0 |
-| `HVAC_POWER_ON` | 354419984 (`0x15200510`) | đọc/ghi | 75: 0..0 |
-| `HVAC_AUTO_RECIRC_ON` | 354419986 (`0x15200512`) | đọc/ghi | 75: 0..0 |
-| `HVAC_FAN_SPEED` | 356517120 (`0x15400500`) | đọc/ghi | 75: 1..7 |
-| `HVAC_FAN_DIRECTION` | 356517121 (`0x15400501`) | đọc/ghi | 75: 0..0 |
-| `HVAC_TEMPERATURE_SET` | 358614275 (`0x15600503`) | đọc/ghi | 31: 16.0..32.0; 44: 16.0..32.0 |
+| `HVAC_AC_ON` | 354419973 (`0x15200505`) | đọc/ghi | 117: 0..0 |
+| `HVAC_MAX_AC_ON` | 354419974 (`0x15200506`) | đọc/ghi | 117: 0..0 |
+| `HVAC_MAX_DEFROST_ON` | 354419975 (`0x15200507`) | đọc/ghi | 117: 0..0 |
+| `HVAC_RECIRC_ON` | 354419976 (`0x15200508`) | đọc/ghi | 117: 0..0 |
+| `HVAC_DUAL_ON` | 354419977 (`0x15200509`) | đọc/ghi | 117: 0..0 |
+| `HVAC_AUTO_ON` | 354419978 (`0x1520050a`) | đọc/ghi | 117: 0..0 |
+| `HVAC_POWER_ON` | 354419984 (`0x15200510`) | đọc/ghi | 117: 0..0 |
+| `HVAC_AUTO_RECIRC_ON` | 354419986 (`0x15200512`) | đọc/ghi | 117: 0..0 |
+| `HVAC_FAN_SPEED` | 356517120 (`0x15400500`) | đọc/ghi | 117: 1..7 |
+| `HVAC_FAN_DIRECTION` | 356517121 (`0x15400501`) | đọc/ghi | 117: 0..0 |
+| `HVAC_TEMPERATURE_SET` | 358614275 (`0x15600503`) | đọc/ghi | 49: 16.0..32.0; 68: 16.0..32.0 |
 | `DOOR_LOCK` | 371198722 (`0x16200b02`) | đọc | 1: 0..0; 4: 0..0 |

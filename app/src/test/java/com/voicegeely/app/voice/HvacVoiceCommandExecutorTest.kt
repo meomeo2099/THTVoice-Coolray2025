@@ -66,7 +66,7 @@ class HvacVoiceCommandExecutorTest {
             intReadSequences[CoolrayProperties.HVAC_FAN_DIRECTION] = mutableListOf(1, 6)
         }
         val executor = HvacVoiceCommandExecutor(fake, waitForReadback = {})
-        // Coolray 2025 recirculation: HVAC_RECIRC_ON 354419976 area 75.
+        // Coolray 2025 recirculation: HVAC_RECIRC_ON 354419976 area 0x75 (117).
         assertTrue(executor.execute(VoiceCommand.Recirculation(true)) is CommandExecutionResult.Confirmed)
         assertEquals(true, fake.boolWrites[CoolrayProperties.HVAC_RECIRC])
         // Coolray 2025 windshield / rear window heat: HVAC_DEFROSTER areas 1 / 2, read back on the same property.

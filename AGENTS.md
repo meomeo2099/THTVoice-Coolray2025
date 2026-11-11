@@ -4,7 +4,7 @@
 > - Số hiệu VHAL: `car/CoolrayProperties.kt`; hàm ECARX AdaptAPI: `car/Coolray2025Functions.kt`; bảng: `docs/COOLRAY2025_PROPERTIES.md`.
 > - Đặc tả lệnh + danh mục đầy đủ hàm AdaptAPI 1.1.18.9: `docs/COOLRAY2025_VOICE_SPEC.md`.
 > - Nhóm lệnh được phép ghi xuống xe: `voice/CoolrayCapabilities.kt`. Nhóm chưa có mapping Coolray 2025 phải để tắt.
-> - Không dùng số của Coolray cũ (IHU624G/IHU689G: area 5/117, kính 591405227, REF-WIDGET…) — đầu xe 2025 không có các thuộc tính đó.
+> - Không lấy mapping từ Coolray cũ (IHU624G/IHU689G: kính 591405227, REF-WIDGET…). Dùng cấu hình đầu xe 2025, kể cả khi giá trị area trùng model khác.
 > - Không thêm mã/luồng EV (sạc, regen, cốp trước).
 
 Đây là chỉ dẫn bắt buộc cho mọi AI/code agent làm việc trong repository này.
@@ -80,7 +80,7 @@ THT Voice bản Coolray: trợ lý điều khiển/trạng thái xe Geely Coolra
 
 ### Coolray 2025 reference
 - Nguồn: dữ liệu lấy trực tiếp từ đầu xe (getprop, `dumpsys car_service`, `AdapterAPI.jar`), lưu trong `docs/COOLRAY2025_PROPERTIES.md` và `docs/COOLRAY2025_VOICE_SPEC.md`.
-- VHAL: chỉ dùng property có trong config dump của đầu xe, đúng area/min/max ở đó (HVAC area 75, nhiệt độ 31/44, quạt 1..7, `HVAC_DEFROSTER` 1/2).
+- VHAL: chỉ dùng property có trong config dump của đầu xe, đúng area/min/max ở đó. Capture 11/11/2026 xác nhận HVAC area `0x75 = 117`, nhiệt độ `0x31 = 49` / `0x44 = 68`, quạt 1..7, `HVAC_DEFROSTER` 1/2. Bản HAL dump in area theo hệ 16; `CarPropertyConfig.mSupportedAreas` in hệ 10.
 - ECARX AdaptAPI: gọi qua `ICarFunction` (`car/EcarxFunctionAccess.kt`), không ghi function ID qua CarPropertyManager. Luôn `isFunctionSupported` trước khi ghi và đọc lại sau khi ghi. Giá trị enum = `functionId + n`.
 - Không dùng số của EX2, E5, Starship 7 hay Coolray IHU624G/IHU689G.
 
