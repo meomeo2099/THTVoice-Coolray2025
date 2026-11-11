@@ -5,7 +5,7 @@ import com.voicegeely.app.car.VehicleDebugTrace
 import com.voicegeely.app.car.VehiclePropertyAccess
 import kotlin.math.abs
 
-/** Coolray 2025 HVAC executor (standard VHAL, area 0x75 (117) / temperature areas 0x31 (49) & 0x44 (68)). REFERENCE. */
+/** Coolray HVAC executor. Production facade maps the declared areas to OEM AdaptAPI. REFERENCE/UNVERIFIED. */
 class HvacVoiceCommandExecutor(
     private val vehicle: VehiclePropertyAccess,
     private val waitForReadback: (Long) -> Unit = { Thread.sleep(it) },
@@ -68,7 +68,7 @@ class HvacVoiceCommandExecutor(
             }
             if (!pause(attempt)) return interrupted()
         }
-        return unverified("Lệnh VHAL đã được gửi nhưng chưa đọc lại được mức ${format(requested)} độ.")
+        return unverified("API xe đã nhận lệnh nhưng chưa đọc lại được mức ${format(requested)} độ.")
     }
 
     private fun setAcPower(on: Boolean, target: HvacPowerTarget): CommandExecutionResult = when (target) {
@@ -237,7 +237,7 @@ class HvacVoiceCommandExecutor(
             if (actual == value) return confirmed(actualText(actual))
             if (!pause(attempt)) return interrupted()
         }
-        return unverified("Lệnh VHAL đã được gửi nhưng chưa xác nhận được trạng thái.")
+        return unverified("API xe đã nhận lệnh nhưng chưa xác nhận được trạng thái.")
     }
 
     private fun safeBool(property: Int, area: Int): Boolean? = try { vehicle.getBoolPropertyOrNull(property, area) } catch (_: Throwable) { null }

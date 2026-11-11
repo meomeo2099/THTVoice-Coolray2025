@@ -93,11 +93,14 @@ class EcarxFunctionAccess private constructor(
     override fun isSupported(functionId: Int, zone: Int): Boolean? {
         val method = supported2 ?: return null
         return try {
-            when (val status = method.invoke(carFunction, functionId, zone)) {
+            val supported = when (val status = method.invoke(carFunction, functionId, zone)) {
                 null -> null
                 is Enum<*> -> status.name.equals("active", ignoreCase = true)
                 else -> status.toString().equals("active", ignoreCase = true)
             }
+            if (supported != true) VehicleTelemetryRegistry.recordResult("ECARX", "IS_SUPPORTED", functionId, zone,
+                if (supported == false) "INACTIVE" else "UNKNOWN")
+            supported
         } catch (error: Throwable) {
             VehicleTelemetryRegistry.recordFailure("ECARX", "IS_SUPPORTED", functionId, zone, error)
             null
@@ -112,7 +115,7 @@ class EcarxFunctionAccess private constructor(
     }
 
     override fun setInt(functionId: Int, zone: Int, value: Int): Boolean =
-        invokeBoolean(setInt3, functionId, zone, value)
+        invokeBoolean("setFunctionValue", setInt3, functionId, zone, value)
 
     override fun getFloat(functionId: Int, zone: Int): Float? = try {
         (getFloat2?.invoke(carFunction, functionId, zone) as? Number)?.toFloat()?.takeIf { it.isFinite() }
@@ -122,18 +125,22 @@ class EcarxFunctionAccess private constructor(
     }
 
     override fun setFloat(functionId: Int, zone: Int, value: Float): Boolean =
-        invokeBoolean(setFloat3, functionId, zone, value)
+        invokeBoolean("setCustomizeFunctionValue", setFloat3, functionId, zone, value)
 
     private val carMethods by lazy { car.javaClass.methods }
     private fun carMethod(name: String, vararg types: Class<*>): Method? =
         carMethods.firstOrNull { it.name == name && it.parameterTypes.contentEquals(arrayOf(*types)) }
 
     override fun sendBytesToMcu(propertyId: Int, bytes: ByteArray): Boolean = try {
-        when (val r = carMethod("sendBytesToMcuByPropID", INT, ByteArray::class.java)?.invoke(car, propertyId, bytes)) {
+        val method = carMethod("sendBytesToMcuByPropID", INT, ByteArray::class.java)
+        val accepted = when (val r = method?.invoke(car, propertyId, bytes)) {
             is Boolean -> r
             is Number -> r.toInt() != 0
             else -> false
         }
+        VehicleTelemetryRegistry.recordResult("ECARX", "SEND_MCU", propertyId, null,
+            if (method == null) "METHOD_UNAVAILABLE" else if (accepted) "ACCEPTED_UNVERIFIED" else "REJECTED")
+        accepted
     } catch (error: Throwable) {
         VehicleTelemetryRegistry.recordFailure("ECARX", "SEND_MCU", propertyId, null, error)
         false
@@ -155,14 +162,20 @@ class EcarxFunctionAccess private constructor(
         null
     }
 
-    private fun invokeBoolean(method: Method?, vararg args: Any): Boolean {
-        if (method == null) return false
+    private fun invokeBoolean(operation: String, method: Method?, vararg args: Any): Boolean {
+        if (method == null) {
+            VehicleTelemetryRegistry.recordResult("ECARX", operation, args[0] as Int, args[1] as Int, "METHOD_UNAVAILABLE")
+            return false
+        }
         return try {
-            when (val result = method.invoke(carFunction, *args)) {
+            val accepted = when (val result = method.invoke(carFunction, *args)) {
                 is Boolean -> result
                 is Number -> result.toInt() != 0
                 else -> false
             }
+            VehicleTelemetryRegistry.recordResult("ECARX", "$operation value=${args[2]}", args[0] as Int, args[1] as Int,
+                if (accepted) "ACCEPTED_UNVERIFIED" else "REJECTED")
+            accepted
         } catch (error: Throwable) {
             VehicleTelemetryRegistry.recordFailure("ECARX", method.name,
                 args.getOrNull(0) as? Int, args.getOrNull(1) as? Int, error)

@@ -24,8 +24,10 @@ class CommandSuggestion(
 
     /** The question to ask for [text], or null when nothing is close enough. Remembers the phrase. */
     @Synchronized
-    fun suggest(text: String, extraPhrases: List<String>, nowMs: Long): String? {
-        val phrase = best(text, CommandCatalog.PHRASES + extraPhrases) ?: return null
+    fun suggest(text: String, extraPhrases: List<String>, nowMs: Long, cancelled: () -> Boolean = { false }): String? {
+        pending = null
+        val phrase = best(text, CommandCatalog.PHRASES + extraPhrases, cancelled) ?: return null
+        if (Thread.currentThread().isInterrupted || cancelled()) return null
         pending = phrase to nowMs
         return question(phrase)
     }
@@ -48,18 +50,29 @@ class CommandSuggestion(
     fun clear() { pending = null }
 
     /** Closest known phrase that parses, or null. */
-    fun best(text: String, phrases: List<String>): String? {
+    fun best(text: String, phrases: List<String>, cancelled: () -> Boolean = { false }): String? {
+        val started = System.nanoTime()
+        fun stopped() = Thread.currentThread().isInterrupted || cancelled() || System.nanoTime() - started > SEARCH_BUDGET_NS
+        if (stopped()) return null
         val heard = plain(VoiceTextNormalizer.normalize(text))
         if (heard.length < MIN_LEN || heard.split(' ').size > MAX_WORDS) return null
-        val scored = phrases.distinct().mapNotNull { p ->
-            val cmd = parse(p)?.command ?: return@mapNotNull null
-            Triple(p, cmd, similarity(heard, plain(VoiceTextNormalizer.normalize(p))))
-        }.sortedByDescending { it.third }
-        val top = scored.firstOrNull() ?: return null
-        if (top.third < MIN_SIMILARITY) return null
-        val runnerUp = scored.drop(1).firstOrNull { it.second != top.second }
-        if (runnerUp != null && top.third - runnerUp.third < MIN_MARGIN) return null
-        return top.first
+        // Score cheaply before invoking the parse chain (which may load aliases/scenarios).
+        val scored = phrases.distinct().map { p ->
+            if (stopped()) return null
+            p to similarity(heard, plain(VoiceTextNormalizer.normalize(p)))
+        }.sortedByDescending { it.second }
+        var top: Triple<String, VoiceCommand, Double>? = null
+        for ((phrase, score) in scored) {
+            if (stopped()) return null
+            val selected = top
+            if (selected == null && score < MIN_SIMILARITY) break
+            if (selected != null && selected.third - score >= MIN_MARGIN) break
+            val command = parse(phrase)?.command ?: continue
+            if (stopped()) return null
+            if (selected == null) top = Triple(phrase, command, score)
+            else if (command != selected.second) return null
+        }
+        return if (stopped()) null else top?.first
     }
 
     companion object {
@@ -68,6 +81,7 @@ class CommandSuggestion(
         const val MIN_MARGIN = 0.06
         const val MIN_LEN = 5
         const val MAX_WORDS = 8
+        private const val SEARCH_BUDGET_NS = 750_000_000L
 
         fun question(phrase: String) = "Ý bạn là \"$phrase\" phải không?"
         const val DECLINED = "Vâng, bạn nói lại lệnh nhé."

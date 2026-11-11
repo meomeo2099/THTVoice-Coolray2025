@@ -1190,8 +1190,10 @@ class VoiceAssistantService : Service() {
 
     /** Asks "Ý bạn là … phải không?" and listens again; null when nothing is close enough. */
     private fun suggestCommand(text: String, now: Long): String? {
+        if (!canPublishSessionResult()) return null
         val extra = runCatching { voicePreferences.aliasBook().all().map { it.phrase } }.getOrDefault(emptyList())
-        val question = commandSuggestion.suggest(text, extra, now) ?: return null
+        val question = commandSuggestion.suggest(text, extra, now) { !canPublishSessionResult() } ?: return null
+        if (!canPublishSessionResult()) { commandSuggestion.clear(); return null }
         Log.i(TAG, "suggestion_offered")
         emitSafetyMessage(question, VoiceFeedbackCue.PROCESSING)
         reopenForSafetyConfirmation = true
@@ -1480,10 +1482,14 @@ class VoiceAssistantService : Service() {
                 clock = { android.os.SystemClock.elapsedRealtime() }
             )
         } else null
+        val commandAccess = if (access != null && ecarx != null) {
+            com.voicegeely.app.car.EcarxHvacPropertyAccess(access, ecarx)
+        } else access
+        vehicleAccess = commandAccess
         return VoiceCommandRouter(
             headUnitSupported = headUnit != null,
             ecarx = ecarx,
-            vehicle = access,
+            vehicle = commandAccess,
             androidBackend = AndroidSystemActionBackend(this, parkedGate = safetyGate),
             mediaResolver = MediaPreferenceResolver(mediaSettings),
             navigationResolver = NavigationPreferenceResolver(voicePreferences)

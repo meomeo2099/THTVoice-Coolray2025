@@ -99,6 +99,18 @@ object Coolray2025Functions {
         ByteArray(WINDOW_GROUP_SIZE) { -1 }.also { it[groupIndex] = percent.coerceIn(0, 100).toByte() }
 
     // ---- car.hvac.IHvac ----
+    const val HVAC_FUNC_POWER = 0x10010100
+    const val HVAC_FUNC_AUTO = 0x10010200
+    const val HVAC_FUNC_AC = 0x10010300
+    const val HVAC_FUNC_AC_MAX = 0x10010400
+    const val HVAC_FUNC_FAN_SPEED = 0x10020100
+    const val HVAC_FUNC_CIRCULATION = 0x10030100
+    const val HVAC_FUNC_DEFROST_FRONT = 0x10040100
+    const val HVAC_FUNC_DEFROST_FRONT_MAX = 0x10040200
+    const val HVAC_FUNC_DEFROST_REAR = 0x10040300
+    const val HVAC_FUNC_TEMP = 0x10060100
+    const val HVAC_FUNC_TEMP_DUAL = 0x10060500
+    const val HVAC_FUNC_BLOWING_MODE = 0x10070100
     /** Seat ventilation, zone ROW_1_LEFT / ROW_1_RIGHT, value OFF or level(…, 1..3). */
     const val HVAC_FUNC_SEAT_VENTILATION = 268763392
     /** Seat heating, zone ROW_1_LEFT / ROW_1_RIGHT, value OFF or level(…, 1..3). */

@@ -35,7 +35,8 @@ internal object VehicleConnectionDiagnostics {
                 appendLine("${permission.substringAfterLast('.')}=${if (granted) "GRANTED" else "DENIED"}")
             }
             appendLine()
-            appendLine("Lỗi kết nối gần đây")
+            appendLine("Lịch sử API xe gần đây")
+            appendLine("ACCEPTED_UNVERIFIED: API nhận lệnh, chưa xác nhận xe thực hiện.")
             val failures = VehicleTelemetryRegistry.diagnosticFailures()
             if (failures.isEmpty()) appendLine("Chưa ghi nhận lỗi. Thử một lệnh đang lỗi rồi mở lại mục này.")
             else failures.forEach { appendLine(it) }

@@ -46,6 +46,15 @@ object VehicleTelemetryRegistry {
     @Synchronized
     fun diagnosticFailures(): List<String> = failures.toList()
 
+    /** Numeric API metadata only. Accepted writes are requests, not hardware confirmation. */
+    @Synchronized
+    fun recordResult(backend: String, operation: String, propertyId: Int, areaId: Int?, outcome: String) {
+        val entry = "$backend $operation property=0x${propertyId.toString(16)} area=$areaId $outcome"
+        failures.addLast(entry)
+        while (failures.size > 16) failures.removeFirst()
+        runCatching { android.util.Log.i("THTVoiceECARX", entry) }
+    }
+
     /** Retains failure metadata even when a later successful read changes the status. */
     @Synchronized
     fun recordFailure(backend: String, operation: String, propertyId: Int?, areaId: Int?, error: Throwable) {
@@ -54,6 +63,7 @@ object VehicleTelemetryRegistry {
         val message = cause.message.orEmpty().replace(Regex("[\\r\\n]+"), " ").take(240)
         failures.addLast("$backend $operation$location ${cause.javaClass.simpleName}: $message")
         while (failures.size > 16) failures.removeFirst()
+        runCatching { android.util.Log.w("THTVoiceECARX", "$backend $operation$location ${cause.javaClass.simpleName}: $message") }
     }
 
     @Synchronized

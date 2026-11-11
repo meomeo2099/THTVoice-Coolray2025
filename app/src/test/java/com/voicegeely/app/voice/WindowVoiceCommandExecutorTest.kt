@@ -44,14 +44,35 @@ class WindowVoiceCommandExecutorTest {
             val ints = mutableListOf<Triple<Int, Int, Int>>()
             override fun isSupported(functionId: Int, zone: Int) = true
             override fun getInt(functionId: Int, zone: Int): Int? = null
-            override fun setInt(functionId: Int, zone: Int, value: Int): Boolean { ints += Triple(functionId, zone, value); return true }
+            override fun setInt(functionId: Int, zone: Int, value: Int): Boolean { ints += Triple(functionId, zone, value); return functionId == F.BCM_FUNC_WINDOW }
             override fun getFloat(functionId: Int, zone: Int): Float? = null
             override fun setFloat(functionId: Int, zone: Int, value: Float) = false
         }
         val result = WindowVoiceCommandExecutor(port, waitForReadback = {})
             .execute(VoiceCommand.Window(setOf(WindowTarget.FRONT_LEFT), WindowOperation.OPEN))
-        assertEquals(listOf(Triple(F.BCM_FUNC_WINDOW, 16, F.ON)), port.ints)
+        assertEquals(listOf(Triple(F.BCM_FUNC_WINDOW_POS, 16, 100), Triple(F.BCM_FUNC_WINDOW, 16, F.ON)), port.ints)
         assertTrue(result is CommandExecutionResult.AcceptedUnverified)
+    }
+
+    @Test fun integerPositionApiWorksWhenCustomizeSetterIsUnavailable() = runBlocking {
+        val port = object : com.voicegeely.app.car.EcarxFunctionPort {
+            var position = 0
+            val writes = mutableListOf<Triple<Int, Int, Int>>()
+            override fun isSupported(functionId: Int, zone: Int) = true
+            override fun getInt(functionId: Int, zone: Int): Int? = if (functionId == F.BCM_FUNC_WINDOW_CURRENT_POS) position else null
+            override fun setInt(functionId: Int, zone: Int, value: Int): Boolean {
+                writes += Triple(functionId, zone, value)
+                if (functionId != F.BCM_FUNC_WINDOW_POS) return false
+                position = value
+                return true
+            }
+            override fun getFloat(functionId: Int, zone: Int): Float? = null
+            override fun setFloat(functionId: Int, zone: Int, value: Float) = false
+        }
+        val result = WindowVoiceCommandExecutor(port, waitForReadback = {})
+            .execute(VoiceCommand.Window(setOf(WindowTarget.REAR_RIGHT), WindowOperation.SET_PERCENT, 50))
+        assertTrue(result is CommandExecutionResult.Confirmed)
+        assertEquals(listOf(Triple(F.BCM_FUNC_WINDOW_POS, 512, 50)), port.writes)
     }
 
     @Test fun noReadBackIsNeverSuccess() = runBlocking {

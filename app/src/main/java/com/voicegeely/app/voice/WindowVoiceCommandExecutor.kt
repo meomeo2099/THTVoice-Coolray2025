@@ -12,7 +12,8 @@ import kotlin.math.roundToInt
  * 8 bytes (index 0 FL, 1 FR, 2 RL, 3 RR; 0..100 %, -1 = unchanged); position read back from
  * `INFO_ID_WINDOW_FL/FR/RL/RR`. Fallback when the MCU path is refused, ECARX AdaptAPI `IBcm`:
  * - target position: `BCM_FUNC_WINDOW_POS`, customize value 0..100 %, zones 16 / 32 / 256 / 512;
- * - when the position write is refused, open/close fall back once to `BCM_FUNC_WINDOW` ON / OFF;
+ * - integer position fallback: shipped BCMModule.setFunctionValue(0x21030300, zone, percent);
+ * - when both position writes are refused, open/close fall back once to `BCM_FUNC_WINDOW` ON / OFF;
  * - stop: `BCM_FUNC_WINDOW` = WINDOW_PAUSE;
  * - read-back: `BCM_FUNC_WINDOW_CURRENT_POS`, else `BCM_FUNC_WINDOW_POS`.
  * Success only after every window reads back at its target.
@@ -54,6 +55,7 @@ class WindowVoiceCommandExecutor(
             try { port.sendBytesToMcu(F.INFO_ID_WINDOW_GROUP, F.windowGroupPayload(idx, percent)) } catch (_: Throwable) { false }
         } ?: false
         if (!accepted) accepted = try { port.setFloat(F.BCM_FUNC_WINDOW_POS, zone, percent.toFloat()) } catch (_: Throwable) { false }
+        if (!accepted) accepted = try { port.setInt(F.BCM_FUNC_WINDOW_POS, zone, percent) } catch (_: Throwable) { false }
         if (!accepted && (percent == 0 || percent == 100)) {
             accepted = try { port.setInt(F.BCM_FUNC_WINDOW, zone, if (percent == 100) F.ON else F.OFF) } catch (_: Throwable) { false }
         }
@@ -86,6 +88,7 @@ class WindowVoiceCommandExecutor(
             (try { port.getIntByProp(prop, F.BCM_FUNC_WINDOW_POS) } catch (_: Throwable) { null })
                 ?.takeIf { it in 0..100 }?.let { return it }
         }
+        support.readInt(F.BCM_FUNC_WINDOW_CURRENT_POS, zone)?.takeIf { it in 0..100 }?.let { return it }
         return (support.readFloat(F.BCM_FUNC_WINDOW_CURRENT_POS, zone) ?: support.readFloat(F.BCM_FUNC_WINDOW_POS, zone))
             ?.takeIf { it in 0f..100f }?.roundToInt()
     }
