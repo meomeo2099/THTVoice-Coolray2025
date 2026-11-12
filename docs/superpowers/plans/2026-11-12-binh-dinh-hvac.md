@@ -16,7 +16,7 @@
 ## Tasks
 - [x] Write failing tests for reported dialect phrases/negative text, global-vs-zoned overload contracts, AUTO parsing/prerequisites and temperature write ordering/partial confirmation.
 - [x] Implement narrowly scoped corrections and HVAC execution changes; preserve denied/unknown distinctions and invalid-input no-side-effect behavior.
-- [ ] Run focused/full corpus tests, independent review and signed candidate CI; record verified Git/artifact state and restore manual build workflow.
+- [x] Run focused/full corpus tests, independent review and signed candidate CI; record verified Git/artifact state and restore manual build workflow.
 
 ## Constraints
 - Language rules apply only to explicit vehicle-command contexts; preserve app names, destinations and unrelated ordinary words.
@@ -35,3 +35,7 @@
 - Final focused regression: OK (166 tests), build/regional113-final.log. Fresh independent review found no material defects; signed Android CI remains pending.
 
 - Android CI run43192587965 compiled production and ran853 tests:5 failures were stale cooling-state fixtures in CoolrayTemperatureRangeTest and OfflineCommandFlowTest. Updated only their fake power/A/C read-back; all existing assertions retained. Expanded local regression now OK (175 tests), build/regional113-final2.log.
+
+- Follow-up independent review of the two fixture changes found no inappropriate assertion weakening. Production code was unchanged by the CI follow-up.
+
+- Final signed candidate:1.0.13 (versionCode14), source278793f82908c2f75060fd155f523e2d72f5d793; CI43193453866/job131098307209 succeeded (unit tests, SQLite, runtime integrity, release assembly and signature/package/version verification). Artifact13932675596, THTVoice-rc-1.0.13-14, expires2026-11-13T09:45:28Z. APK SHA2569237c5efb13cc7bdea5a3344b6218f12de92bf793928a2c66b6472e7a0c326bb. OTA publication skipped; manual workflow restored in final documentation commit. Hardware behavior remains UNVERIFIED.

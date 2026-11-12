@@ -23,3 +23,7 @@ The owner had tested AUTO and inside/outside circulation; other climate modes we
 ## Tests
 
 `BinhDinhHvacTest`, `RegionalVehiclePhrasesTest` and `EcarxGlobalContractTest` cover regional positives/negatives, AUTO spellings, side/row/percentage preservation, global/zoned method selection, prerequisite order, refusals, invalid-input no side effects and partial read-back. Existing full phrase corpus and HVAC/vehicle regressions remain enabled.
+
+## Signed test candidate
+
+Version1.0.13/code14 passed local175-test regression and full Android CI [43193453866](https://github.com/meomeo2099/THTVoice-Coolray2025/actions/runs/43193453866). [Artifact13932675596](https://github.com/meomeo2099/THTVoice-Coolray2025/actions/runs/43193453866/artifacts/13932675596), expires2026-11-13T09:45:28Z. THT_SIGN release certificate/package/version verified. APK SHA256: `9237c5efb13cc7bdea5a3344b6218f12de92bf793928a2c66b6472e7a0c326bb`. Source commit: `278793f82908c2f75060fd155f523e2d72f5d793`. No OTA published.
