@@ -12,8 +12,8 @@
 
 ## Tasks
 - [x] Verify diff and restore coherent runtime pins/checksum from the previous release.
-- [ ] Independently review the scoped rollback and run archive/API/ABI/minSdk checks plus full Android tests and signed build in CI.
-- [ ] Record artifact and Git recovery points, restore manual workflow, report how to compare on the car.
+- [x] Independently review the scoped rollback and run archive/API/ABI/minSdk checks plus full Android tests and signed build in CI.
+- [x] Record artifact and Git recovery points, restore manual workflow, report how to compare on the car.
 
 ## Constraints
 - No generic git revert/reset, schema downgrade, settings wipe, model replacement or new microphone tuning.
@@ -26,3 +26,9 @@
 - `git diff -- app/src/main/java app/src/test/java app/src/main/assets scripts/fetch-gipformer65m-int8.sh` is empty: feature implementation, ASR/mic adapters, tests and model staging unchanged. Database schema unchanged.
 
 - Independent fresh review found no material issue: active pins/checksum coherent; source/assets unchanged; no causal/hardware-fix claim. Real AAR/ABI/API validation pending CI.
+
+## Candidate verification
+- Buildcommit8b7138f41e0c03351077c1498b29d437d9f3b904, Actionsrun43156229526. Attempt1 ended before jobsteps with no downloadable logs; authorized failed-job rerun started normally. Attempt2/job131025768346 passed runtime archive/API/ABI/minSdk verification, SQLite checks, complete Androidunit tests, signed release assembly and certificate/package/version verification.
+- Sherpa1.13.8 archiveSHA633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96, minSdk21 and both ARM JNI architectures verified.
+- Candidate1.0.12(13), packagecom.tht.voice.coolray2025. APKSHA2566015cc451f3762afc85b30c37f8f24bbfafb8f8063f656305236f29c7a1cc9fd. ArtifactTHTVoice-rc-1.0.12-13/13922158111. OTApublication skipped.
+- Retain testbranch/Git recovery points; workflow restored manual-only. Hardware comparison and exact crashcause remain unverified until the owner tests this APK or supplies crashlogs. No claim that the fault is definitively fixed.
