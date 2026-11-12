@@ -6,6 +6,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AssistantRuntimeStateTest {
+    @Test fun archiveDoesNotRestoreEngineReadiness() {
+        val store = AssistantRuntimeStore()
+        store.restoreHistory(listOf(AssistantHistoryEntry("Hạ kính", "Đã xác minh", 1, "CONFIRMED")))
+        assertEquals(1, store.state.history.size)
+        assertFalse(store.state.serviceReady)
+        assertFalse(store.state.asrReady)
+        assertEquals(AssistantRuntimePhase.STARTING, store.state.phase)
+    }
     @Test
     fun partialThenFinalMovesToProcessingAndCreatesHistory() {
         var now = 1_000L

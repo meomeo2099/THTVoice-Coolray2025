@@ -8,5 +8,6 @@ class ThtVoiceApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         AndroidRuntimeContext.install(this)
+        com.voicegeely.app.history.VoiceHistory.install(this)
     }
 }

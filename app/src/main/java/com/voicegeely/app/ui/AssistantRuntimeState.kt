@@ -13,7 +13,8 @@ enum class AssistantRuntimePhase {
 data class AssistantHistoryEntry(
     val command: String,
     val result: String,
-    val timestampMs: Long
+    val timestampMs: Long,
+    val outcome: String? = null
 )
 
 /** Last engine readiness published by the Voice core; lets a newly opened screen show it at once. */
@@ -51,6 +52,11 @@ class AssistantRuntimeStore(
 ) {
     var state: AssistantRuntimeSnapshot = AssistantRuntimeSnapshot()
         private set
+
+    /** Display archive only; restoring it never restores live engine/vehicle readiness. */
+    fun restoreHistory(history: List<AssistantHistoryEntry>) {
+        state = state.copy(history = history.take(maxHistory.coerceAtLeast(1)))
+    }
 
     fun initialize(serviceReady: Boolean, readiness: EngineReadiness? = null) {
         if (!serviceReady) return

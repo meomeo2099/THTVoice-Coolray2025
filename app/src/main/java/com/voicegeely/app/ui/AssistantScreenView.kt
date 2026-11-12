@@ -65,11 +65,17 @@ class AssistantScreenBinding(
 
         historyList.removeAllViews()
         if (state.history.isEmpty()) {
-            historyList.addView(ThtUi.text(context, "Chưa có lệnh nào trong phiên này.", 14f, ThtUi.TEXT_2), ThtUi.matchWrap(context, 8))
+            historyList.addView(ThtUi.text(context, "Chưa có lịch sử thực hiện lệnh.", 14f, ThtUi.TEXT_2), ThtUi.matchWrap(context, 8))
         } else {
-            val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val formatter = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
             state.history.take(5).forEach { item ->
-                val (label, chipState) = outcome(item.result)
+                val (label, chipState) = when (item.outcome) {
+                    "CONFIRMED" -> "Đã xác minh" to ThtUi.ChipState.OK
+                    "ACCEPTED_UNVERIFIED", "INTERRUPTED" -> "Chưa xác nhận" to ThtUi.ChipState.WARN
+                    "REJECTED", "FAILED" -> "Không thành công" to ThtUi.ChipState.ERR
+                    "PENDING" -> "Đang xử lý" to ThtUi.ChipState.WARN
+                    else -> outcome(item.result)
+                }
                 historyList.addView(ThtUi.horizontal(context).apply {
                     setPadding(0, dp(context, 7), 0, dp(context, 7))
                     addView(ThtUi.text(context, "“${item.command}”", 15f, Color.WHITE, maxLines = 1), ThtUi.weight(1f, ViewGroup.LayoutParams.WRAP_CONTENT))

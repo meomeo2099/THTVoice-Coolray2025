@@ -99,9 +99,9 @@ class HomeScreenBinding(
 
         recentList.removeAllViews()
         if (runtime.history.isEmpty()) {
-            recentList.addView(ThtUi.text(context, "Chưa có hoạt động Voice trong phiên này.", 14f, ThtUi.TEXT_2), ThtUi.matchWrap(context, 8))
+            recentList.addView(ThtUi.text(context, "Chưa có lịch sử thực hiện lệnh.", 14f, ThtUi.TEXT_2), ThtUi.matchWrap(context, 8))
         } else {
-            val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val formatter = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
             runtime.history.take(3).forEachIndexed { index, item ->
                 if (index > 0) recentList.addView(View(context).apply { setBackgroundColor(ThtUi.BORDER) },
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(context, 1)))

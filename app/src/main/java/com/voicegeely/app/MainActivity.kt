@@ -66,6 +66,9 @@ class MainActivity : AppCompatActivity() {
 
     private val navButtons = linkedMapOf<MainDestination, View>()
     private val assistantRuntime = AssistantRuntimeStore()
+    private val historyChanged: () -> Unit = {
+        runOnUiThread { if (!isDestroyed) renderRuntimeScreens() }
+    }
     private var assistantBinding: AssistantScreenBinding? = null
     private var homeBinding: HomeScreenBinding? = null
     private var currentDestination = MainDestination.HOME
@@ -124,6 +127,8 @@ class MainActivity : AppCompatActivity() {
         voicePreferences = UserVoicePreferences(this)
         assistantRuntime.initialize(VoiceAssistantService.isServiceReady(), VoiceAssistantService.engineReadiness())
         setContentView(buildNavigationShell())
+        com.voicegeely.app.history.VoiceHistory.journal?.addListener(historyChanged)
+        renderRuntimeScreens()
 
         VoiceServiceEventBus.registerReceiver(
             serviceReceiver,
@@ -309,6 +314,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun renderRuntimeScreens() {
+        com.voicegeely.app.history.VoiceHistory.journal?.let { journal ->
+            assistantRuntime.restoreHistory(journal.commands().map {
+                com.voicegeely.app.ui.AssistantHistoryEntry(it.command, it.result, it.timestampMs, it.outcome)
+            })
+        }
         assistantBinding?.render(assistantRuntime.state)
         homeBinding?.render(assistantRuntime.state, voicePreferences, mediaSettings)
     }
@@ -735,6 +745,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        com.voicegeely.app.history.VoiceHistory.journal?.removeListener(historyChanged)
         voiceKeyHandler.clear()
         runCatching { VoiceServiceEventBus.unregisterReceiver(serviceReceiver) }
         assistantBinding = null

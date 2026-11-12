@@ -29,6 +29,8 @@ internal object VehicleConnectionDiagnostics {
             appendLine("Model ${Build.MODEL}, device ${Build.DEVICE}, UID ${android.os.Process.myUid()}")
             appendLine("Coolray profile ${CoolrayHeadUnit.detect() ?: "UNRECOGNIZED"}")
             appendLine("VHAL ${status.state}: ${status.detail}")
+            appendLine("Database: ${com.voicegeely.app.history.VoiceHistory.journal?.storageStatus ?: "NOT_INITIALIZED"}")
+            appendLine("Lịch sử đã lưu chỉ để tra cứu; trạng thái VHAL phía trên thuộc phiên hiện tại.")
             appendLine()
             permissions.forEach { permission ->
                 val granted = context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED

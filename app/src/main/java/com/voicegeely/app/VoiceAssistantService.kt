@@ -176,6 +176,7 @@ class VoiceAssistantService : Service() {
         commandExecutor = com.voicegeely.app.voice.SwappableCommandExecutor(buildVehicleStack(vehicleAccess))
         commandCoordinator = VoiceCommandCoordinator(
             executor = commandExecutor,
+            history = com.voicegeely.app.history.VoiceHistory,
             followUp = com.voicegeely.app.voice.FollowUpContext(),
             snapshotReader = ::readFollowUpSnapshot,
             speech = VoiceSpeechSink { text ->

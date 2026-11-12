@@ -33,6 +33,8 @@ data class VehicleTelemetrySnapshot(
  * or vehicle property values.
  */
 object VehicleTelemetryRegistry {
+    @Volatile var diagnosticSink: ((String) -> Unit)? = null
+    @Volatile var archivedDiagnostics: (() -> List<String>)? = null
     private val failures = java.util.ArrayDeque<String>()
     @Volatile
     private var current = VehicleTelemetrySnapshot(
@@ -44,12 +46,14 @@ object VehicleTelemetryRegistry {
     fun snapshot(): VehicleTelemetrySnapshot = current
 
     @Synchronized
-    fun diagnosticFailures(): List<String> = failures.toList()
+    fun diagnosticFailures(): List<String> = runCatching { archivedDiagnostics?.invoke() }.getOrNull()
+        ?.takeIf { it.isNotEmpty() } ?: failures.toList()
 
     @Synchronized
     fun recordConnection(backend: String, state: String) {
         val entry = "$backend CONNECT $state"
         failures.addLast(entry)
+        runCatching { diagnosticSink?.invoke(entry) }
         while (failures.size > 16) failures.removeFirst()
         runCatching { android.util.Log.i("THTVoiceECARX", entry) }
     }
@@ -59,6 +63,7 @@ object VehicleTelemetryRegistry {
     fun recordResult(backend: String, operation: String, propertyId: Int, areaId: Int?, outcome: String) {
         val entry = "$backend $operation property=0x${propertyId.toString(16)} area=$areaId $outcome"
         failures.addLast(entry)
+        runCatching { diagnosticSink?.invoke(entry) }
         while (failures.size > 16) failures.removeFirst()
         runCatching { android.util.Log.i("THTVoiceECARX", entry) }
     }
@@ -70,6 +75,7 @@ object VehicleTelemetryRegistry {
         val location = propertyId?.let { " property=0x${it.toString(16)} area=$areaId" }.orEmpty()
         val message = cause.message.orEmpty().replace(Regex("[\\r\\n]+"), " ").take(240)
         failures.addLast("$backend $operation$location ${cause.javaClass.simpleName}: $message")
+        runCatching { diagnosticSink?.invoke("$backend $operation$location ${cause.javaClass.simpleName}: $message") }
         while (failures.size > 16) failures.removeFirst()
         runCatching { android.util.Log.w("THTVoiceECARX", "$backend $operation$location ${cause.javaClass.simpleName}: $message") }
     }
@@ -121,6 +127,8 @@ object VehicleTelemetryRegistry {
 
     @Synchronized
     fun resetForTest() {
+        diagnosticSink = null
+        archivedDiagnostics = null
         failures.clear()
         current = VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.UNAVAILABLE,
