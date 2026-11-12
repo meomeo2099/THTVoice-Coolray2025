@@ -33,3 +33,5 @@
 - Detailed behavior and limits: docs/HVAC_REGIONAL_UPDATES.md. Sherpa1.13.8 and model/mic settings remain unchanged.
 
 - Final focused regression: OK (166 tests), build/regional113-final.log. Fresh independent review found no material defects; signed Android CI remains pending.
+
+- Android CI run43192587965 compiled production and ran853 tests:5 failures were stale cooling-state fixtures in CoolrayTemperatureRangeTest and OfflineCommandFlowTest. Updated only their fake power/A/C read-back; all existing assertions retained. Expanded local regression now OK (175 tests), build/regional113-final2.log.

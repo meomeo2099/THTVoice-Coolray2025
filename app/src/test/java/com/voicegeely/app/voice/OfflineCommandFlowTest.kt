@@ -67,7 +67,10 @@ class OfflineCommandFlowTest {
         var writeCount = 0
 
         override fun getIntProperty(propertyId: Int, areaId: Int): Int = -1
-        override fun getBoolProperty(propertyId: Int, areaId: Int): Boolean = false
+        // These tests isolate setpoint acceptance/read-back with cooling already running.
+        // Prerequisite writes and unknown A/C are covered by BinhDinhHvacTest.
+        override fun getBoolProperty(propertyId: Int, areaId: Int): Boolean =
+            propertyId == CoolrayProperties.HVAC_POWER || propertyId == CoolrayProperties.HVAC_AC
         override fun getFloatProperty(propertyId: Int, areaId: Int): Float =
             if (propertyId == CoolrayProperties.HVAC_TEMP_SET) temperature else Float.NaN
 

@@ -68,14 +68,15 @@ class CoolrayTemperatureRangeTest {
 
     private class Fake(private var temp: Float) : VehiclePropertyAccess {
         val writes = mutableListOf<Float>()
+        private val bools = mutableMapOf<Pair<Int, Int>, Boolean>()
         override val isMock = false
         override fun getIntProperty(propertyId: Int, areaId: Int) = -1
-        override fun getBoolProperty(propertyId: Int, areaId: Int) = false
-        override fun getBoolPropertyOrNull(propertyId: Int, areaId: Int): Boolean? = null
+        override fun getBoolProperty(propertyId: Int, areaId: Int) = bools[propertyId to areaId] ?: false
+        override fun getBoolPropertyOrNull(propertyId: Int, areaId: Int): Boolean? = bools[propertyId to areaId]
         override fun getFloatProperty(propertyId: Int, areaId: Int) = temp
         override fun getIntRange(propertyId: Int, areaId: Int): VehicleIntRange? = null
         override fun setIntProperty(propertyId: Int, areaId: Int, value: Int) = true
-        override fun setBoolProperty(propertyId: Int, areaId: Int, value: Boolean) = true
+        override fun setBoolProperty(propertyId: Int, areaId: Int, value: Boolean): Boolean { bools[propertyId to areaId] = value; return true }
         override fun setFloatProperty(propertyId: Int, areaId: Int, value: Float): Boolean { writes += value; temp = value; return true }
         override fun disconnect() = Unit
     }
