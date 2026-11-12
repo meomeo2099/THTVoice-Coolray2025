@@ -51,9 +51,9 @@ Files: `car/EcarxFunctionAccess.kt`, `car/DeferredEcarxFunctionPort.kt`, `voice/
 
 ### Task 4: Validate and deliver
 
-- [ ] Run targeted JVM tests, full Android unit tests and release compilation.
-- [ ] Build candidate 1.0.9 (10) using configured THT_SIGN_*; verify package/version/signature.
-- [ ] Restore manual-only workflow, synchronize local test branch, deliver APK with sample commands and hardware verification limits.
+- [x] Run targeted JVM tests, full Android unit tests and release compilation.
+- [x] Build candidate 1.0.9 (10) using configured THT_SIGN_*; verify package/version/signature.
+- [x] Restore manual-only workflow, synchronize local test branch, deliver APK with sample commands and hardware verification limits.
 
 
 ## Execution ledger
@@ -62,6 +62,8 @@ Files: `car/EcarxFunctionAccess.kt`, `car/DeferredEcarxFunctionPort.kt`, `voice/
 - Implementation: added OEM family executor and explicit parser; API availability/readback and safety policies retained. Added ISensor read path and completed MCU status/roof handling. Heating removed from production capability routing.
 - Review: an independent code review found ambiguous/negated drive-mode parsing and zero-percent roof commands bypassing tilt closure. Both were reproduced in tests and fixed.
 - Ruling: include the fuel-unit correction and MCU empty-payload guard in this change because these directly affect truthful voice vehicle status. Standard FUEL_LEVEL ml takes precedence; MCU percent needs known capacity for litres. Shipped byteToInt returns-1 for null but0 for empty; the bridge now preserves both as unknown.
-- Local validation: full production parse chain, response formatter and targeted regression suite pass; final CI/release-signature verification pending below.
+- Local validation: full production parse chain, response formatter and targeted regression suite pass; full CI unit tests, release compilation and signature/package/version checks passed in run43053962281.
 
 - CI integration: LegacyPredictionBridge explicitly maps the five new typed command classes to contract-only metadata, avoiding any legacy generic actuator route. Added a regression test and included the bridge in local compilation.
+
+- Delivery: candidate1.0.9(10), signed with configured release credentials, artifact13871042278; APK SHA256 `dba0def72c796ce69375dc581f61e12d9db94f5f06d771e1822c675ff6c192d9`. No OTA release published. Hardware verification remains REFERENCE/UNVERIFIED.
