@@ -2,6 +2,11 @@ package com.voicegeely.app.voice
 
 /** Explicit commands only: do not confuse engine shutdown, HVAC AUTO and Auto Hold. */
 object CoolrayOemCommandParser {
+    private const val AUTO_WORD = "(?:auto|aoto|aotu|ao to|ao tô|ao tu|au to|au tô|au tu|a tô|a to|a tu|a o tô|a u tô)"
+    private const val AUTO_CAR_HOMOPHONE = "(?:ô tô|ô tu|o to)"
+    private val autoAlone = Regex("^$AUTO_WORD$")
+    private val autoClimate = Regex("^(?:điều hòa (?:$AUTO_WORD|$AUTO_CAR_HOMOPHONE)|(?:$AUTO_WORD|$AUTO_CAR_HOMOPHONE) điều hòa)$")
+    private val autoModeHomophone = Regex("^chế độ $AUTO_CAR_HOMOPHONE$")
     fun parse(original: String): ParsedVoiceCommand? {
         val text = VoiceTextNormalizer.normalize(original)
         if (text in setOf("nghiêng cửa sổ trời", "mở nghiêng cửa sổ trời", "bật chế độ nghiêng cửa sổ trời")) {
@@ -18,7 +23,8 @@ object CoolrayOemCommandParser {
             val on = switch.groupValues[1] in setOf("bật", "mở", "kích hoạt")
             val target = switch.groupValues[2].removePrefix("chế độ ")
             feature(target)?.let { return ParsedVoiceCommand(original, text, VoiceCommand.OemSwitch(it, on)) }
-            if (target in setOf("điều hòa tự động", "điều hòa auto", "auto điều hòa", "tự động điều hòa")) {
+            if (target in setOf("điều hòa tự động", "tự động điều hòa") || autoAlone.matches(target) ||
+                autoClimate.matches(target) || autoModeHomophone.matches(switch.groupValues[2])) {
                 return ParsedVoiceCommand(original, text, VoiceCommand.HvacAuto(on))
             }
         }

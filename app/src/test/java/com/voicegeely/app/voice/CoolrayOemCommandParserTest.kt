@@ -13,13 +13,15 @@ class CoolrayOemCommandParserTest {
         }
     }
     @Test fun autoClimateAndFanProfilesAreExplicit() {
+        // Owner 12/11/2026: bare AUTO now explicitly names the HVAC mode, never Auto Hold.
+        assertEquals(VoiceCommand.HvacAuto(true), CoolrayOemCommandParser.parse("bật auto")?.command)
         assertEquals(VoiceCommand.HvacAuto(true), CoolrayOemCommandParser.parse("bật điều hòa tự động")?.command)
         assertEquals(VoiceCommand.HvacAuto(false), CoolrayOemCommandParser.parse("tắt auto điều hòa")?.command)
         assertEquals(VoiceCommand.SetAutoFanProfile(AutoFanProfile.QUIET), CoolrayOemCommandParser.parse("chỉnh quạt tự động sang êm")?.command)
         assertEquals(VoiceCommand.SetAutoFanProfile(AutoFanProfile.STRONG), CoolrayOemCommandParser.parse("chỉnh quạt auto sang mạnh")?.command)
     }
     @Test fun ambiguousEngineAndStabilityRequestsDoNotSelectSwitches() {
-        for (text in listOf("tắt máy", "tắt cân bằng điện tử", "bật auto", "bật điều hòa", "chế độ lái eco", "tắt tất cả")) {
+        for (text in listOf("tắt máy", "tắt cân bằng điện tử", "bật điều hòa", "chế độ lái eco", "tắt tất cả")) {
             assertNull(text, CoolrayOemCommandParser.parse(text))
         }
     }

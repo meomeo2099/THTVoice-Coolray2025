@@ -53,9 +53,10 @@ class HvacVoiceCommandExecutor(
 
     private fun setTemperature(rawRequested: Float, endpoint: Endpoint? = null): CommandExecutionResult {
         val requested = roundToStep(rawRequested)
-        if (!requested.isFinite() || requested !in minTemp..maxTemp) {
+        if (!rawRequested.isFinite() || rawRequested !in minTemp..maxTemp || !requested.isFinite() || requested !in minTemp..maxTemp) {
             return CommandExecutionResult.Rejected("Nhiệt độ phải nằm trong khoảng ${format(minTemp)} đến ${format(maxTemp)} độ.")
         }
+        requestCoolingPower()?.let { return it }
         val accepted = try { vehicle.setFloatProperty(CoolrayProperties.HVAC_TEMP_SET, CoolrayProperties.HVAC_TEMP_AREA, requested) }
         catch (t: Throwable) { return failed(t, "Lỗi khi gửi lệnh nhiệt độ.") }
         if (!accepted) return CommandExecutionResult.Rejected("Xe không chấp nhận lệnh điều chỉnh nhiệt độ.")
@@ -63,12 +64,29 @@ class HvacVoiceCommandExecutor(
 
         repeat(VERIFY_ATTEMPTS) { attempt ->
             val actual = safeFloat(CoolrayProperties.HVAC_TEMP_SET, CoolrayProperties.HVAC_TEMP_AREA)
-            if (actual != null && isTemperatureConfirmed(requested, actual, endpoint)) {
+            if (actual != null && isTemperatureConfirmed(requested, actual, endpoint) &&
+                safeBool(CoolrayProperties.HVAC_POWER, CoolrayProperties.HVAC_POWER_AREA) == true &&
+                safeBool(CoolrayProperties.HVAC_AC, CoolrayProperties.HVAC_AC_AREA) == true) {
                 return confirmed("${format(actual.coerceIn(minTemp, maxTemp))} độ")
             }
             if (!pause(attempt)) return interrupted()
         }
-        return unverified("API xe đã nhận lệnh nhưng chưa đọc lại được mức ${format(requested)} độ.")
+        return unverified("API xe đã nhận yêu cầu bật A/C và chỉnh ${format(requested)} độ, nhưng chưa xác nhận đủ trạng thái nguồn, A/C và nhiệt độ.")
+    }
+
+    /** Owner request: valid setpoint changes request system power and compressor before temperature. */
+    private fun requestCoolingPower(): CommandExecutionResult? {
+        val prerequisites = listOf(
+            Triple(CoolrayProperties.HVAC_POWER, CoolrayProperties.HVAC_POWER_AREA, "nguồn điều hòa"),
+            Triple(CoolrayProperties.HVAC_AC, CoolrayProperties.HVAC_AC_AREA, "A/C")
+        )
+        for ((property, area, name) in prerequisites) {
+            if (safeBool(property, area) == true) continue
+            val accepted = try { vehicle.setBoolProperty(property, area, true) }
+                catch (error: Throwable) { return failed(error, "Lỗi khi bật $name trước khi chỉnh nhiệt độ.") }
+            if (!accepted) return CommandExecutionResult.Rejected("Xe không chấp nhận bật $name; chưa gửi lệnh chỉnh nhiệt độ.")
+        }
+        return null
     }
 
     private fun setAcPower(on: Boolean, target: HvacPowerTarget): CommandExecutionResult = when (target) {

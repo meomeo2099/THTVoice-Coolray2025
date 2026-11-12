@@ -153,6 +153,7 @@ object VoiceTextNormalizer {
         value = colloquialNumbers(value)
         value = VietnameseNumberParser.parseVietnameseNumber(value)
         value = fixOwnerReportedAsrSlips(value)
+        value = normalizeRegionalVehicleWords(value)
         value = fixWindowNounSlips(value)
 
         replacements.forEach { (wrong, correct) ->
@@ -295,7 +296,7 @@ object VoiceTextNormalizer {
         // Final consonant swaps (t/c) heard in Southern/Central speech.
         Regex("^tắc ") to "tắt ",
         Regex("^bậc ") to "bật ",
-        Regex("${B}quạc$E") to "quạt",
+        // Fan final-consonant variants are handled by the command-scoped regionalFan below.
         // Northern n/l: "kéo kính nên".
         Regex("${B}(kính|gió|quạt|nhiệt độ|âm lượng|tiếng) nên$") to "$1 lên",
         // Requests: "cho tôi …", "mở giùm cái …", "… giùm tôi".
@@ -444,6 +445,44 @@ object VoiceTextNormalizer {
         return value.replace("các kính", "kính").replace("các kiếng", "kiếng")
     }
     private val windowNoun = Regex("(?<![\\p{L}\\p{N}])cửa (?:sổ|xổ)(?! trời| tự do)(?![\\p{L}\\p{N}])")
+
+    // Unified regional word corrections: always enabled, with no separate accent profile.
+    private val regionalWindowLead = Regex("^(?:mở|đóng|hạ|nâng|kéo|quay|hé|dừng)(?: (?:lên|xuống))? (?:(?:tất cả|toàn bộ|hết|cả|các|[1-4]) )*(?:cửa kính|cửa sổ|kính|kiếng|cánh)(?: |$)")
+    private val regionalDemistVerb = Regex("^(?:(bật|mở|tắt|ngắt) )?(?:sái|sáy)(?= (?:kính|kiếng|gương)(?: |$))")
+    private val regionalDemistLead = Regex("^(?:(?:bật|mở|tắt|ngắt) )?sấy (?:kính|kiếng|gương)(?: |$)")
+    private val regionalCirculation = Regex("^(?:(?:bật|mở|chuyển(?: sang)?|đổi(?: sang)?|chỉnh|chọn|để) )?(?:chế độ )?(?:lấy )?(?:gió|khí) (treo|chong|trông|ngoai|ngoải|ngoãi|ngòai)$")
+    private val regionalRows = listOf(
+        Regex("${B}(?:seo|xau|xao|sao)$E") to "sau",
+        Regex("${B}(?:chước|trướt|trức|chướt|trưới)$E") to "trước"
+    )
+    private const val REGIONAL_PASSENGER = "(?:phụ|phủ|phú|phù|phũ|fụ|fu|phu|bụ|vụ)"
+    private val regionalWindowSides = listOf(
+        // Long passenger names first; "tay phụ" must never turn into driver+passenger.
+        Regex("${B}(?:tài|tay) $REGIONAL_PASSENGER$E") to "phụ",
+        Regex("${B}ghé$E") to "ghế",
+        Regex("(?<=(?:bên|ghế) )(?:tay|nái|lài|lãi|lải|lại|lấy|nãi)$E") to "lái",
+        // A bare "lại" still means closing/again, never an inferred driver window.
+        Regex("(?<=(?:kính|kiếng|cánh|cửa sổ|sau|trước) )(?:tay|nái|lài|lãi|lải|nãi)$E") to "lái",
+        Regex("(?<=(?:bên|ghế|kính|kiếng|cánh|sau|trước) )$REGIONAL_PASSENGER$E") to "phụ",
+        Regex("(?<=(?:bên|ghế|kính|kiếng|cánh|sau|trước) )(?:chái|chải|trãi|trải|chại)$E") to "trái",
+        Regex("(?<=(?:bên|ghế|kính|kiếng|cánh|sau|trước) )(?:phãi|phái|fải|phai|phại)$E") to "phải"
+    )
+    private val regionalFan = Regex("^((?:(?:tăng|giảm|hạ|nâng|chỉnh|đặt|để|bật|tắt|mở)(?: tốc độ)? )?)(?:quạc|quặc)(?=$FAN_ASR_TAIL)")
+
+    private fun normalizeRegionalVehicleWords(input: String): String {
+        regionalCirculation.matchEntire(input)?.let {
+            return if (it.groupValues[1] in setOf("treo", "chong", "trông")) "lấy gió trong" else "lấy gió ngoài"
+        }
+        var value = regionalDemistVerb.replace(input) { match ->
+            match.groupValues[1].takeIf { it.isNotEmpty() }?.let { "$it sấy" } ?: "sấy"
+        }
+        val window = regionalWindowLead.containsMatchIn(value)
+        if (window || regionalDemistLead.containsMatchIn(value)) {
+            regionalRows.forEach { (pattern, replacement) -> value = pattern.replace(value, replacement) }
+        }
+        if (window) regionalWindowSides.forEach { (pattern, replacement) -> value = pattern.replace(value, replacement) }
+        return regionalFan.replace(value, "$1quạt")
+    }
     // In window phrases "trên" / "dưới" mean the front / rear row.
     private val windowUpperRow = Regex("(kính[^0-9]*?)(?<![\\p{L}\\p{N}])trên(?![\\p{L}\\p{N}])")
     private val windowLowerRow = Regex("(kính[^0-9]*?)(?<![\\p{L}\\p{N}])dưới(?![\\p{L}\\p{N}])")

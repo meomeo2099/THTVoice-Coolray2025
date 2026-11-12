@@ -73,6 +73,14 @@ class EcarxFunctionAccess private constructor(
     private val setFloat3: Method?
 ) : EcarxFunctionPort {
 
+    // OEM global HVAC uses non-zoned overloads (CarClimat reference). GLOBAL is a facade
+    // sentinel, not permission to invent a physical zone. Keep explicit-zone calls unchanged.
+    private fun functionMethod(name: String, vararg types: Class<*>): Method? =
+        carFunction.javaClass.methods.firstOrNull { it.name == name && it.parameterTypes.contentEquals(arrayOf(*types)) }
+    private val supported1 by lazy { functionMethod("isFunctionSupported", INT) }
+    private val getInt1 by lazy { functionMethod("getFunctionValue", INT) }
+    private val setInt2 by lazy { functionMethod("setFunctionValue", INT, INT) }
+
     data class Probe(
         val available: Boolean,
         val carClassName: String? = null,
@@ -87,15 +95,17 @@ class EcarxFunctionAccess private constructor(
         available = true,
         carClassName = car.javaClass.name,
         carFunctionClassName = carFunction.javaClass.name,
-        isSupported = supported2 != null,
-        intAccess = getInt2 != null && setInt3 != null,
+        isSupported = supported1 != null || supported2 != null,
+        intAccess = (getInt1 != null || getInt2 != null) && (setInt2 != null || setInt3 != null),
         floatAccess = getFloat2 != null && setFloat3 != null
     )
 
     override fun isSupported(functionId: Int, zone: Int): Boolean? {
-        val method = supported2 ?: return null
+        val method = (if (zone == Coolray2025Functions.GLOBAL) supported1 ?: supported2 else supported2) ?: return null
         return try {
-            val supported = when (val status = method.invoke(carFunction, functionId, zone)) {
+            val status = if (method.parameterTypes.size == 1) method.invoke(carFunction, functionId)
+                else method.invoke(carFunction, functionId, zone)
+            val supported = when (status) {
                 null -> null
                 is Enum<*> -> status.name.equals("active", ignoreCase = true)
                 else -> status.toString().equals("active", ignoreCase = true)
@@ -110,14 +120,18 @@ class EcarxFunctionAccess private constructor(
     }
 
     override fun getInt(functionId: Int, zone: Int): Int? = try {
-        (getInt2?.invoke(carFunction, functionId, zone) as? Number)?.toInt()
+        val result = if (zone == Coolray2025Functions.GLOBAL && getInt1 != null) getInt1?.invoke(carFunction, functionId)
+            else getInt2?.invoke(carFunction, functionId, zone)
+        (result as? Number)?.toInt()
     } catch (error: Throwable) {
         VehicleTelemetryRegistry.recordFailure("ECARX", "GET_INT", functionId, zone, error)
         null
     }
 
     override fun setInt(functionId: Int, zone: Int, value: Int): Boolean =
-        invokeBoolean("setFunctionValue", setInt3, functionId, zone, value)
+        if (zone == Coolray2025Functions.GLOBAL && setInt2 != null)
+            invokeBoolean("setFunctionValue[global]", setInt2, functionId, value)
+        else invokeBoolean("setFunctionValue", setInt3, functionId, zone, value)
 
     override fun getFloat(functionId: Int, zone: Int): Float? = try {
         (getFloat2?.invoke(carFunction, functionId, zone) as? Number)?.toFloat()?.takeIf { it.isFinite() }
@@ -187,8 +201,9 @@ class EcarxFunctionAccess private constructor(
     }
 
     private fun invokeBoolean(operation: String, method: Method?, vararg args: Any): Boolean {
+        val zone = if (args.size >= 3) args[1] as Int else Coolray2025Functions.GLOBAL
         if (method == null) {
-            VehicleTelemetryRegistry.recordResult("ECARX", operation, args[0] as Int, args[1] as Int, "METHOD_UNAVAILABLE")
+            VehicleTelemetryRegistry.recordResult("ECARX", operation, args[0] as Int, zone, "METHOD_UNAVAILABLE")
             return false
         }
         return try {
@@ -197,12 +212,12 @@ class EcarxFunctionAccess private constructor(
                 is Number -> result.toInt() != 0
                 else -> false
             }
-            VehicleTelemetryRegistry.recordResult("ECARX", "$operation value=${args[2]}", args[0] as Int, args[1] as Int,
+            VehicleTelemetryRegistry.recordResult("ECARX", "$operation value=${args.last()}", args[0] as Int, zone,
                 if (accepted) "ACCEPTED_UNVERIFIED" else "REJECTED")
             accepted
         } catch (error: Throwable) {
             VehicleTelemetryRegistry.recordFailure("ECARX", method.name,
-                args.getOrNull(0) as? Int, args.getOrNull(1) as? Int, error)
+                args.getOrNull(0) as? Int, zone, error)
             false
         }
     }
