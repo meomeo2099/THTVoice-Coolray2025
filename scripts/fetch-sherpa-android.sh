@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="1.13.8"
+VERSION="2.0.1"
 NAME="sherpa-onnx-${VERSION}.aar"
 URL="https://github.com/k2-fsa/sherpa-onnx/releases/download/v${VERSION}/${NAME}"
-SHA256="633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96"
+SHA256="a8d09d1d32f3eb8520482c6d3d43fae674681c5b050385967c70a3c2c9bf0ee7"
 DEST="app/libs/${NAME}"
 
 mkdir -p app/libs

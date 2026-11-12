@@ -22,6 +22,14 @@ class OwnerShadeWindowAsrTest {
         assertEquals(VoiceCommand.Window(setOf(WindowTarget.REAR_LEFT, WindowTarget.REAR_RIGHT), WindowOperation.OPEN, 100), parse("hạ cả hai kính sau"))
     }
 
+    @Test fun explicitRowNamesStillControlTheRequestedPair() {
+        for (text in listOf("hạ kính hàng ghế sau", "hạ kính bên sau")) {
+            assertEquals(text, VoiceCommand.Window(setOf(WindowTarget.REAR_LEFT, WindowTarget.REAR_RIGHT), WindowOperation.OPEN, 100), parse(text))
+        }
+        assertEquals(VoiceCommand.Window(setOf(WindowTarget.FRONT_LEFT, WindowTarget.FRONT_RIGHT), WindowOperation.CLOSE, 0), parse("đóng kính hàng ghế trước"))
+        assertFalse(parse("hạ kính ghế sau bên không rõ") is VoiceCommand.Window)
+    }
+
     @Test fun fanMisheardAsHoatInFanCommandContextOnly() {
         assertEquals(VoiceCommand.AdjustFanSpeed(1), parse("tăng hoạt"))
         assertEquals(VoiceCommand.AdjustFanSpeed(-1), parse("giảm hoạt"))

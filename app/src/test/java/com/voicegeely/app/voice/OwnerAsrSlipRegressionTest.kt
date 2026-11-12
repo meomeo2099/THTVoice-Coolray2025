@@ -115,7 +115,7 @@ class OwnerAsrSlipRegressionTest {
             assertEquals(slip, expected, cmd(slip))
         }
         assertEquals("đóng kính", VoiceTextNormalizer.normalize("đám kính"))
-        assertEquals("đóng cửa sổ", VoiceTextNormalizer.normalize("đám cửa sổ"))
+        assertEquals("đóng kính", VoiceTextNormalizer.normalize("đám cửa sổ"))
         assertEquals("đám cưới", VoiceTextNormalizer.normalize("đám cưới"))
     }
 }

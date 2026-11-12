@@ -25,3 +25,11 @@
 - GREEN: all130 focused tests passed after changes; individual rear payload tests include open, close and50percent, checking other motors remain -1.
 - Fresh read-only reviewer found no material defects.
 - Explicit shade requests now always send byte6; stable targetmatching baseline reads cannot produce hardware confirmation. A later observed away-to-target position can confirm. No automatic sunroofglass operation is added.
+
+## Approved scope additions
+- Owner requested importing command/error phrases from THTVoice: compared sourcecommit424a7b9 and referenceCSV (3,230rows, no new phrase strings versus local). Added shared20-case CSV/tests, newer compatible ASR corrections and context-scoped scene pronunciation aliases; see docs/THTVOICE_SHARED_ASR_IMPORT.md.
+- Owner requested newest Sherpa-ONNX: pinned officialAndroidAAR2.0.1 and SHA256a8d09d1d32f3eb8520482c6d3d43fae674681c5b050385967c70a3c2c9bf0ee7. Verify downloaded minSdk/ARM JNI/API classes in CI; modelweights remain unchanged. See docs/SHERPA_RUNTIME.md.
+- CI firstattempt43150695491 compiled all source, then failed1of831 tests: coverage lost16 row-label phrases (2681vs2697). Reproduced locally, preserved recognized rowlabels, and all135tests including fullcorpus passed. No coverage threshold was lowered.
+- SharedASR import RED2failures, then GREEN138focused tests including fullcorpus. Updated oldnormalizer expectation from “đóng cửa sổ” to sharedcanonical “đóng kính”, with an explicit ambiguity/clarification assertion.
+
+- Expanded-scope final review found no material defect and independently matched official AAR2.0.1 checksum. Local138tests (including20shared cases and full phrasecorpus) green; newruntime archive checks pendingCI.

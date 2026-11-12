@@ -127,6 +127,7 @@ jobs:
         run: |
           set -euo pipefail
           bash scripts/fetch-sherpa-android.sh
+          python3 scripts/verify-sherpa-runtime.py
           bash scripts/fetch-gipformer65m-int8.sh
           bash scripts/fetch-sherpa-kws-heytht.sh
           THTVOICE_KOKORO_TTS_DIR=build/kokoro-full/kokoro_vi bash scripts/fetch-kokoro-vi-tts.sh

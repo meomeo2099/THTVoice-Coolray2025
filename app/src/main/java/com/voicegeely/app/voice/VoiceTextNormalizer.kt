@@ -174,6 +174,9 @@ object VoiceTextNormalizer {
     private const val DRIVE_LEAD = "(?:chế độ(?: lái)?|chuyển(?: sang)?(?: chế độ(?: lái)?)?|đổi(?: sang)?(?: chế độ(?: lái)?)?)"
     // Whole fan utterances only: never rewrite "hoạt động", app titles or destinations.
     private const val FAN_ASR_TAIL = "(?:(?: mức| số| cấp| nấc| lên| xuống| to| nhỏ| mạnh| yếu| lớn| cao| thấp| tối| đa| thiểu| nhất| hơn| nữa| thêm| bớt| gió| [0-9]+))*[.!?,]*$"
+    private const val SCENE_SLIP_LEAD = "(?:(?:bật|mở|vào|chuyển(?: sang)?) )?(?:(?:chế độ|chế đô|chế đỗ|chế đổ|chế độc|chề độ|thế độ|chế dộ) )?"
+    private val sharedCampingSlip = Regex("^$SCENE_SLIP_LEAD(?:đi )?(?:cắm|cấm|căm|cắn|cám|gắm|cằm) (?:trại|chại|trải|trạy|tại|chải|trai)$")
+    private val sharedRestSlip = Regex("^$SCENE_SLIP_LEAD(?:(?:nghĩ|ngỉ|nghỉ|ngĩ|nghị) (?:ngơi|ngời|ngởi|ngơ|ngới)|thư dãn|thư giản|thư dản|thu giãn|thư giãn)(?: trong xe)?$")
 
     /**
      * ASR slips reported by the owner from real use (29/09/2026). Whole-utterance or
@@ -234,6 +237,12 @@ object VoiceTextNormalizer {
         ownerAsrSlips.forEach { (pattern, replacement) -> value = pattern.replace(value, replacement) }
         nearSoundSlips.forEach { (pattern, replacement) -> value = pattern.replace(value, replacement) }
         regionalSpeech.forEach { (pattern, replacement) -> value = pattern.replace(value, replacement) }
+        // Shared scene corrections open an existing OEM screen; never rewrite navigation text.
+        value = when {
+            sharedCampingSlip.matches(value) -> "chế độ cắm trại"
+            sharedRestSlip.matches(value) -> "chế độ nghỉ ngơi"
+            else -> value
+        }
         return value.trim()
     }
 
@@ -264,7 +273,13 @@ object VoiceTextNormalizer {
         Regex("${B}bảng đồ$E") to "bản đồ",
         Regex("${B}âm (?:lượn|lương|lựng)$E") to "âm lượng",
         Regex("^(?:bày|bài) tiếp$") to "bài tiếp theo",
-        Regex("^bày tiếp theo$") to "bài tiếp theo"
+        Regex("^bày tiếp theo$") to "bài tiếp theo",
+        // Shared THTVoice ASR regressions (424a7b9, 22/10/2026), restricted to car contexts.
+        Regex("^(tăng|giảm|bật|tắt|chỉnh) quảng(?=$FAN_ASR_TAIL)") to "$1 quạt",
+        Regex("^xây (kinh|kính|kín|gương)(?=(?: (?:trước|sau|lái|phụ|bên lái|bên phụ))?[.!?,]*$)") to "sấy $1",
+        Regex("(?<=^sấy )kinh$E") to "kính",
+        Regex("^(?:mở )?khe (?=kính|kiếng|cửa kính)") to "hé ",
+        Regex("^chế độ(?: lái)? sơn$") to "chế độ lái sport"
     )
 
     /**
@@ -420,13 +435,15 @@ object VoiceTextNormalizer {
 
     /** Runs before the replacement table so "kênh lái" still becomes "kính bên lái". */
     private fun fixWindowNounSlips(input: String): String {
-        var value = windowTightSlip.replace(input) { "kính ${it.groupValues[1]}" }
+        var value = windowNoun.replace(input, "kính")
+        value = windowTightSlip.replace(value) { "kính ${it.groupValues[1]}" }
         value = windowChannelSlip.replace(value) { "kính ${it.groupValues[1]}" }
         if (Regex("kính|kiếng|cửa sổ").containsMatchIn(value)) {
             value = value.replace(Regex("(?<=bên )lá$E"), "lái")
         }
         return value.replace("các kính", "kính").replace("các kiếng", "kiếng")
     }
+    private val windowNoun = Regex("(?<![\\p{L}\\p{N}])cửa (?:sổ|xổ)(?! trời| tự do)(?![\\p{L}\\p{N}])")
     // In window phrases "trên" / "dưới" mean the front / rear row.
     private val windowUpperRow = Regex("(kính[^0-9]*?)(?<![\\p{L}\\p{N}])trên(?![\\p{L}\\p{N}])")
     private val windowLowerRow = Regex("(kính[^0-9]*?)(?<![\\p{L}\\p{N}])dưới(?![\\p{L}\\p{N}])")

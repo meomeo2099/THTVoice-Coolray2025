@@ -403,7 +403,8 @@ object VoiceCommandParser {
         val right = passenger || rightSide
 
         // A spoken side that ASR has damaged must never broaden into a whole-row write.
-        if (!left && !right && Regex("(?:^| )(?:bên|ghế)(?: |$)").containsMatchIn(text)) return null
+        val withoutRowLabels = text.replace(Regex("(?:^| )(?:ghế|bên) (?:trước|sau)(?= |$)"), " ")
+        if (!left && !right && Regex("(?:^| )(?:bên|ghế)(?: |$)").containsMatchIn(withoutRowLabels)) return null
 
         return when {
             back && left && right -> setOf(WindowTarget.REAR_LEFT, WindowTarget.REAR_RIGHT)

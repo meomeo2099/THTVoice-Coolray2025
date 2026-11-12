@@ -92,6 +92,9 @@ jobs:
         shell: bash
         run: bash scripts/fetch-sherpa-android.sh
 
+      - name: Verify Sherpa Android runtime
+        run: python3 scripts/verify-sherpa-runtime.py
+
       - name: Test Sherpa 65M model staging
         shell: bash
         run: bash scripts/test-prepare-sherpa65m-model.sh
