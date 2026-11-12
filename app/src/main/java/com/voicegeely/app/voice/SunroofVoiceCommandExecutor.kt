@@ -55,7 +55,9 @@ class SunroofVoiceCommandExecutor(
 
     private fun moveTo(group: Int, target: Int, name: String, glassFallback: Boolean): CommandExecutionResult {
         val before = position(group, glassFallback)
-        if (before != null && abs(before - target) <= TOLERANCE) return support.confirmed("$target phần trăm")
+        // Real owner report: shade telemetry can remain zero while the shade is open.
+        // Never suppress an explicit shade request using that pre-read alone.
+        if (glassFallback && before != null && abs(before - target) <= TOLERANCE) return support.confirmed("$target phần trăm")
         var accepted = try { port.sendBytesToMcu(F.INFO_ID_WINDOW_GROUP, F.windowGroupPayload(group, target)) } catch (_: Throwable) { false }
         if (!accepted && glassFallback) {
             accepted = try { port.setFloat(F.BCM_FUNC_WINDOW_POS, ZONE, target.toFloat()) } catch (_: Throwable) { false }
@@ -68,12 +70,19 @@ class SunroofVoiceCommandExecutor(
         if (port.isMock) return support.confirmed("$target phần trăm")
         var moved = false
         var previous = before
+        var observedAwayFromTarget = before?.let { abs(it - target) > TOLERANCE } ?: false
         for (delay in VERIFY_DELAYS) {
             if (!support.sleep(delay)) return support.interrupted()
             val actual = position(group, glassFallback) ?: continue
-            if (abs(actual - target) <= TOLERANCE) return support.confirmed("$target phần trăm")
+            if (abs(actual - target) <= TOLERANCE) {
+                if (glassFallback || observedAwayFromTarget) return support.confirmed("$target phần trăm")
+            } else observedAwayFromTarget = true
             if (previous != null && abs(target - actual) < abs(target - previous)) moved = true
             previous = actual
+        }
+        if (!glassFallback && !observedAwayFromTarget) {
+            com.voicegeely.app.car.VehicleTelemetryRegistry.recordResult("ECARX", "SHADE_VERIFY", F.INFO_ID_WINDOW_SUNSHADE, null, "NO_SHADE_MOVEMENT_EVIDENCE_UNVERIFIED")
+            return CommandExecutionResult.AcceptedUnverified("Chưa có dữ liệu chuyển động để xác nhận rèm đã thực hiện lệnh.")
         }
         return CommandExecutionResult.AcceptedUnverified(
             if (moved) "${name.replaceFirstChar { it.uppercase() }} đang di chuyển về vị trí đích." else "Chưa đọc lại được vị trí $name."

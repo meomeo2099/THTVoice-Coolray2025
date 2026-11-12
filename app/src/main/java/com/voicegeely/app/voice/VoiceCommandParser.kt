@@ -395,14 +395,19 @@ object VoiceCommandParser {
 
         val back = Regex("sau|phía sau|đằng sau").containsMatchIn(text)
         val front = Regex("trước|phía trước|đằng trước").containsMatchIn(text)
-        val driver = Regex("bên lái|ghế lái|tài xế").containsMatchIn(text)
-        val passenger = Regex("bên phụ|ghế phụ").containsMatchIn(text)
+        val driver = Regex("bên lái|ghế lái|tài xế|(?:^| )(?:lái|tài)(?: |$)").containsMatchIn(text)
+        val passenger = Regex("bên phụ|ghế phụ|(?:^| )phụ(?: |$)").containsMatchIn(text)
         val leftSide = Regex("bên trái|(?:^| )trái(?: |$)").containsMatchIn(text)
         val rightSide = Regex("bên phải|(?:^| )phải(?: |$)").containsMatchIn(text)
         val left = driver || leftSide
         val right = passenger || rightSide
 
+        // A spoken side that ASR has damaged must never broaden into a whole-row write.
+        if (!left && !right && Regex("(?:^| )(?:bên|ghế)(?: |$)").containsMatchIn(text)) return null
+
         return when {
+            back && left && right -> setOf(WindowTarget.REAR_LEFT, WindowTarget.REAR_RIGHT)
+            front && left && right -> setOf(WindowTarget.FRONT_LEFT, WindowTarget.FRONT_RIGHT)
             back && right -> setOf(WindowTarget.REAR_RIGHT)
             back && left -> setOf(WindowTarget.REAR_LEFT)
             front && right -> setOf(WindowTarget.FRONT_RIGHT)

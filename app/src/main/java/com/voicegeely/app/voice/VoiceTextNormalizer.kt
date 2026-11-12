@@ -172,6 +172,8 @@ object VoiceTextNormalizer {
     /** "chế độ ê cô điều hòa" is the climate Eco, not a drive mode. */
     private const val NOT_HVAC = "(?! (?:điều hòa|điều hoà|máy lạnh|điều hòa không khí))"
     private const val DRIVE_LEAD = "(?:chế độ(?: lái)?|chuyển(?: sang)?(?: chế độ(?: lái)?)?|đổi(?: sang)?(?: chế độ(?: lái)?)?)"
+    // Whole fan utterances only: never rewrite "hoạt động", app titles or destinations.
+    private const val FAN_ASR_TAIL = "(?:(?: mức| số| cấp| nấc| lên| xuống| to| nhỏ| mạnh| yếu| lớn| cao| thấp| tối| đa| thiểu| nhất| hơn| nữa| thêm| bớt| gió| [0-9]+))*[.!?,]*$"
 
     /**
      * ASR slips reported by the owner from real use (29/09/2026). Whole-utterance or
@@ -201,6 +203,9 @@ object VoiceTextNormalizer {
         Regex("(?<=(?:bật|tắt|tăng|giảm|chỉnh|mở|đặt|để|cho) )phạt$E") to "quạt",
         Regex("${B}phạt(?= (?:mức|số|cấp|lên|xuống|to|nhỏ|mạnh|yếu|lớn|cao|thấp|tối|gió|\\d|một|hai|ba|bốn|năm|sáu|bảy|tám)$E)") to "quạt",
         Regex("^phạt$") to "quạt",
+        // Owner 12/11/2026: offline ASR hears "quạt" as "hoạt".
+        Regex("^(tăng|giảm|hạ|nâng|chỉnh|đặt|để|cho|bật|tắt|mở)( tốc độ)? hoạt(?=$FAN_ASR_TAIL)") to "$1$2 quạt",
+        Regex("^(tốc độ )?hoạt(?= (?:mức|số|cấp|nấc|mạnh|yếu|to|nhỏ|tối|[0-9]+)(?: |[.!?,]*$))(?=$FAN_ASR_TAIL)") to "$1quạt",
         // Apps.
         Regex("${B}(?:you (?:tụ|tu|tú|tù|tủ) bay|diu tụ bay|you tụp bay|you tụi bay|youtu bay|you tụp|you túp|yoube|you tube|diu túp|yu túp)$E") to "youtube",
         // 09/10/2026: more YouTube / Spotify / Zing spellings, so media and "mở …" agree.
@@ -417,6 +422,9 @@ object VoiceTextNormalizer {
     private fun fixWindowNounSlips(input: String): String {
         var value = windowTightSlip.replace(input) { "kính ${it.groupValues[1]}" }
         value = windowChannelSlip.replace(value) { "kính ${it.groupValues[1]}" }
+        if (Regex("kính|kiếng|cửa sổ").containsMatchIn(value)) {
+            value = value.replace(Regex("(?<=bên )lá$E"), "lái")
+        }
         return value.replace("các kính", "kính").replace("các kiếng", "kiếng")
     }
     // In window phrases "trên" / "dưới" mean the front / rear row.
