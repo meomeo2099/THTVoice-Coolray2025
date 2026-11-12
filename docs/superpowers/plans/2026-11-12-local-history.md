@@ -21,7 +21,7 @@
 - [x] Write failing tests for repeat commands, restart merge, errors, and typed outcomes before speech.
 - [x] Implement journal/cache, SQLite schema/store, process startup and telemetry sink.
 - [x] Connect coordinator and cached UI history; document limits and storage health.
-- [ ] Run local regression and actual SQLite restart/retention checks; review; build signed test APK.
+- [x] Run local regression and actual SQLite restart/retention checks; review; build signed test APK.
 
 ## Ledger
 - Existing isolated test branch retained; no changes to main or OTA publication.
@@ -29,3 +29,8 @@
 
 - Verification: 124 focused JVM tests and real SQLite close/reopen/retention test passed locally. Android storage and adapter sources compiled against API 32 in the JVM harness.
 - Fresh review found completion could be lost after display cache eviction. Reproduced failing regression, then fixed by UUID-based database UPDATE; regression now passes.
+
+- Final reviewer verified the UUID completion fix and independently passed the SQL test; no remaining material finding.
+- Signed candidate 1.0.10 (11): build commit bcd0a1bb2923a8f900f8f5e961a7a8cde4bda1af; Actions run 43139946635 / job 130924237173. Full Android unit tests, SQLite test, release assembly, certificate/package/version checks all passed. OTA publishing skipped.
+- APK SHA256: 00e5a2981e7b605620ce4f595d4daa33267d5b67e2331dc5108dcbbbc39a0b94. Artifact THTVoice-rc-1.0.10-11, ID13909621319.
+- Integration: retain existing test branch as authorized; restore workflow manual trigger while keeping permanent SQLite verification step. Hardware persistence/performance still unverified.
