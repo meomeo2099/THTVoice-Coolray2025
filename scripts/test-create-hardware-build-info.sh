@@ -5,7 +5,7 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
 APK="$TMP/app-debug.apk"
-RUNTIME="$TMP/sherpa-onnx-2.0.1.aar"
+RUNTIME="$TMP/sherpa-onnx-1.13.8.aar"
 MATRIX="$TMP/IHU689G_TEST_MATRIX.csv"
 ASR="$TMP/asr"
 KWS="$TMP/kws"
@@ -64,7 +64,7 @@ grep -q '^scene_probe_sha256=[0-9a-f]\{64\}$' "$OUT/BUILD_INFO.txt"
 grep -q '^asset_manifest_sha256=[0-9a-f]\{64\}$' "$OUT/BUILD_INFO.txt"
 grep -qx 'test_matrix=IHU689G_TEST_MATRIX.csv' "$OUT/BUILD_INFO.txt"
 grep -qx 'scene_probe=probe-scene-contract.ps1' "$OUT/BUILD_INFO.txt"
-for token in sherpa-onnx-2.0.1.aar encoder.int8.onnx kokoro_vi.onnx voices.bin lexicon-vi.txt SOURCE.txt \
+for token in sherpa-onnx-1.13.8.aar encoder.int8.onnx kokoro_vi.onnx voices.bin lexicon-vi.txt SOURCE.txt \
   IHU689G_TEST_MATRIX.csv probe-scene-contract.ps1; do
 grep -q "$token" "$OUT/ASSET_SHA256.txt"
 done

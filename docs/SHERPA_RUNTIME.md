@@ -1,5 +1,13 @@
 # Sherpa Android runtime
 
+## Active recovery baseline: 1.0.12 candidate
+
+The owner reported a listening freeze/process exit with1.0.11 after speaking a command through both the Voice button and Hey Geely. Photos show VHAL and database ready but contain no crash stack. Candidate1.0.12 restores the prior complete `sherpa-onnx-1.13.8.aar` runtime and SHA256 `633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96`, retaining all1.0.11 application features, models, ASR/mic code and stored data. This is a controlled runtime comparison, not confirmation that2.0.1 caused a specific native crash or that rollback has fixed hardware behavior.
+
+The archive/API/ABI/minSdk verifier remains enabled for the restored version. TTS probe and hardware metadata pins are restored consistently.
+
+## Historical 1.0.11 upgrade experiment
+
 The owner requested the newest released Sherpa-ONNX runtime on 12 November 2026. The newest versioned library release checked was [v2.0.1](https://github.com/k2-fsa/sherpa-onnx/releases/tag/v2.0.1). GitHub's generic `/releases/latest` currently points to a separate forced-alignment model asset release; that tag is not an Android runtime upgrade.
 
 - Runtime: official `sherpa-onnx-2.0.1.aar`, replacing 1.13.8 in Gradle, fetch script, hardware-build metadata defaults/fixtures and Python TTS probe.

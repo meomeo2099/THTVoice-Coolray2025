@@ -118,5 +118,5 @@ dependencies {
 
     // Fetched and SHA-256 verified by scripts/fetch-sherpa-android.sh.
     // Binary stays out of normal Git history.
-    implementation(files("libs/sherpa-onnx-2.0.1.aar"))
+    implementation(files("libs/sherpa-onnx-1.13.8.aar"))
 }

@@ -28,7 +28,7 @@ try {
     $dummyE = "e" * 64
     @(
         "# THT Voice IHU689G hardware-test asset SHA-256",
-        "$dummyA  app/libs/sherpa-onnx-2.0.1.aar",
+        "$dummyA  app/libs/sherpa-onnx-1.13.8.aar",
         "$dummyB  app/src/main/assets/models/sherpa-onnx-streaming-zipformer-vi-65M-int8/encoder.int8.onnx",
         "$dummyC  app/src/main/assets/models/sherpa-onnx-kws-zipformer-zh-en/keywords.txt",
         "$dummyE  app/src/main/assets/models/sherpa-onnx-kws-zipformer-zh-en/keywords-hello-geely.txt",
@@ -47,7 +47,7 @@ try {
         "git_ref=refs/heads/hardware-test/test",
         "apk_size_bytes=$apkSize",
         "apk_sha256=$apkHash",
-        "sherpa_runtime=sherpa-onnx-2.0.1.aar",
+        "sherpa_runtime=sherpa-onnx-1.13.8.aar",
         "sherpa_runtime_sha256=$dummyA",
         "asr_model=test-65M-int8",
         "asr_backend=offline-transducer",
