@@ -11,7 +11,7 @@
 ## Tasks
 - [x] Reproduce each case with failing parser/executor tests, including unrelated “hoạt động” and ambiguous window-side negatives.
 - [x] Correct contextual fan/driver aliases, prevent side loss from broadening the command, and fix false shade confirmation/pre-read no-op.
-- [ ] Run regressions, independent review and signed candidate CI; document live hardware limits.
+- [x] Run regressions, independent review and signed candidate CI; document live hardware limits.
 
 ## Evidence and constraints
 - `parseWindowTargets` does not recognize “bên lá”; rear-row fallback chooses both windows.
@@ -33,3 +33,9 @@
 - SharedASR import RED2failures, then GREEN138focused tests including fullcorpus. Updated oldnormalizer expectation from “đóng cửa sổ” to sharedcanonical “đóng kính”, with an explicit ambiguity/clarification assertion.
 
 - Expanded-scope final review found no material defect and independently matched official AAR2.0.1 checksum. Local138tests (including20shared cases and full phrasecorpus) green; newruntime archive checks pendingCI.
+
+## Final verification
+- Signed candidate1.0.11(versionCode12), buildcommit a687f98fdaccb18f6db93bd22514d1d50c3ffca7. Actionsrun43152664162/job130965284432: real AARverification, SQLite checks, completeAndroidunit suite, releaseassembly and certificate/package/version checks allpassed. OTA publication skipped.
+- RealSherpa2.0.1 AAR: minSdk21; ARM32+ARM64 JNI and ASR/KWS/TTS/denoiser classes verified; allproductionKotlin callsites compiled.
+- APK SHA256 31b8fc0ee2557f8e893c93909c4d5a406564c10838374116042aa33a93ca2e51. Artifact THTVoice-rc-1.0.11-12 /13914279307.
+- Keep authorizedtestbranch; restore manual release trigger, retain runtimeverification in workflows. No nativevehicle execution or speechaccuracy benchmark claimed.

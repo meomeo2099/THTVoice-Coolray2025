@@ -9,3 +9,7 @@ The owner requested the newest released Sherpa-ONNX runtime on 12 November 2026.
 - The upstream Android sample for v2.0.1 uses minSdk21 and compileSdk32; the downloaded library is checked independently. This is source/package compatibility evidence, not a head-unit performance benchmark.
 - Existing Vietnamese 65M model files, backend marker, CPU provider, thread limits, KWS profile and TTS voice pack remain unchanged. Upgrading the runtime does not retrain the model, prove fewer word errors, or introduce Google/network recognition.
 - Local shell cannot download GitHub binaries in this environment (DNS restricted). CI performs the pinned download, archive verification and full Android build; native initialization, microphone quality and latency on the actual vehicle remain to be tested after installation.
+
+## Candidate verification
+
+THT Voice1.0.11(12), Actionsrun[43152664162](https://github.com/meomeo2099/THTVoice-Coolray2025/actions/runs/43152664162), verified the actual AAR at minSdk21 with both ARM architectures and allrequired classes. The completeAndroid unit suite and signed releaseassembly succeeded against2.0.1. APKpackage/version/certificate checks passed; OTA was notpublished. This does not replace testing native initialization and accuracy on the head unit.
