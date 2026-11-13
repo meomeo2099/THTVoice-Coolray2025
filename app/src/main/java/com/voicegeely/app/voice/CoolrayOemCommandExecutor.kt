@@ -58,7 +58,7 @@ class CoolrayOemCommandExecutor(
             CommandExecutionResult.AcceptedUnverified("AUTO đã được API tiếp nhận, nhưng chưa xác nhận đủ trạng thái nguồn điều hòa.")
         else mode
     }
-    /** Manual fan override exits AUTO on the owner's car. Same-level request remains REFERENCE. */
+    /** Owner verified fan +1 exits AUTO; never exceed the Coolray maximum level7. */
     private fun manualFanAutoOff(original: CommandExecutionResult.AcceptedUnverified): CommandExecutionResult {
         if (Thread.currentThread().isInterrupted) return original
         if (support.readInt(F.HVAC_FUNC_AUTO, F.GLOBAL) != F.ON ||
@@ -66,8 +66,9 @@ class CoolrayOemCommandExecutor(
         fun fanLevel(): Int? = F.levelOf(F.HVAC_FUNC_FAN_SPEED, support.readInt(F.HVAC_FUNC_FAN_SPEED, F.ZONE_ROW_1_LEFT))
             ?.takeIf { it in 1..7 }
             ?: F.levelOf(F.HVAC_FUNC_FAN_SPEED, support.readInt(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL))?.takeIf { it in 1..7 }
-        val level = fanLevel() ?: return original
-        // Force one manual request even when the numeric level already matches. Never raise/lower it.
+        val current = fanLevel() ?: return original
+        val level = (current + 1).coerceAtMost(7)
+        // One manual fan step, as tested by the owner. At maximum reapply7; never guess8.
         if (Thread.currentThread().isInterrupted) return original
         if (!port.setInt(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL, F.level(F.HVAC_FUNC_FAN_SPEED, level))) return original
         for (delay in EcarxCommandSupport.DEFAULT_DELAYS) {
@@ -79,7 +80,7 @@ class CoolrayOemCommandExecutor(
                 if (auto == F.OFF && fan == level) "MATCH" else "UNVERIFIED")
             if (auto == F.OFF && fan == level) return support.confirmed()
         }
-        return CommandExecutionResult.AcceptedUnverified("Đã gửi yêu cầu chuyển quạt sang điều khiển tay ở mức hiện tại, nhưng chưa xác nhận AUTO đã tắt.")
+        return CommandExecutionResult.AcceptedUnverified("Đã gửi yêu cầu chuyển quạt sang điều khiển tay ở mức $level, nhưng chưa xác nhận AUTO đã tắt.")
     }
     private fun bit(on: Boolean) = if (on) F.ON else F.OFF
     companion object {

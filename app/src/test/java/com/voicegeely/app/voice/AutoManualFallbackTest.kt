@@ -11,18 +11,21 @@ class AutoManualFallbackTest {
         auto?.let { ints[F.HVAC_FUNC_AUTO to F.GLOBAL] = it }
         fan?.let { ints[F.HVAC_FUNC_FAN_SPEED to F.ZONE_ROW_1_LEFT] = F.level(F.HVAC_FUNC_FAN_SPEED, it) }
     }
-    @Test fun acceptedOffCanEnterManualAtSameFanLevel() = runBlocking {
+    @Test fun acceptedOffEntersManualByIncreasingOneLevel() = runBlocking {
         val base = fake()
         val port = object : EcarxFunctionPort by base {
             override fun setInt(functionId: Int, zone: Int, value: Int): Boolean {
                 val ok = base.setInt(functionId, zone, value)
-                if (functionId == F.HVAC_FUNC_FAN_SPEED && ok) base.ints[F.HVAC_FUNC_AUTO to 0] = 0
+                if (functionId == F.HVAC_FUNC_FAN_SPEED && ok) {
+                    base.ints[F.HVAC_FUNC_AUTO to 0] = 0
+                    base.ints[F.HVAC_FUNC_FAN_SPEED to F.ZONE_ROW_1_LEFT] = value
+                }
                 return ok
             }
         }
         val result = CoolrayOemCommandExecutor(port) {}.execute(VoiceCommand.HvacAuto(false))
         assertTrue(result is CommandExecutionResult.Confirmed)
-        assertEquals(listOf(Triple(F.HVAC_FUNC_AUTO, 0, 0), Triple(F.HVAC_FUNC_FAN_SPEED, 0, F.level(F.HVAC_FUNC_FAN_SPEED, 3))), base.intWrites)
+        assertEquals(listOf(Triple(F.HVAC_FUNC_AUTO, 0, 0), Triple(F.HVAC_FUNC_FAN_SPEED, 0, F.level(F.HVAC_FUNC_FAN_SPEED, 4))), base.intWrites)
     }
     @Test fun absentOrInvalidFanAndUnknownAutoNeverGuess() = runBlocking {
         for (base in listOf(fake(fan=null), fake(fan=8), fake(auto=null), fake().apply { unsupported += F.HVAC_FUNC_FAN_SPEED })) {
@@ -43,6 +46,11 @@ class AutoManualFallbackTest {
             assertTrue(result is CommandExecutionResult.AcceptedUnverified)
             assertEquals(listOf(Triple(F.HVAC_FUNC_AUTO, 0, 0)), base.intWrites)
         } finally { Thread.interrupted() }
+    }
+    @Test fun maximumFanNeverWritesLevelEight() = runBlocking {
+        val base = fake(fan=7)
+        assertTrue(CoolrayOemCommandExecutor(base) {}.execute(VoiceCommand.HvacAuto(false)) is CommandExecutionResult.AcceptedUnverified)
+        assertEquals(Triple(F.HVAC_FUNC_FAN_SPEED, 0, F.level(F.HVAC_FUNC_FAN_SPEED, 7)), base.intWrites.last())
     }
     @Test fun alreadyOffAndDeniedOffNeverChangeFan() = runBlocking {
         val off = fake(auto=0)
