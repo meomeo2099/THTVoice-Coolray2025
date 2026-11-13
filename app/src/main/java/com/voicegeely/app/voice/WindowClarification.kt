@@ -10,13 +10,21 @@ class WindowClarification(
     private val parse: (String) -> ParsedVoiceCommand? = VoiceParseChain::parse,
     private val windowMs: Long = WINDOW_MS
 ) {
-    private data class Pending(val verb: String, val percentTail: String, val atMs: Long)
+    private data class Pending(val verb: String, val percentTail: String, val atMs: Long, val side: String? = null)
     private var pending: Pending? = null
 
     /** The question when [text] is an open/close-window sentence without a window; null otherwise. */
     @Synchronized
     fun check(text: String, nowMs: Long): String? {
         val t = VoiceTextNormalizer.normalize(text)
+        UNCERTAIN_ROW.matchEntire(t)?.let { damaged ->
+            val verb = if (damaged.groupValues[1] in listOf("mở", "hạ")) "mở" else "đóng"
+            val side = damaged.groupValues[2]
+            val percent = damaged.groupValues[3].takeIf { it.isNotEmpty() }
+            if (percent != null && percent.toInt() !in 0..100) return null
+            pending = Pending(verb, percent?.let { " $it phần trăm" }.orEmpty(), nowMs, side)
+            return "Bạn cần $verb kính trước hay sau bên $side?"
+        }
         val m = AMBIGUOUS.matchEntire(t) ?: return null
         val word = m.groupValues[1]
         val direction = m.groupValues[2]
@@ -45,6 +53,13 @@ class WindowClarification(
             .trim()
         ANSWER_SLIPS.forEach { (re, to) -> answer = re.replace(answer, to) }
         if (answer.isEmpty()) return null
+        if (p.side != null) {
+            // Only fill the missing row; never expand a damaged single-window request.
+            val row = Regex("^(?:phía |đằng )?(trước|sau)$").matchEntire(answer)?.groupValues?.get(1) ?: return null
+            val parsed = parse("${p.verb} kính $row bên ${p.side}${p.percentTail}") ?: return null
+            return (parsed.command as? VoiceCommand.Window)?.takeIf { it.targets.size == 1 }
+                ?.let { ParsedVoiceCommand(text, parsed.normalizedText, it) }
+        }
         val sentence = if (ALL.matches(answer)) "${p.verb} tất cả kính${p.percentTail}" else "${p.verb} kính $answer${p.percentTail}"
         val parsed = parse(sentence) ?: return null
         return (parsed.command as? VoiceCommand.Window)?.let { ParsedVoiceCommand(text, parsed.normalizedText, it) }
@@ -57,6 +72,8 @@ class WindowClarification(
         const val WINDOW_MS = 20_000L
         /** Owner 15/10/2026: short question, no list of answers. */
         fun question(verb: String) = "Bạn cần $verb kính nào?"
+        fun hasUncertainRow(normalized: String): Boolean = UNCERTAIN_ROW.matches(normalized)
+        private val UNCERTAIN_ROW = Regex("^(mở|đóng|hạ|nâng) kính xe (?:bên )?(lái|phụ|trái|phải)(?: (\\d{1,3}) phần trăm)?$")
 
         private const val WB = "(?<![\\p{L}\\p{N}])"
         private const val WE = "(?![\\p{L}\\p{N}])"

@@ -1,6 +1,7 @@
 package com.voicegeely.app.voice
 
 import com.voicegeely.app.car.EcarxFunctionPort
+import com.voicegeely.app.car.VehicleTelemetryRegistry
 
 /**
  * Shared write + read-back steps for Coolray 2025 executors that go through the ECARX AdaptAPI.
@@ -33,7 +34,11 @@ internal class EcarxCommandSupport(
         state: () -> Int? = { readInt(functionId, zone) },
         actualText: String? = null
     ): CommandExecutionResult {
-        if (!port.isMock && state() == expected) return confirmed(actualText)
+        fun readState(): Int? = state().also { actual ->
+            VehicleTelemetryRegistry.recordResult("ECARX", "VERIFY requested=$expected actual=${actual ?: "unknown"}", functionId, zone,
+                if (actual == null) "UNKNOWN" else if (actual == expected) "MATCH" else "MISMATCH")
+        }
+        if (!port.isMock && readState() == expected) return confirmed(actualText)
         val accepted = try { port.setInt(functionId, zone, value) } catch (t: Throwable) {
             return CommandExecutionResult.Failed(t.message ?: "Lỗi khi gửi lệnh $name.", t::class.java.name)
         }
@@ -42,7 +47,7 @@ internal class EcarxCommandSupport(
         var readable = false
         for (delay in verifyDelays) {
             if (!sleep(delay)) return interrupted()
-            val actual = state() ?: continue
+            val actual = readState() ?: continue
             readable = true
             if (actual == expected) return confirmed(actualText)
         }

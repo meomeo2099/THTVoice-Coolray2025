@@ -448,7 +448,7 @@ object VoiceTextNormalizer {
 
     // Unified regional word corrections: always enabled, with no separate accent profile.
     private val regionalWindowLead = Regex("^(?:mở|đóng|hạ|nâng|kéo|quay|hé|dừng)(?: (?:lên|xuống))? (?:(?:tất cả|toàn bộ|hết|cả|các|[1-4]) )*(?:cửa kính|cửa sổ|kính|kiếng|cánh)(?: |$)")
-    private val regionalDemistVerb = Regex("^(?:(bật|mở|tắt|ngắt) )?(?:sái|sáy)(?= (?:kính|kiếng|gương)(?: |$))")
+    private val regionalDemistVerb = Regex("^(?:(bật|mở|tắt|ngắt) )?(?:sai|sái|sáy)(?= (?:kính|kiếng|gương)(?: |$))")
     private val regionalDemistLead = Regex("^(?:(?:bật|mở|tắt|ngắt) )?sấy (?:kính|kiếng|gương)(?: |$)")
     private val regionalCirculation = Regex("^(?:(?:bật|mở|chuyển(?: sang)?|đổi(?: sang)?|chỉnh|chọn|để) )?(?:chế độ )?(?:lấy )?(?:gió|khí) (treo|chong|trông|ngoai|ngoải|ngoãi|ngòai)$")
     private val regionalRows = listOf(

@@ -59,6 +59,8 @@ object VoiceCommandParser {
         CoolrayOemCommandParser.parse(text)?.let { return it }
         val normalized = VoiceTextNormalizer.normalize(text)
         if (normalized.isBlank()) return null
+        // Reported sau -> xe loses the row. Do not fall back to the front window.
+        if (WindowClarification.hasUncertainRow(normalized)) return null
         MaxAcCommandParser.parse(text)?.let { return it }
         SunroofCommandParser.parse(text)?.let { return it }
         CoolrayLightCommandParser.parse(text)?.let { return it }
