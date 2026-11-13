@@ -58,8 +58,8 @@ jobs:
       - name: Pick version and gate it
         shell: bash
         env:
-          IN_CODE: ${{ inputs.version_code || '15' }}
-          IN_NAME: ${{ inputs.version_name || '1.0.14' }}
+          IN_CODE: ${{ inputs.version_code || '16' }}
+          IN_NAME: ${{ inputs.version_name || '1.0.15' }}
         run: |
           set -euo pipefail
           read -r code name < <(bash scripts/release/next-version.sh "$IN_CODE" "$IN_NAME")

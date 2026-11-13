@@ -289,7 +289,7 @@ object AssistantScreenView {
             Triple("asr", R.drawable.ic_ui_wave, "Nhận dạng giọng nói"),
             Triple("kws", R.drawable.ic_ui_mic, "Từ đánh thức"),
             Triple("mic", R.drawable.ic_ui_ear, "Micrô"),
-            Triple("vhal", R.drawable.ic_ui_car, "Kết nối xe"),
+            Triple("vhal", R.drawable.ic_ui_car, "Kết nối VHAL"),
             Triple("tts", R.drawable.ic_ui_headphones, "Giọng trợ lý")
         ).forEach { (key, iconRes, title) ->
             val value = ThtUi.text(context, "", 14f, ThtUi.OK, maxLines = 1)

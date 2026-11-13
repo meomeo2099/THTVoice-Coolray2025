@@ -35,6 +35,7 @@ data class VehicleTelemetrySnapshot(
 object VehicleTelemetryRegistry {
     @Volatile var diagnosticSink: ((String) -> Unit)? = null
     @Volatile var archivedDiagnostics: (() -> List<String>)? = null
+    private val connections = linkedMapOf<Any, VehicleTelemetrySnapshot>()
     private val failures = java.util.ArrayDeque<String>()
     @Volatile
     private var current = VehicleTelemetrySnapshot(
@@ -81,48 +82,73 @@ object VehicleTelemetryRegistry {
     }
 
     @Synchronized
-    fun markConnected(nowMs: Long = System.currentTimeMillis()) {
-        current = VehicleTelemetrySnapshot(
+    fun markConnected(nowMs: Long = System.currentTimeMillis(), owner: Any? = null) {
+        publish(VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.CONNECTED,
             detail = "PROPERTY_MANAGER_READY",
             updatedAtMs = nowMs
-        )
+        ), owner, activate = true)
     }
 
     @Synchronized
-    fun markIoSuccess(nowMs: Long = System.currentTimeMillis()) {
-        current = VehicleTelemetrySnapshot(
+    fun markIoSuccess(nowMs: Long = System.currentTimeMillis(), owner: Any? = null) {
+        publish(VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.CONNECTED,
             detail = "IO_OK",
             updatedAtMs = nowMs
-        )
+        ), owner)
     }
 
     @Synchronized
-    fun markIoFailure(reason: String, nowMs: Long = System.currentTimeMillis()) {
-        current = VehicleTelemetrySnapshot(
+    fun markIoFailure(reason: String, nowMs: Long = System.currentTimeMillis(), owner: Any? = null) {
+        publish(VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.DEGRADED,
             detail = reason.trim().ifBlank { "IO_FAILED" },
             updatedAtMs = nowMs
-        )
+        ), owner)
     }
 
     @Synchronized
-    fun markUnavailable(reason: String, nowMs: Long = System.currentTimeMillis()) {
-        current = VehicleTelemetrySnapshot(
+    fun markUnavailable(reason: String, nowMs: Long = System.currentTimeMillis(), owner: Any? = null) {
+        publish(VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.UNAVAILABLE,
             detail = reason.trim().ifBlank { "UNAVAILABLE" },
             updatedAtMs = nowMs
-        )
+        ), owner, remove = true, unownedFailure = true)
     }
 
     @Synchronized
-    fun markDisconnected(nowMs: Long = System.currentTimeMillis()) {
-        current = VehicleTelemetrySnapshot(
+    fun markDisconnected(nowMs: Long = System.currentTimeMillis(), owner: Any? = null) {
+        publish(VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.DISCONNECTED,
             detail = "DISCONNECTED",
             updatedAtMs = nowMs
-        )
+        ), owner, remove = true)
+    }
+
+    @Synchronized
+    fun markServiceDisconnected(nowMs: Long = System.currentTimeMillis(), owner: Any) {
+        publish(VehicleTelemetrySnapshot(VehicleTelemetryState.DISCONNECTED, "SERVICE_DISCONNECTED", nowMs), owner)
+    }
+
+    // Each bound Car owns its status. Temporary safety probes and retired reconnections
+    // must not disconnect another live backend or resurrect their own retired status.
+    private fun publish(value: VehicleTelemetrySnapshot, owner: Any?, activate: Boolean = false,
+                        remove: Boolean = false, unownedFailure: Boolean = false) {
+        if (owner == null) { current = value; return }
+        when {
+            activate -> connections[owner] = value
+            remove -> {
+                if (connections.remove(owner) == null) {
+                    if (unownedFailure && connections.isEmpty()) current = value
+                    return
+                }
+            }
+            owner in connections -> connections[owner] = value
+            else -> return
+        }
+        current = connections.values.lastOrNull { it.state == VehicleTelemetryState.CONNECTED }
+            ?: connections.values.lastOrNull() ?: value
     }
 
     @Synchronized
@@ -130,6 +156,7 @@ object VehicleTelemetryRegistry {
         diagnosticSink = null
         archivedDiagnostics = null
         failures.clear()
+        connections.clear()
         current = VehicleTelemetrySnapshot(
             state = VehicleTelemetryState.UNAVAILABLE,
             detail = "NOT_INITIALIZED",

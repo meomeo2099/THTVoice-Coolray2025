@@ -7,22 +7,23 @@ import android.util.Log
 
 class AndroidCarVehiclePropertyAccess private constructor(
     private val car: Car,
-    private val propertyManager: CarPropertyManager
+    private val propertyManager: CarPropertyManager,
+    private val telemetryOwner: Any
 ) : VehiclePropertyAccess {
     override fun getIntProperty(propertyId: Int, areaId: Int): Int = try {
-        propertyManager.getIntProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(); trace("GET_INT", propertyId, areaId, it, "OK") }
+        propertyManager.getIntProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(owner = telemetryOwner); trace("GET_INT", propertyId, areaId, it, "OK") }
     } catch (t: Throwable) { traceFailure("GET_INT", propertyId, areaId, t); -1 }
 
     override fun getBoolProperty(propertyId: Int, areaId: Int): Boolean = try {
-        propertyManager.getBooleanProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(); trace("GET_BOOL", propertyId, areaId, it, "OK") }
+        propertyManager.getBooleanProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(owner = telemetryOwner); trace("GET_BOOL", propertyId, areaId, it, "OK") }
     } catch (t: Throwable) { traceFailure("GET_BOOL", propertyId, areaId, t); false }
 
     override fun getBoolPropertyOrNull(propertyId: Int, areaId: Int): Boolean? = try {
-        propertyManager.getBooleanProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(); trace("GET_BOOL", propertyId, areaId, it, "OK") }
+        propertyManager.getBooleanProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(owner = telemetryOwner); trace("GET_BOOL", propertyId, areaId, it, "OK") }
     } catch (t: Throwable) { traceFailure("GET_BOOL", propertyId, areaId, t); null }
 
     override fun getFloatProperty(propertyId: Int, areaId: Int): Float = try {
-        propertyManager.getFloatProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(); trace("GET_FLOAT", propertyId, areaId, it, "OK") }
+        propertyManager.getFloatProperty(propertyId, areaId).also { VehicleTelemetryRegistry.markIoSuccess(owner = telemetryOwner); trace("GET_FLOAT", propertyId, areaId, it, "OK") }
     } catch (t: Throwable) { traceFailure("GET_FLOAT", propertyId, areaId, t); Float.NaN }
 
     override fun getIntRange(propertyId: Int, areaId: Int): VehicleIntRange? = try {
@@ -39,7 +40,7 @@ class AndroidCarVehiclePropertyAccess private constructor(
                 traceRange(propertyId, areaId, min, max, "INVALID_RANGE")
                 null
             } else {
-                VehicleTelemetryRegistry.markIoSuccess()
+                VehicleTelemetryRegistry.markIoSuccess(owner = telemetryOwner)
                 traceRange(propertyId, areaId, min, max, "OK")
                 VehicleIntRange(min, max, "VHAL_CONFIG")
             }
@@ -52,7 +53,7 @@ class AndroidCarVehiclePropertyAccess private constructor(
 
     private inline fun write(op: String, propertyId: Int, areaId: Int, value: Any, action: () -> Unit): Boolean {
         val writeSeq = VehicleDebugTrace.markWrite()
-        return try { action(); VehicleTelemetryRegistry.markIoSuccess(); trace(op, propertyId, areaId, value, "ACCEPTED", writeSeq); true }
+        return try { action(); VehicleTelemetryRegistry.markIoSuccess(owner = telemetryOwner); trace(op, propertyId, areaId, value, "ACCEPTED", writeSeq); true }
         catch (t: Throwable) { traceFailure(op, propertyId, areaId, t, value, writeSeq); false }
     }
 
@@ -80,13 +81,13 @@ class AndroidCarVehiclePropertyAccess private constructor(
         }
     }
 
-    override fun disconnect() { try { car.disconnect() } catch (_: Throwable) {}; VehicleTelemetryRegistry.markDisconnected(); Log.i(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=DISCONNECT result=OK") }
+    override fun disconnect() { try { car.disconnect() } catch (_: Throwable) {}; VehicleTelemetryRegistry.markDisconnected(owner = telemetryOwner); Log.i(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=DISCONNECT result=OK") }
 
     private fun trace(op: String, propertyId: Int, areaId: Int, value: Any, result: String, writeSeq: Long = VehicleDebugTrace.writeSequence()) {
         Log.v(TAG, "trace=${VehicleDebugTrace.currentTraceId() ?: 0L} scope=${VehicleDebugTrace.currentScope() ?: "NONE"} writeSeq=$writeSeq op=$op property=$propertyId area=$areaId value=$value result=$result")
     }
     private fun traceFailure(op: String, propertyId: Int, areaId: Int, error: Throwable, requestedValue: Any? = null, writeSeq: Long = VehicleDebugTrace.writeSequence()) {
-        VehicleTelemetryRegistry.markIoFailure(error.javaClass.simpleName)
+        VehicleTelemetryRegistry.markIoFailure(error.javaClass.simpleName, owner = telemetryOwner)
         VehicleTelemetryRegistry.recordFailure("VHAL", op, propertyId, areaId, error)
         val valuePart = requestedValue?.let { " value=$it" }.orEmpty()
         Log.w(TAG, "trace=${VehicleDebugTrace.currentTraceId() ?: 0L} scope=${VehicleDebugTrace.currentScope() ?: "NONE"} writeSeq=$writeSeq op=$op property=$propertyId area=$areaId$valuePart result=FAILED status=${failureStatus(error)} type=${error.javaClass.simpleName}")
@@ -95,7 +96,7 @@ class AndroidCarVehiclePropertyAccess private constructor(
         Log.v(TAG, "trace=${VehicleDebugTrace.currentTraceId() ?: 0L} scope=${VehicleDebugTrace.currentScope() ?: "NONE"} writeSeq=${VehicleDebugTrace.writeSequence()} op=GET_RANGE property=$propertyId area=$areaId min=${min ?: "none"} max=${max ?: "none"} result=$result source=${if (result == "OK") "VHAL_CONFIG" else "NONE"}")
     }
     private fun traceRangeFailure(propertyId: Int, areaId: Int, error: Throwable) {
-        VehicleTelemetryRegistry.markIoFailure(error.javaClass.simpleName)
+        VehicleTelemetryRegistry.markIoFailure(error.javaClass.simpleName, owner = telemetryOwner)
         VehicleTelemetryRegistry.recordFailure("VHAL", "GET_RANGE", propertyId, areaId, error)
         Log.w(TAG, "trace=${VehicleDebugTrace.currentTraceId() ?: 0L} scope=${VehicleDebugTrace.currentScope() ?: "NONE"} writeSeq=${VehicleDebugTrace.writeSequence()} op=GET_RANGE property=$propertyId area=$areaId result=FAILED status=${failureStatus(error)} type=${error.javaClass.simpleName}")
     }
@@ -115,12 +116,12 @@ class AndroidCarVehiclePropertyAccess private constructor(
          * never deadlocks the main thread.
          */
         @Suppress("DEPRECATION")
-        private fun connectApi28(context: Context): Car {
+        private fun connectApi28(context: Context, telemetryOwner: Any): Car {
             val latch = java.util.concurrent.CountDownLatch(1)
             val connection = object : android.content.ServiceConnection {
                 override fun onServiceConnected(name: android.content.ComponentName?, service: android.os.IBinder?) { latch.countDown() }
                 override fun onServiceDisconnected(name: android.content.ComponentName?) {
-                    VehicleTelemetryRegistry.markDisconnected()
+                    VehicleTelemetryRegistry.markServiceDisconnected(owner = telemetryOwner)
                     Log.w(TAG, "trace=0 scope=NONE op=CONNECT result=SERVICE_DISCONNECTED")
                 }
             }
@@ -135,20 +136,21 @@ class AndroidCarVehiclePropertyAccess private constructor(
         }
 
         fun create(context: Context): AndroidCarVehiclePropertyAccess? {
+            val telemetryOwner = Any()
             var car: Car? = null
             return try {
                 val connected: Car = if (android.os.Build.VERSION.SDK_INT >= 29) {
                     Car.createCar(context.applicationContext) ?: error("Car.createCar returned null")
                 } else {
-                    connectApi28(context.applicationContext)
+                    connectApi28(context.applicationContext, telemetryOwner)
                 }
                 car = connected
                 val manager = connected.getCarManager(Car.PROPERTY_SERVICE) as? CarPropertyManager ?: run {
-                    VehicleTelemetryRegistry.markUnavailable("NO_PROPERTY_MANAGER"); Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=NO_PROPERTY_MANAGER"); try { connected.disconnect() } catch (_: Throwable) {}; return null
+                    VehicleTelemetryRegistry.markUnavailable("NO_PROPERTY_MANAGER", owner = telemetryOwner); Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=NO_PROPERTY_MANAGER"); try { connected.disconnect() } catch (_: Throwable) {}; return null
                 }
-                VehicleTelemetryRegistry.markConnected(); Log.i(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=OK"); AndroidCarVehiclePropertyAccess(connected, manager)
+                VehicleTelemetryRegistry.markConnected(owner = telemetryOwner); Log.i(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=OK"); AndroidCarVehiclePropertyAccess(connected, manager, telemetryOwner)
             } catch (t: Throwable) {
-                VehicleTelemetryRegistry.markUnavailable(t.javaClass.simpleName)
+                VehicleTelemetryRegistry.markUnavailable(t.javaClass.simpleName, owner = telemetryOwner)
                 VehicleTelemetryRegistry.recordFailure("VHAL", "CONNECT", null, null, t)
                 Log.w(TAG, "trace=0 scope=NONE writeSeq=${VehicleDebugTrace.writeSequence()} op=CONNECT result=FAILED status=${if (t is SecurityException) "SECURITY_DENIED" else "BACKEND_ERROR"} type=${t.javaClass.simpleName}")
                 try { car?.disconnect() } catch (_: Throwable) {}; null

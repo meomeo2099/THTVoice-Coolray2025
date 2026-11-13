@@ -51,10 +51,33 @@ class CoolrayOemCommandExecutor(
         val power = if (on) write(F.HVAC_FUNC_POWER, F.ON, "nguồn điều hòa") else null
         if (power is CommandExecutionResult.Rejected) return power
         if (power is CommandExecutionResult.Failed) return power
-        val mode = write(F.HVAC_FUNC_AUTO, bit(on), "AUTO điều hòa")
+        val direct = write(F.HVAC_FUNC_AUTO, bit(on), "AUTO điều hòa")
+        val mode = if (!on && direct is CommandExecutionResult.AcceptedUnverified)
+            manualFanAutoOff(direct) else direct
         return if (power is CommandExecutionResult.AcceptedUnverified && mode is CommandExecutionResult.Confirmed)
             CommandExecutionResult.AcceptedUnverified("AUTO đã được API tiếp nhận, nhưng chưa xác nhận đủ trạng thái nguồn điều hòa.")
         else mode
+    }
+    /** Manual fan override exits AUTO on the owner's car. Same-level request remains REFERENCE. */
+    private fun manualFanAutoOff(original: CommandExecutionResult.AcceptedUnverified): CommandExecutionResult {
+        if (support.readInt(F.HVAC_FUNC_AUTO, F.GLOBAL) != F.ON ||
+            port.isSupported(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL) != true) return original
+        fun fanLevel(): Int? = F.levelOf(F.HVAC_FUNC_FAN_SPEED, support.readInt(F.HVAC_FUNC_FAN_SPEED, F.ZONE_ROW_1_LEFT))
+            ?.takeIf { it in 1..7 }
+            ?: F.levelOf(F.HVAC_FUNC_FAN_SPEED, support.readInt(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL))?.takeIf { it in 1..7 }
+        val level = fanLevel() ?: return original
+        // Force one manual request even when the numeric level already matches. Never raise/lower it.
+        if (!port.setInt(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL, F.level(F.HVAC_FUNC_FAN_SPEED, level))) return original
+        for (delay in EcarxCommandSupport.DEFAULT_DELAYS) {
+            if (!support.sleep(delay)) return support.interrupted()
+            val auto = support.readInt(F.HVAC_FUNC_AUTO, F.GLOBAL)
+            val fan = fanLevel()
+            com.voicegeely.app.car.VehicleTelemetryRegistry.recordResult("ECARX",
+                "AUTO_MANUAL_FAN requested=$level auto=${auto ?: "unknown"} fan=${fan ?: "unknown"}", F.HVAC_FUNC_AUTO, F.GLOBAL,
+                if (auto == F.OFF && fan == level) "MATCH" else "UNVERIFIED")
+            if (auto == F.OFF && fan == level) return support.confirmed()
+        }
+        return CommandExecutionResult.AcceptedUnverified("Đã gửi yêu cầu chuyển quạt sang điều khiển tay ở mức hiện tại, nhưng chưa xác nhận AUTO đã tắt.")
     }
     private fun bit(on: Boolean) = if (on) F.ON else F.OFF
     companion object {
