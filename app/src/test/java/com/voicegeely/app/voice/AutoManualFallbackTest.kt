@@ -36,6 +36,14 @@ class AutoManualFallbackTest {
         assertEquals(2, base.intWrites.size)
         assertEquals(1, base.intWrites.count { it.first == F.HVAC_FUNC_FAN_SPEED })
     }
+    @Test fun interruptedVerificationNeverStartsManualFallback() = runBlocking {
+        val base = fake()
+        try {
+            val result = CoolrayOemCommandExecutor(base) { throw InterruptedException("cancelled") }.execute(VoiceCommand.HvacAuto(false))
+            assertTrue(result is CommandExecutionResult.AcceptedUnverified)
+            assertEquals(listOf(Triple(F.HVAC_FUNC_AUTO, 0, 0)), base.intWrites)
+        } finally { Thread.interrupted() }
+    }
     @Test fun alreadyOffAndDeniedOffNeverChangeFan() = runBlocking {
         val off = fake(auto=0)
         assertTrue(CoolrayOemCommandExecutor(off) {}.execute(VoiceCommand.HvacAuto(false)) is CommandExecutionResult.Confirmed)

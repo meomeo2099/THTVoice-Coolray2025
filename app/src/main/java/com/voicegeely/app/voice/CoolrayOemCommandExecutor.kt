@@ -60,6 +60,7 @@ class CoolrayOemCommandExecutor(
     }
     /** Manual fan override exits AUTO on the owner's car. Same-level request remains REFERENCE. */
     private fun manualFanAutoOff(original: CommandExecutionResult.AcceptedUnverified): CommandExecutionResult {
+        if (Thread.currentThread().isInterrupted) return original
         if (support.readInt(F.HVAC_FUNC_AUTO, F.GLOBAL) != F.ON ||
             port.isSupported(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL) != true) return original
         fun fanLevel(): Int? = F.levelOf(F.HVAC_FUNC_FAN_SPEED, support.readInt(F.HVAC_FUNC_FAN_SPEED, F.ZONE_ROW_1_LEFT))
@@ -67,6 +68,7 @@ class CoolrayOemCommandExecutor(
             ?: F.levelOf(F.HVAC_FUNC_FAN_SPEED, support.readInt(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL))?.takeIf { it in 1..7 }
         val level = fanLevel() ?: return original
         // Force one manual request even when the numeric level already matches. Never raise/lower it.
+        if (Thread.currentThread().isInterrupted) return original
         if (!port.setInt(F.HVAC_FUNC_FAN_SPEED, F.GLOBAL, F.level(F.HVAC_FUNC_FAN_SPEED, level))) return original
         for (delay in EcarxCommandSupport.DEFAULT_DELAYS) {
             if (!support.sleep(delay)) return support.interrupted()
