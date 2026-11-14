@@ -9,6 +9,8 @@ package com.voicegeely.app.voice
  */
 object SpokenTerms {
     private val TERMS: List<Pair<String, String>> = listOf(
+        "Vietmap Live" to "việt mép lai",
+        "Vietmap" to "việt mép",
         "THT Voice" to "tê hát tê voi",
         "THT Split" to "tê hát tê chia màn hình",
         "THT" to "tê hát tê",

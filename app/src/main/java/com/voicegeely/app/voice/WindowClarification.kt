@@ -89,7 +89,7 @@ class WindowClarification(
             Regex("^(?:hét|hếch|hếc|hệt|hến)$") to "hết",
             Regex("^cả (?:bố|bổ|bộ|bón|bốn)$") to "cả 4"
         )
-        private val AMBIGUOUS = Regex("^(mở|đóng|hạ|nâng|kéo|quay)(?: cửa)? kính(?: (lên|xuống|ra|lại))?(?: (\\d{1,3}) phần trăm)?$")
+        private val AMBIGUOUS = Regex("^(mở|đóng|hạ|nâng|kéo|quay)(?: luôn)?(?: cửa)? kính(?: (lên|xuống|ra|lại|còn lại))?(?: (\\d{1,3}) phần trăm)?$")
         private val ALL = Regex("^(?:tất cả|tắt cả|hết|cả|cả 4|cả bốn|toàn bộ|4 kính|bốn kính|tất cả kính|tắt cả kính|hết kính|cả 4 kính|hết luôn)(?: kính)?$")
     }
 }

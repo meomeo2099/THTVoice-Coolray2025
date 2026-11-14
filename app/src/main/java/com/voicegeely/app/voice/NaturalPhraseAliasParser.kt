@@ -87,7 +87,7 @@ object NaturalPhraseAliasParser {
     fun parse(text: String): ParsedVoiceCommand? {
         val normalized = VoiceTextNormalizer.normalize(text)
         if (normalized.isBlank()) return null
-        val command = match(normalized) ?: return null
+        val command = SharedCommandLanguage.resolve(normalized) ?: match(normalized) ?: return null
         return ParsedVoiceCommand(text, normalized, command)
     }
 

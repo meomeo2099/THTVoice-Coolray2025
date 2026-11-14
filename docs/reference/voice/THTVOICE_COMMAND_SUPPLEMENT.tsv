@@ -1,0 +1,92 @@
+category	phrase
+ac_on	cho mát xe đi
+ac_on	làm mát xe ngay
+ac_on	bật lạnh sâu
+ac_on	nóng chết đi được
+ac_on	nóng thế
+ac_on	sao nóng thế
+ac_on	nóng quá bạn ơi
+ac_off	lạnh cóng
+ac_off	lạnh buốt
+ac_off	lạnh run
+ac_off	cho ấm xe lên
+ac_off	lạnh thế
+ac_off	sao lạnh thế
+ac_off	lạnh teo rồi
+warmer	lạnh quá tăng độ lên
+warmer	nâng nhiệt lên tí
+cooler	nóng quá giảm độ đi
+cooler	nóng quá giảm độ
+cooler	cho mát thêm
+cooler	cho mát thêm tí nữa
+cooler	cho mát thêm chút
+cooler	hạ độ xuống
+cooler	mát thêm
+outside_air	trong xe có mùi
+outside_air	xe bí quá
+outside_air	ngột ngạt quá
+outside_air	hút mùi ra
+outside_air	bí bách quá
+fan_max	gió số cực đại
+fan_max	mức gió to nhất
+fan_max	mức gió cực đại
+fan_min	gió nhỏ nhất
+fan_min	gió nhẹ nhất
+fan_min	gió thấp nhất
+fan_min	điều hòa mức nhỏ nhất
+fan_three	bậc giáo ba
+fan_three	bậc gió ba
+fan_three	bật giáo ba
+quick_ac	điều hòa làm mát nhanh
+quick_ac	máy lạnh làm mát nhanh
+demist_front	sấy giúp tôi kính lái
+odometer	tổng số km đã đi
+odometer	số km đã đi
+odometer	tổng km đã đi
+fan_query	quạt đang cấp mấy
+climate_query	điều hòa đang thế nào
+climate_query	trạng thái điều hòa
+crack_windows	hé cửa kính một chút
+crack_windows	hạ hé cửa sổ
+crack_windows	hé cửa kiếng một chút
+music	mở cho tôi một bài nhạc
+music	mở cho tôi bài nhạc
+music	mở cho tôi một bài nhạc hay
+music	mở cho tôi bài nhạc hay
+video	xem video
+video	mở trình phát video
+youtube	xem tu be
+youtube	chạy youty
+smarttube	mở xì mát túp
+youtube_music	youtube music
+waze	bản đồ waze
+waze	bản đồ quây
+waze	bản đồ quê dơ
+waze	bản đồ vê dơ
+waze	waze
+google_maps	bản đồ google
+default_maps	dẫn đường
+vtv	xem vtv
+vtv	tv go
+vtv	tvgo
+vtv	vtv go
+vtv	vtvgo
+fpt	xem fpt play
+vieon	xem vi on
+tv360	xem tv360
+gofa	chạy gofa
+file_manager	quản lý file
+file_manager	duyệt file
+kiki	trợ lý kiki
+browser	lướt web
+vietmap	mở viên map li
+vietmap	mở việc map lie
+vietmap	mở vietmap lie
+vietmap	mở việt map lai
+vietmap	mở viên map
+vietmap	mở viện map
+vietmap	mở viết mép li
+vietmap	mở vietmap live
+vietmap	mở vietmap
+vietmap	mở map live
+vietmap	mở map lie

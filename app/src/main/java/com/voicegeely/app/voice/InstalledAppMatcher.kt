@@ -72,7 +72,13 @@ object InstalledAppMatcher {
     fun canonicalName(spoken: String): String {
         var value = " " + spoken.trim().lowercase(Locale("vi", "VN")) + " "
         spokenAliases.forEach { (from, to) -> value = value.replace(" $from ", " $to ") }
-        return value.trim()
+        val name = value.trim().replace(
+            Regex("^(?:viên|viện|việc|việt|viết|viêt|viet|vi ét)(?: |-)?(?:map|máp|mép|mắp|mát|mạp)(?= |$)"), "vietmap")
+        return when {
+            Regex("^vietmap (?:live|lai|lây|lie|li|lí|lại|lái|lay|lai vơ|lai phờ)$").matches(name) -> "vietmap live"
+            Regex("^(?:map|máp|mép|mắp) (?:live|lai|lây|lie|li|lí|lai vơ)$").matches(name) -> "vietmap live"
+            else -> name
+        }
     }
 
     /** Packages whose label (or package id) matches the spoken name, best match first. */

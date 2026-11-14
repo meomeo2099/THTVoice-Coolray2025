@@ -558,7 +558,6 @@ object VoiceCommandParser {
             val target = detectAppTarget(InstalledAppMatcher.canonicalName(text.substring(browse.range.last + 1)))
             return target?.let { VoiceCommand.OpenApp(it) }
         }
-        detectAppTarget(text)?.let { return VoiceCommand.OpenApp(it) }
         val verbWord = verb.value.trim()
         val name = text.substring(verb.range.last + 1)
             .removePrefix("ứng dụng ").removePrefix("app ").trim()
@@ -593,9 +592,9 @@ object VoiceCommandParser {
         Regex("zing mp3|zing").containsMatchIn(text) -> AppTarget.ZING_MP3
         Regex("spotify").containsMatchIn(text) -> AppTarget.SPOTIFY
         Regex("google maps?|gu gồ mát|gu gờ mát").containsMatchIn(text) -> AppTarget.MAPS
-        Regex("(?<![\\p{L}\\p{N}])(?:maps?|bản đồ)(?![\\p{L}\\p{N}])").containsMatchIn(text) -> AppTarget.DEFAULT_MAPS
         Regex("waze").containsMatchIn(text) -> AppTarget.WAZE
         Regex("vietmap(?: live)?").containsMatchIn(text) -> AppTarget.VIETMAP
+        Regex("(?<![\\p{L}\\p{N}])(?:maps?|bản đồ)(?![\\p{L}\\p{N}])").containsMatchIn(text) -> AppTarget.DEFAULT_MAPS
         Regex("chrome|trình duyệt").containsMatchIn(text) -> AppTarget.CHROME
         Regex("netflix").containsMatchIn(text) -> AppTarget.NETFLIX
         Regex("tiktok|tik tok").containsMatchIn(text) -> AppTarget.TIKTOK
