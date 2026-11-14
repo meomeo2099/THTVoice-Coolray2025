@@ -37,3 +37,12 @@ Bộ91mẫu câu kiểm thử ở [THTVOICE_COMMAND_SUPPLEMENT.tsv](reference/vo
 RED206tests/3failures tái hiện thiếu alias, ô tên Vietmap và câu hỏi kính còn lại. GREEN206tests sau sửa; gồm toàn bộ kiểm tra corpus3230dòng, cửa kính, điều hòa, AUTO và lifecycle hiện có. Test mới kiểm tra91mẫu cùng các trường hợp tên địa điểm/app, prefix mở ứng dụng, ứng dụng đích danh và giới hạn capability. Rà soát độc lập không có phát hiện cần sửa.
 
 Sherpa1.13.8, mô hình65M, mic, backend xe, bước0,5°C, quạt1..7 và Worker được giữ nguyên. Chưa có thử xe thật cho các biến thể mới.
+
+## Signed candidate and backup
+- Candidate: 1.0.17 / versionCode 18; package `com.tht.voice.coolray2025`.
+- Source commit: `853e3c1143a6fc63e4f2e9399ae1e42481d70b5d`.
+- CI: https://github.com/meomeo2099/THTVoice-Coolray2025/actions/runs/43545998093 (success; offline assets, SQLite, unit tests, release assembly and pinned THT_SIGN verification passed).
+- APK artifact: https://github.com/meomeo2099/THTVoice-Coolray2025/actions/runs/43545998093/artifacts/14094307336 (`THTVoice-rc-1.0.17-18`, expires 2026-11-15 02:28:56 UTC).
+- APK SHA256: `1b6fa68219a52d5aa99712645d3fec3dd57ad950491fd16ab076af7dffd48369`.
+- GitHub Release/OTA publication skipped. Temporary push trigger restored to the original manual-only workflow in the follow-up backup commit.
+- Vehicle verification remains pending for new utterances.
