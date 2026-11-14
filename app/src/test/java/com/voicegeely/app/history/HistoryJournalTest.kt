@@ -4,6 +4,17 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class HistoryJournalTest {
+    @Test fun browseRetainsMoreThanHomeWithoutChangingHomeContracts() {
+        val journal = HistoryJournal(Memory(), { it(); true })
+        repeat(40) { val id = journal.begin("Lệnh $it"); journal.complete(id, "FAILED", "Lỗi"); journal.diagnostic("API $it") }
+        var loaded: HistorySnapshot? = null
+        journal.browse { loaded = it }
+        assertEquals(40, loaded!!.commands.size)
+        assertEquals(40, loaded!!.diagnostics.size)
+        assertEquals(6, journal.commands().size)
+        assertEquals(16, journal.diagnostics().size)
+        assertEquals(40, HistoryReport.rows(loaded!!, HistoryFilter.PROBLEMS, "").size)
+    }
     @Test fun completionSurvivesDisplayCacheEviction() {
         val db = Memory()
         val journal = HistoryJournal(db, { it(); true })

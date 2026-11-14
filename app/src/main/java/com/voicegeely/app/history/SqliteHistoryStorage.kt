@@ -18,12 +18,18 @@ internal class SqliteHistoryStorage(context: Context) : SQLiteOpenHelper(context
     override fun load(): HistorySnapshot {
         val db = writableDatabase
         db.execSQL(HistorySql.INTERRUPT)
+        return read(db, HistorySql.RECENT_COMMANDS, HistorySql.RECENT_DIAGNOSTICS)
+    }
+
+    override fun browse(): HistorySnapshot = read(readableDatabase, HistorySql.BROWSE_COMMANDS, HistorySql.BROWSE_DIAGNOSTICS)
+
+    private fun read(db: SQLiteDatabase, commandsSql: String, diagnosticsSql: String): HistorySnapshot {
         val commands = mutableListOf<HistoryCommand>()
-        db.rawQuery(HistorySql.RECENT_COMMANDS, null).use { c ->
+        db.rawQuery(commandsSql, null).use { c ->
             while (c.moveToNext()) commands += HistoryCommand(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getLong(4))
         }
         val diagnostics = mutableListOf<HistoryDiagnostic>()
-        db.rawQuery(HistorySql.RECENT_DIAGNOSTICS, null).use { c ->
+        db.rawQuery(diagnosticsSql, null).use { c ->
             while (c.moveToNext()) diagnostics += HistoryDiagnostic(c.getString(0), c.getString(1), c.getLong(2))
         }
         return HistorySnapshot(commands, diagnostics)

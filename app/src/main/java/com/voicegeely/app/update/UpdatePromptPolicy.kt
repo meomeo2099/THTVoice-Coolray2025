@@ -11,8 +11,14 @@ package com.voicegeely.app.update
 object UpdatePromptPolicy {
     const val AUTO_CHECK_INTERVAL_MS = 6L * 60 * 60 * 1000
 
-    fun shouldAutoCheck(now: Long, lastCheckAt: Long): Boolean =
-        lastCheckAt <= 0L || now < lastCheckAt || now - lastCheckAt >= AUTO_CHECK_INTERVAL_MS
+    /** After a blocked or failed automatic attempt (including offline), wait this long. */
+    const val BLOCKED_RETRY_MS = 30L * 60 * 1000
+
+    fun shouldAutoCheck(now: Long, lastCheckAt: Long, lastBlockedAt: Long = 0L): Boolean {
+        val dueByCheck = lastCheckAt <= 0L || now < lastCheckAt || now - lastCheckAt >= AUTO_CHECK_INTERVAL_MS
+        val dueByBlock = lastBlockedAt <= 0L || now < lastBlockedAt || now - lastBlockedAt >= BLOCKED_RETRY_MS
+        return dueByCheck && dueByBlock
+    }
 
     fun isRequired(requiredVersionCode: Long, currentVersionCode: Long): Boolean =
         requiredVersionCode > currentVersionCode

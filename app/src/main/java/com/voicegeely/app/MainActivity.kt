@@ -47,6 +47,7 @@ import com.voicegeely.app.voice.safety.VehicleSafetyGate
 
 class MainActivity : AppCompatActivity() {
     private val voiceKeyHandler = VoiceKeyEventHandler()
+    private var historyDialog: android.app.Dialog? = null
 
     override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean =
         voiceKeyHandler.handle(this, event, "activity_key") || super.dispatchKeyEvent(event)
@@ -358,6 +359,11 @@ class MainActivity : AppCompatActivity() {
 
     /** Extra rows in "Thiết lập giọng nói": the downloadable voice pack (when not bundled). */
     private fun settingsExtraRows(): List<View> = listOfNotNull(
+        com.voicegeely.app.ui.ThtUi.settingRow(this, com.tht.voice.R.drawable.ic_ui_list,
+            "Nhật ký lệnh và chẩn đoán", "Lọc lịch sử đã lưu; chia sẻ báo cáo sang điện thoại bằng QR.",
+            com.voicegeely.app.ui.ThtUi.smallButton(this, null, "Xem nhật ký", com.voicegeely.app.ui.ThtUi.SmallStyle.OUTLINE) {
+                showHistoryJournal()
+            }),
         com.voicegeely.app.ui.ThtUi.settingRow(
             this, com.tht.voice.R.drawable.ic_ui_car, "Kết nối xe",
             "Xem quyền truy cập và lỗi kết nối điều hòa, kính hoặc dữ liệu xe.",
@@ -397,6 +403,30 @@ class MainActivity : AppCompatActivity() {
                 sendServiceAction(VoiceAssistantService.ACTION_SETTINGS_CHANGED)
             }
         }
+    }
+
+    private fun showHistoryJournal() {
+        historyDialog?.dismiss()
+        val section = com.voicegeely.app.ui.HistoryLogSection(this)
+        val dialog = android.app.Dialog(this)
+        historyDialog = dialog
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        val root = com.voicegeely.app.ui.ThtUi.vertical(this).apply {
+            setPadding(dp(18), dp(18), dp(18), dp(18))
+            background = com.voicegeely.app.ui.ThtUi.panel(this@MainActivity, COLOR_PANEL, COLOR_BORDER, 18f)
+            addView(com.voicegeely.app.ui.ThtUi.smallButton(this@MainActivity, null, "Đóng nhật ký",
+                com.voicegeely.app.ui.ThtUi.SmallStyle.OUTLINE) { dialog.dismiss() })
+            addView(ScrollView(this@MainActivity).apply { addView(section.view()) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
+        }
+        dialog.setContentView(root)
+        dialog.setOnDismissListener {
+            section.destroy()
+            if (historyDialog === dialog) historyDialog = null
+        }
+        dialog.show()
+        dialog.window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92f).toInt(),
+            (resources.displayMetrics.heightPixels * 0.88f).toInt())
     }
 
     private fun buildSupportScreen(): View = SupportScreenView.build(
@@ -684,10 +714,10 @@ class MainActivity : AppCompatActivity() {
             showUpdatePrompt(store.requiredVersionName, "", force = true)
             return
         }
-        if (!com.voicegeely.app.update.UpdatePromptPolicy.shouldAutoCheck(System.currentTimeMillis(), store.lastAutoCheckAt)) return
+        if (!com.voicegeely.app.update.UpdatePromptPolicy.shouldAutoCheck(System.currentTimeMillis(), store.lastAutoCheckAt, store.lastAutoBlockedAt)) return
         autoUpdateCheckRunning = true
         Thread {
-            val vehicle = AndroidCarVehiclePropertyAccess.create(this)
+            val vehicle = runCatching { AndroidCarVehiclePropertyAccess.create(this) }.getOrNull()
             val check = try {
                 SafeAppUpdateManager(this, licenseManager, VehicleSafetyGate(vehicle)).checkOnly()
             } catch (_: Throwable) {
@@ -697,7 +727,13 @@ class MainActivity : AppCompatActivity() {
             }
             runOnUiThread {
                 autoUpdateCheckRunning = false
-                if (check == null || !check.ok) return@runOnUiThread // not parked or offline: try next time
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                if (check == null || !check.ok) {
+                    // Bounded retry also covers offline/error attempts; manual checks bypass this.
+                    store.lastAutoBlockedAt = System.currentTimeMillis()
+                    return@runOnUiThread
+                }
+                store.lastAutoBlockedAt = 0L
                 store.lastAutoCheckAt = System.currentTimeMillis()
                 val meta = check.metadata
                 if (!check.updateAvailable || meta == null) return@runOnUiThread
@@ -745,6 +781,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        historyDialog?.dismiss()
         com.voicegeely.app.history.VoiceHistory.journal?.removeListener(historyChanged)
         voiceKeyHandler.clear()
         runCatching { VoiceServiceEventBus.unregisterReceiver(serviceReceiver) }
@@ -773,7 +810,16 @@ class MainActivity : AppCompatActivity() {
 }
 
 internal object MainUiTexts {
-    const val CHANGELOG_TEXT = """Bản cập nhật mới
+    const val CHANGELOG_TEXT = """THT Voice 1.0.18
+
+• Nhật ký lệnh và chẩn đoán: lọc, tìm kiếm và chia sẻ báo cáo bằng QR qua cùng Wi-Fi
+• Dạy từ đánh thức theo giọng của bạn: thu 5 lần, lưu theo từng từ gọi; có thể quên giọng đã học
+• Thêm kiểm tra từ gọi khi có nhạc và cơ hội gọi lại trong thời gian ngắn
+• Hỗ trợ gói giọng M4A R6, ghép phản hồi liền mạch; vẫn dùng được gói MP3 đã cài
+• Giữ các biến thể gọi Vietmap Live và đọc “việt mép lai”
+• Tự kiểm tra cập nhật lỗi hoặc chưa đỗ xe sẽ chờ 30 phút; nút kiểm tra thủ công vẫn hoạt động
+
+Bản cập nhật trước
 
 • Nhiều lệnh trong một câu: "tắt điều hòa rồi mở nhạc"; kịch bản: một câu bạn đặt chạy nhiều lệnh
 • Nói tiếp: "tăng nữa", "giảm nữa", "về như cũ" cho quạt, nhiệt độ, âm lượng
@@ -811,5 +857,8 @@ THT Voice v1.0
 5. Nói "mở kính" mà không nói kính nào: trợ lý hỏi lại, bạn chỉ cần trả lời "lái", "sau", "tất cả"…
 6. Tên gọi riêng (Cài đặt): dạy trợ lý câu nói của bạn, ví dụ "Khi tôi nói đi làm thì bật điều hòa 24 độ rồi mở nhạc".
 7. Một số lệnh (cốp, đèn, màn hình đen…) chỉ chạy khi xe ở số P và đứng yên.
-8. Trợ lý chỉ nói "Đã…" khi đọc lại được trạng thái từ xe; nếu chưa xác nhận sẽ báo rõ."""
+8. Trợ lý chỉ nói "Đã…" khi đọc lại được trạng thái từ xe; nếu chưa xác nhận sẽ báo rõ.
+9. Cài đặt → Dạy từ gọi: thu 5 lần trong xe yên tĩnh; có thể dạy thêm khi nghe nhạc. Bấm Hủy nếu muốn dừng.
+10. Cài đặt → Nhật ký lệnh và chẩn đoán: chọn bộ lọc, bấm chia sẻ QR; điện thoại cần cùng Wi-Fi. Đóng cửa sổ chia sẻ để dừng liên kết.
+11. Tải gói giọng M4A trong Cài đặt. Gói cũ vẫn dùng được khi chưa tải thành công."""
 }

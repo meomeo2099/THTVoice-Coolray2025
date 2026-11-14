@@ -96,6 +96,7 @@ object SettingsScreenView {
                 wakeEnabled = index > 0
                 if (index > 0) wakePhrase = phrases[index - 1]
             }))
+        voice.row(WakeTrainingSection(context, voicePreferences).view())
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_volume, "Phản hồi giọng nói",
             "THT Voice sẽ phản hồi bằng giọng nói sau khi xử lý lệnh; tắt thì dùng tiếng bíp.",
             ThtUi.switch(context, feedback) { feedback = it }))

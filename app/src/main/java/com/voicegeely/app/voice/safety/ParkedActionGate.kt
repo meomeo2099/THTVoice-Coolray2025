@@ -7,10 +7,10 @@ package com.voicegeely.app.voice.safety
 class ParkedActionGate(
     private val vehicleSafetyGate: VehicleSafetyGate
 ) {
-    fun evaluate(actionName: String): SafetyDecision =
-        vehicleSafetyGate.evaluateParkedOnly(actionName)
+    fun evaluate(actionName: String, record: Boolean = true): SafetyDecision =
+        vehicleSafetyGate.evaluateParkedOnly(actionName, record)
 
-    fun evaluate(action: ParkedAction): SafetyDecision = evaluate(action.displayName)
+    fun evaluate(action: ParkedAction, record: Boolean = true): SafetyDecision = evaluate(action.displayName, record)
 
     inline fun <T> runIfParked(
         actionName: String,

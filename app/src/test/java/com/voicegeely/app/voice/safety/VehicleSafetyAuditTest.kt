@@ -9,6 +9,15 @@ import org.junit.Test
 
 class VehicleSafetyAuditTest {
     @Test
+    fun backgroundCheckEnforcesParkedRuleWithoutFillingProblemLog() {
+        val logger = SafetyEventLogger(clockMs = { 2L })
+        val gate = ParkedActionGate(VehicleSafetyGate(FakeVehicle(speed = 20f, gear = 8), logger))
+        assertEquals(SafetyDecisionType.BLOCK, gate.evaluate(ParkedAction.OTA_INSTALL, record = false).type)
+        assertEquals(0, logger.snapshot().size)
+        gate.evaluate(ParkedAction.OTA_INSTALL)
+        assertEquals(1, logger.snapshot().size)
+    }
+    @Test
     fun gateAutomaticallyAuditsInitialDecisionAndRecheck() {
         val logger = SafetyEventLogger(clockMs = { 1L })
         val gate = VehicleSafetyGate(FakeVehicle(speed = 35f, gear = 8), logger)
