@@ -20,6 +20,7 @@ class SherpaOnlineTransducerAsrEngine(
     private val numThreads: Int = 2,
     private val configProvider: () -> AsrEndpointConfig = { AsrEndpointRuntime.snapshot() }
 ) : OfflineAsrEngine {
+    private val speechGate = AdaptiveSpeechGate()
     private var recognizer: OnlineRecognizer? = null
     private var stream: OnlineStream? = null
     private var speechSeen = false
@@ -77,6 +78,21 @@ class SherpaOnlineTransducerAsrEngine(
     }
 
     @Synchronized
+    override fun warmUp() {
+        val r = recognizer ?: return
+        var s: OnlineStream? = null
+        try {
+            s = r.createStream()
+            s.acceptWaveform(FloatArray(sampleRate / 2), sampleRate)
+            s.inputFinished()
+            while (r.isReady(s)) r.decode(s)
+        } catch (_: Throwable) {
+        } finally {
+            try { s?.release() } catch (_: Throwable) {}
+        }
+    }
+
+    @Synchronized
     override fun startStream(): Boolean {
         val r = recognizer ?: return false
         stream?.release()
@@ -85,6 +101,7 @@ class SherpaOnlineTransducerAsrEngine(
         } catch (_: Throwable) {
             null
         }
+        speechGate.reset()
         speechSeen = false
         speechSamples = 0L
         trailingSilenceSamples = 0L
@@ -103,7 +120,7 @@ class SherpaOnlineTransducerAsrEngine(
             totalSamples += samples.size
             val config = configProvider().normalized()
             val rms = SherpaBufferedOfflineAsrEngine.rms(samples)
-            if (rms >= config.speechRmsThreshold) {
+            if (speechGate.isSpeech(rms, config.speechRmsThreshold, samples.size, sampleRate)) {
                 speechSeen = true
                 speechSamples += samples.size
                 trailingSilenceSamples = 0L
@@ -188,6 +205,7 @@ class SherpaOnlineTransducerAsrEngine(
     }
 
     private fun clearEndpointState() {
+        speechGate.reset()
         speechSeen = false
         speechSamples = 0L
         trailingSilenceSamples = 0L

@@ -24,6 +24,9 @@ class SherpaBufferedOfflineAsrEngine(
     private var active = false
     private val tracker = OfflineEndpointTracker(Sherpa65mModelSpec.SAMPLE_RATE, configProvider)
     private var endpointText = ""
+    /** Early decode at a short pause: its text and how much speech it covered. */
+    private var earlyDecoded: String? = null
+    private var earlyAtSpeech = -1L
 
     override val sampleRate: Int = Sherpa65mModelSpec.SAMPLE_RATE
     override val isReady: Boolean
@@ -72,10 +75,25 @@ class SherpaBufferedOfflineAsrEngine(
     }
 
     @Synchronized
+    override fun warmUp() {
+        val r = recognizer ?: return
+        var s: OfflineStream? = null
+        try {
+            s = r.createStream()
+            s.acceptWaveform(FloatArray(sampleRate / 2), sampleRate)
+            r.decode(s)
+        } catch (_: Throwable) {
+        } finally {
+            try { s?.release() } catch (_: Throwable) {}
+        }
+    }
+
+    @Synchronized
     override fun startStream(): Boolean {
         if (recognizer == null) return false
         tracker.reset()
         endpointText = ""
+        clearEarly()
         active = true
         return true
     }
@@ -100,6 +118,16 @@ class SherpaBufferedOfflineAsrEngine(
     }
 
     @Synchronized
+    override fun earlyText(): String? {
+        if (!active || tracker.decodedValid || tracker.speechSamples == earlyAtSpeech) return null
+        val config = configProvider().normalized()
+        if (EARLY_PAUSE_MS >= config.trailingSilenceMs || !tracker.pauseReached(EARLY_PAUSE_MS)) return null
+        earlyAtSpeech = tracker.speechSamples
+        earlyDecoded = decodeText()
+        return earlyDecoded
+    }
+
+    @Synchronized
     override fun isEndpoint(): Boolean = tracker.decodedValid || tracker.endpointReached()
 
     @Synchronized
@@ -107,7 +135,11 @@ class SherpaBufferedOfflineAsrEngine(
 
     @Synchronized
     override fun finishStream(): AsrRecognitionResult {
-        if (!tracker.decodedValid && tracker.hasSpeechForDecode()) decodeAll()
+        val early = earlyDecoded
+        if (!tracker.decodedValid && early != null && tracker.speechSamples == earlyAtSpeech) {
+            // Nothing but silence since the early decode: same words, no second decode.
+            endpointText = early
+        } else if (!tracker.decodedValid && tracker.hasSpeechForDecode()) decodeAll()
         val text = if (tracker.hasSpeechForDecode()) endpointText else ""
         if (tracker.resumedCount > 0) android.util.Log.i("THTAsr", "offline_endpoint_resumed count=${tracker.resumedCount}")
         active = false
@@ -120,6 +152,12 @@ class SherpaBufferedOfflineAsrEngine(
         active = false
         tracker.reset()
         endpointText = ""
+        clearEarly()
+    }
+
+    private fun clearEarly() {
+        earlyDecoded = null
+        earlyAtSpeech = -1L
     }
 
     @Synchronized
@@ -131,27 +169,33 @@ class SherpaBufferedOfflineAsrEngine(
 
     /** Fresh stream over the whole buffered utterance, so a re-decode after a pause sees it all. */
     private fun decodeAll() {
-        val r = recognizer ?: return
+        // An older decode may belong to the words before a pause. Never execute it as the final
+        // command when decoding the completed utterance failed (Coolray 2025).
+        endpointText = decodeText() ?: throw IllegalStateException("Không giải mã được câu lệnh")
+        tracker.markDecoded()
+    }
+
+    private fun decodeText(): String? {
+        val r = recognizer ?: return null
         var s: OfflineStream? = null
-        endpointText = try {
+        return try {
             s = r.createStream()
             s.acceptWaveform(tracker.audio(), sampleRate)
             r.decode(s)
             r.getResult(s).text.trim()
-        } catch (t: Throwable) {
-            // An older decode may belong to the words before a pause. Never execute it as
-            // the final command when decoding the completed utterance failed.
-            throw IllegalStateException("Không giải mã được câu lệnh", t)
+        } catch (_: Throwable) {
+            null
         } finally {
             try { s?.release() } catch (_: Throwable) {}
         }
-        tracker.markDecoded()
     }
 
     companion object {
         const val DEFAULT_TRAILING_SILENCE_MS = AsrEndpointConfig.DEFAULT_TRAILING_SILENCE_MS
         const val DEFAULT_MIN_SPEECH_MS = AsrEndpointConfig.DEFAULT_MIN_SPEECH_MS
         const val DEFAULT_SPEECH_RMS = AsrEndpointConfig.DEFAULT_SPEECH_RMS
+        /** Pause after which a complete command may end listening early. */
+        const val EARLY_PAUSE_MS = 300L
 
         internal fun rms(samples: FloatArray): Float = OfflineEndpointTracker.rms(samples)
     }

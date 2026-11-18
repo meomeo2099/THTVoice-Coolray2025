@@ -31,6 +31,21 @@ interface OfflineAsrEngine {
      */
     fun noSpeechTimedOut(): Boolean = false
 
+    /**
+     * Runs one throw-away decode right after [initialize] so the first real command does not pay
+     * for the model's cold first run (owner report 21/10/2026: the first command after the car
+     * starts was misheard and stuck on "Đang xử lý"). Must not touch the current stream.
+     */
+    fun warmUp() = Unit
+
+    /**
+     * Early look at a short pause (R02 1.3.0 "zero latency"): the text decoded once per pause, or
+     * null (no pause yet, already looked at this pause, or the backend has partials anyway). The
+     * caller ends listening only when this is a complete command; otherwise the normal endpoint
+     * still applies.
+     */
+    fun earlyText(): String? = null
+
     /** Final text for the current utterance. */
     fun finishStream(): AsrRecognitionResult
 

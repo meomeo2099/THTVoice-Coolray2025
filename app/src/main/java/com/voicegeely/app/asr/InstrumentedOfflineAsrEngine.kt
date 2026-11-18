@@ -37,6 +37,9 @@ class InstrumentedOfflineAsrEngine(
 
     override fun initialize(): AsrInitResult = delegate.initialize()
 
+    /** Not a listening session: no diagnostics entry. */
+    override fun warmUp() = delegate.warmUp()
+
     @Synchronized
     override fun startStream(): Boolean {
         recordCancelledIfNeeded()
@@ -73,6 +76,14 @@ class InstrumentedOfflineAsrEngine(
                 session.firstPartialMs = (clock.nowMs() - session.startedAtMs).coerceAtLeast(0L)
             }
         }
+        return text
+    }
+
+    @Synchronized
+    override fun earlyText(): String? {
+        val session = active
+        val (text, elapsed) = timed { delegate.earlyText() }
+        if (session != null) session.computeMs += elapsed
         return text
     }
 

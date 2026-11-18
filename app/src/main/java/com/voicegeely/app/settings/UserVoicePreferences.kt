@@ -45,6 +45,16 @@ class UserVoicePreferences(context: Context) {
         syncAsrEndpointRuntime()
     }
 
+    /** Coolray 2025 quiet mic: amplify x2 before recognition (on by default, as before). */
+    var micGainEnabled: Boolean
+        get() = prefs.getBoolean(KEY_MIC_GAIN, true)
+        set(value) = prefs.edit().putBoolean(KEY_MIC_GAIN, value).apply()
+
+    /** GTCRN noise reduction before recognition (on by default, as before). Off when it distorts speech. */
+    var micDenoiseEnabled: Boolean
+        get() = prefs.getBoolean(KEY_MIC_DENOISE, true)
+        set(value) = prefs.edit().putBoolean(KEY_MIC_DENOISE, value).apply()
+
     var voiceFeedbackEnabled: Boolean
         get() = prefs.getBoolean(KEY_VOICE_FEEDBACK, true)
         set(value) = prefs.edit().putBoolean(KEY_VOICE_FEEDBACK, value).apply()
@@ -242,6 +252,8 @@ class UserVoicePreferences(context: Context) {
 
         private const val PREFS_NAME = "tht_voice_user_preferences"
         private const val KEY_VOICE_FEEDBACK = "voice_feedback_enabled"
+        private const val KEY_MIC_GAIN = "mic_gain_enabled"
+        private const val KEY_MIC_DENOISE = "mic_denoise_enabled"
         private const val KEY_MUSIC_WHILE_LISTENING = "music_while_listening"
         private const val KEY_VOICE_KEY_ALWAYS_THT = "voice_key_always_tht"
         private const val KEY_VOICE_KEY_VEHICLE_SIGNAL = "voice_key_vehicle_signal"

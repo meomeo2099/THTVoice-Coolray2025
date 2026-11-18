@@ -11,8 +11,10 @@ import java.io.File
  */
 class SherpaStreamingAsrEngine(
     modelDir: File,
+    // Owner report 22/10/2026: 1.0.9 with 2..4 threads per core count was slower on the car; back to 2.
     numThreads: Int = 2
 ) : OfflineAsrEngine {
+
     private val delegate: OfflineAsrEngine = SherpaAsrEngineFactory.create(modelDir, numThreads)
 
     override val isReady: Boolean
@@ -21,9 +23,11 @@ class SherpaStreamingAsrEngine(
         get() = delegate.sampleRate
 
     override fun initialize(): AsrInitResult = delegate.initialize()
+    override fun warmUp() = delegate.warmUp()
     override fun startStream(): Boolean = delegate.startStream()
     override fun acceptWaveform(samples: FloatArray): Boolean = delegate.acceptWaveform(samples)
     override fun partialText(): String = delegate.partialText()
+    override fun earlyText(): String? = delegate.earlyText()
     override fun isEndpoint(): Boolean = delegate.isEndpoint()
     override fun noSpeechTimedOut(): Boolean = delegate.noSpeechTimedOut()
     override fun finishStream(): AsrRecognitionResult = delegate.finishStream()

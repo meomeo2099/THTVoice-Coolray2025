@@ -125,6 +125,13 @@ object SettingsScreenView {
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Lọc tiếng nhạc khi nghe lệnh",
             "Chỉ bật khi đang phát nhạc hoặc đang đọc phản hồi, không dùng cho từ đánh thức. Tắt nếu micrô nghe kém.",
             ThtUi.switch(context, echoCancel) { echoCancel = it }))
+        // Coolray 2025 quiet mic: try these off if commands are often misheard (applies from the next command).
+        voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Khuếch đại micrô",
+            "Tăng âm lượng micrô gấp đôi trước khi nhận giọng. Tắt nếu bị rè hoặc nhận sai khi nói to.",
+            ThtUi.switch(context, voicePreferences.micGainEnabled) { voicePreferences.micGainEnabled = it }))
+        voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Khử ồn micrô",
+            "Lọc tiếng ồn máy, quạt gió trước khi nhận giọng. Tắt thử nếu app hay nhận sai chữ.",
+            ThtUi.switch(context, voicePreferences.micDenoiseEnabled) { voicePreferences.micDenoiseEnabled = it }))
         // THT Split API v2: token only needed when the two APKs are signed with different keys.
         val splitSubtitle = { if (voicePreferences.splitToken != null) "Đã lưu mã kết nối. Nói \"chia đôi màn hình\", \"thoát chia đôi\"."
             else "Trong THT Split: Kết nối THT Voice → bật nhận lệnh → sao chép token, rồi bấm Dán mã." }

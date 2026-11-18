@@ -16,10 +16,13 @@ class OfflineEndpointTracker(
     private val configProvider: () -> AsrEndpointConfig
 ) {
     private val chunks = ArrayList<FloatArray>()
+    private val speechGate = AdaptiveSpeechGate()
     var totalSamples = 0L
         private set
     private var speechSeen = false
-    private var speechSamples = 0L
+    /** Samples counted as speech so far; grows only while the driver talks. */
+    var speechSamples = 0L
+        private set
     private var trailingSilenceSamples = 0L
 
     /** True while the last decode still covers all speech heard. */
@@ -31,6 +34,7 @@ class OfflineEndpointTracker(
 
     fun reset() {
         chunks.clear()
+        speechGate.reset()
         totalSamples = 0L
         speechSeen = false
         speechSamples = 0L
@@ -45,7 +49,7 @@ class OfflineEndpointTracker(
         if (totalSamples >= config.maxListenMs * sampleRate / 1000L) return
         chunks += samples.copyOf()
         totalSamples += samples.size
-        if (rms(samples) >= config.speechRmsThreshold) {
+        if (speechGate.isSpeech(rms(samples), config.speechRmsThreshold, samples.size, sampleRate)) {
             if (decodedValid) {
                 decodedValid = false
                 resumedCount++
@@ -67,10 +71,6 @@ class OfflineEndpointTracker(
         return speechSamples >= minSpeech && trailingSilenceSamples >= silence
     }
 
-    /** A timeout is not evidence of speech: never decode silence or a short noise click. */
-    fun hasSpeechForDecode(): Boolean = speechSeen &&
-        speechSamples >= configProvider().normalized().minSpeechMs * sampleRate / 1000L
-
     /** No speech at all for [AsrEndpointConfig.DEFAULT_NO_SPEECH_MS] (never longer than max listen). */
     fun noSpeechTimedOut(): Boolean {
         if (hasSpeechForDecode()) return false
@@ -80,6 +80,18 @@ class OfflineEndpointTracker(
     }
 
     fun markDecoded() { decodedValid = true }
+
+    /** A timeout is not evidence of speech: never decode silence or a short noise click (Coolray 2025). */
+    fun hasSpeechForDecode(): Boolean = speechSeen &&
+        speechSamples >= configProvider().normalized().minSpeechMs * sampleRate / 1000L
+
+    /** Enough speech, then a pause of at least [pauseMs] (shorter than the real endpoint). */
+    fun pauseReached(pauseMs: Long): Boolean {
+        if (!speechSeen) return false
+        val config = configProvider().normalized()
+        return speechSamples >= config.minSpeechMs * sampleRate / 1000L &&
+            trailingSilenceSamples >= pauseMs * sampleRate / 1000L
+    }
 
     /** The whole utterance so far, in order. */
     fun audio(): FloatArray {

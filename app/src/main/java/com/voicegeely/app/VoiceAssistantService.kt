@@ -150,11 +150,20 @@ class VoiceAssistantService : Service() {
     private var vehicleVoiceKeyWatch: (() -> Unit)? = null
     @Volatile private var lastMicSource: Int? = null
     private var micFrontEndInstance: com.voicegeely.app.asr.MicFrontEnd? = null
+    private var micFrontEndKey: Pair<Boolean, Boolean>? = null
 
-    /** Gain + GTCRN denoise before ASR (Coolray 2025 quiet mic). Created once, reused per session. */
-    private fun micFrontEnd(): com.voicegeely.app.asr.MicFrontEnd =
-        micFrontEndInstance ?: com.voicegeely.app.asr.MicFrontEnd.create(assets, Sherpa65mModelSpec.SAMPLE_RATE)
-            .also { micFrontEndInstance = it }
+    /**
+     * Gain + GTCRN denoise before ASR (Coolray 2025 quiet mic). Both can be turned off in Settings to
+     * compare recognition in the car; rebuilt only when that choice changes.
+     */
+    private fun micFrontEnd(): com.voicegeely.app.asr.MicFrontEnd {
+        val key = voicePreferences.micGainEnabled to voicePreferences.micDenoiseEnabled
+        micFrontEndInstance?.takeIf { micFrontEndKey == key }?.let { return it }
+        micFrontEndInstance?.let { old -> runCatching { old.release() } }
+        val gain = if (key.first) com.voicegeely.app.asr.MicFrontEnd.DEFAULT_GAIN else 1f
+        return com.voicegeely.app.asr.MicFrontEnd.create(assets, Sherpa65mModelSpec.SAMPLE_RATE, gain = gain, denoise = key.second)
+            .also { micFrontEndInstance = it; micFrontEndKey = key; Log.i(TAG, "mic_front_end gain=$gain denoise=${key.second}") }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -222,6 +231,12 @@ class VoiceAssistantService : Service() {
             val installed = SherpaModelInstaller.ensureInstalled(this)
             val engine = SherpaStreamingAsrEngine(installed.modelDir)
             val asrInit = if (installed.available) engine.initialize() else AsrInitResult(false, installed.detail)
+            if (asrInit.ready) {
+                // THTVoice: one throw-away decode so the first command after the car starts is not misheard.
+                val warmStart = android.os.SystemClock.elapsedRealtime()
+                runCatching { engine.warmUp() }
+                Log.i(TAG, "asr_warmup ms=${android.os.SystemClock.elapsedRealtime() - warmStart}")
+            }
             if (destroyed) { runCatching { engine.close() }; return@Thread }
             val wakeInit = wakeWordEngine.initialize()
             mainHandler.post {
@@ -668,15 +683,42 @@ class VoiceAssistantService : Service() {
                 return
             }
             var chunksSinceCheck = 0
+            preRoll.clear()
+            // THTVoice: a microphone that goes silent (all zeros / no frames) is reopened instead of staying deaf.
+            val signalWatchdog = com.voicegeely.app.asr.MicSignalWatchdog()
+            signalWatchdog.reset(android.os.SystemClock.elapsedRealtime())
+            val recovery = com.voicegeely.app.asr.MicRecoveryPolicy()
+            recovery.reopened(android.os.SystemClock.elapsedRealtime())
 
             broadcastStatus("${activeWakePhrase.displayLabel} đang chờ lệnh", sherpaReady = asrReady())
             val pcm = ShortArray(CHUNK_SAMPLES)
             while (wakeWordRunning.get() && serviceReady && voicePreferences.wakeWordEnabled) {
+                val activeRecorder = recorder ?: break
                 val count = try {
-                    recorder.read(pcm, 0, pcm.size)
+                    activeRecorder.read(pcm, 0, pcm.size)
                 } catch (_: Throwable) {
                     failed = true
                     break
+                }
+                val nowSignal = android.os.SystemClock.elapsedRealtime()
+                val checkSignal = recovery.observe(pcm, count, nowSignal)
+                if (!checkSignal) signalWatchdog.reset(nowSignal)
+                if (checkSignal && count >= 0 && signalWatchdog.stalled(pcm, count, nowSignal)) {
+                    if (!wakeWordRunning.get() || destroyed) break
+                    if (com.voicegeely.app.kws.KwsMicPolicy.shouldYield(currentAudioMode(), wakeRecorderSilenced(activeRecorder))) {
+                        yielded = true
+                        break
+                    }
+                    if (!recovery.tryRecover()) { failed = true; break }
+                    closeRecorder(activeRecorder)
+                    recorder = openMicrophone(forWakeWord = true)
+                    wakeAudioRecord = recorder
+                    preRoll.clear(); gate.reset(); wakeWordEngine.reset()
+                    if (recorder == null || !wakeWordEngine.startStream()) { failed = true; break }
+                    val reopenedAt = android.os.SystemClock.elapsedRealtime()
+                    signalWatchdog.reset(reopenedAt); recovery.reopened(reopenedAt)
+                    Log.i(TAG, "kws_mic_reopened")
+                    continue
                 }
                 if (count < 0) {
                     // Dead/invalid recorder: retrying read() would spin forever without audio.
@@ -688,7 +730,7 @@ class VoiceAssistantService : Service() {
 
                 if (++chunksSinceCheck >= KWS_YIELD_CHECK_CHUNKS) {
                     chunksSinceCheck = 0
-                    if (com.voicegeely.app.kws.KwsMicPolicy.shouldYield(currentAudioMode(), wakeRecorderSilenced(recorder))) {
+                    if (com.voicegeely.app.kws.KwsMicPolicy.shouldYield(currentAudioMode(), wakeRecorderSilenced(activeRecorder))) {
                         Log.i(TAG, "kws_yield_mic mode=${currentAudioMode()}")
                         yielded = true
                         break
@@ -702,6 +744,7 @@ class VoiceAssistantService : Service() {
                 val media = runCatching { (getSystemService(AUDIO_SERVICE) as android.media.AudioManager).isMusicActive }.getOrDefault(false)
                 val now = android.os.SystemClock.elapsedRealtime()
                 recent.add(samples)
+                preRoll.add(samples, now)
                 gate.marginDb = MediaWakeGate.gateMarginDb(WakeSensitivity.LOW, media)
                 val frame = gate.accept(samples, now, gateEnabled = media)
                 if (media) secondChance.close()
@@ -925,6 +968,20 @@ class VoiceAssistantService : Service() {
             val micProbe = com.voicegeely.app.asr.MicCaptureProbe.start(this, Sherpa65mModelSpec.SAMPLE_RATE)
             val frontEnd = micFrontEnd()
             frontEnd.reset()
+            clippingMeter.reset()
+            // THTVoice: hand the audio heard right after the wake phrase to the ASR, so a command said in
+            // the same breath keeps its first word. Audio older than 1 s is never used.
+            if (wakeVerification == null) {
+                val lead = preRoll.take(android.os.SystemClock.elapsedRealtime(), HANDOFF_LEAD_MS * Sherpa65mModelSpec.SAMPLE_RATE / 1000)
+                if (lead.isNotEmpty()) {
+                    val leadSamples = frontEnd.process(lead)
+                    if (leadSamples.isNotEmpty()) asrEngine.acceptWaveform(leadSamples)
+                }
+            } else preRoll.clear()
+            val signalWatchdog = com.voicegeely.app.asr.MicSignalWatchdog()
+            signalWatchdog.reset(android.os.SystemClock.elapsedRealtime())
+            val recovery = com.voicegeely.app.asr.MicRecoveryPolicy()
+            recovery.reopened(android.os.SystemClock.elapsedRealtime())
             val startedAt = android.os.SystemClock.elapsedRealtime()
             val maxListenMs = voicePreferences.maxListenMs
             var lastPartial = ""
@@ -933,8 +990,35 @@ class VoiceAssistantService : Service() {
             var connectorGraceAt = 0L
 
             while (sessionActive(generation) && android.os.SystemClock.elapsedRealtime() - startedAt < maxListenMs) {
-                val count = recorder.read(pcm, 0, pcm.size)
+                val activeRecorder = recorder ?: break
+                val count = activeRecorder.read(pcm, 0, pcm.size)
                 if (!sessionActive(generation)) return
+                val nowSignal = android.os.SystemClock.elapsedRealtime()
+                val checkSignal = recovery.observe(pcm, count, nowSignal)
+                if (!checkSignal) signalWatchdog.reset(nowSignal)
+                if (checkSignal && count >= 0 && signalWatchdog.stalled(pcm, count, nowSignal)) {
+                    if (!recovery.tryRecover() || com.voicegeely.app.kws.KwsMicPolicy.callActive(currentAudioMode()) ||
+                        wakeRecorderSilenced(activeRecorder)) {
+                        captureError = "Micrô bị gián đoạn. Bạn thử nói lại nhé."
+                        break
+                    }
+                    closeRecorder(activeRecorder)
+                    recorder = openMicrophone(forWakeWord = false)
+                    audioRecord = recorder
+                    if (recorder == null) { captureError = "Micrô bị gián đoạn. Bạn thử nói lại nhé."; break }
+                    // A broken input must not turn half a command into an actuator request.
+                    asrEngine.reset()
+                    frontEnd.reset()
+                    if (!asrEngine.startStream()) { captureError = "Không mở được bộ nhận giọng nói"; break }
+                    lastPartial = ""
+                    connectorGraceText = null
+                    connectorGraceAt = 0L
+                    clippingMeter.reset()
+                    val reopenedAt = android.os.SystemClock.elapsedRealtime()
+                    signalWatchdog.reset(reopenedAt); recovery.reopened(reopenedAt)
+                    Log.i(TAG, "asr_mic_reopened")
+                    continue
+                }
                 if (count < 0) {
                     // IHU629G probe: a phone call (CarPlay too) takes the mic; this recorder then
                     // returns errors and never recovers. Stop instead of spinning until timeout.
@@ -944,6 +1028,7 @@ class VoiceAssistantService : Service() {
                 }
                 if (count == 0) continue
                 micProbe.add(pcm, count)
+                clippingMeter.accept(pcm, count)
 
                 val raw = FloatArray(count) { index -> pcm[index] / 32768.0f }
                 voiceOverlay.updateMicLevel(com.voicegeely.app.asr.OfflineEndpointTracker.rms(raw))
@@ -1020,11 +1105,14 @@ class VoiceAssistantService : Service() {
             if (reopenForWakeEcho) {
                 // Nothing to execute; the session reopens below.
             } else if (finalText.isNotBlank()) {
+                lastSessionClipped = clippingMeter.clipped()
+                if (lastSessionClipped) Log.i(TAG, "asr_clipping")
                 voiceOverlay.updateRecognition(finalText, isFinal = true)
                 broadcastRecognition(finalText, isFinal = true)
                 executeRecognizedText(finalText)
             } else {
-                val message = captureError ?: result?.detail ?: "Không nghe rõ lệnh"
+                val message = captureError ?: result?.detail ?:
+                    if (clippingMeter.clipped()) com.voicegeely.app.asr.ClippingMeter.MESSAGE else "Không nghe rõ lệnh"
                 voiceOverlay.showError(message)
                 broadcastStatus(message, sherpaReady = true)
                 if (spokenFeedback && !speakReply(message)) feedbackAudio.play(VoiceFeedbackCue.ERROR)
@@ -1598,6 +1686,13 @@ class VoiceAssistantService : Service() {
         }
     }
 
+    /** Audio just before the session starts (THTVoice): the first word after the wake phrase is not cut. */
+    private val preRoll = com.voicegeely.app.asr.PcmPreRoll()
+    /** Speech spoken too loud / too close to the mic (THTVoice). */
+    private val clippingMeter = com.voicegeely.app.asr.ClippingMeter()
+    /** Last session's speech was clipped (too loud). */
+    @Volatile private var lastSessionClipped = false
+
     /** The coordinator's last reply could not be spoken by any voice. */
     @Volatile private var lastReplyUnspoken = false
 
@@ -1924,6 +2019,8 @@ class VoiceAssistantService : Service() {
         private const val NOTIFICATION_ID = 1000
         private const val PERMISSION_NOTIFICATION_ID = 1001
         private const val CHUNK_SAMPLES = 1600
+        /** Audio kept from before the session (THTVoice): the first word after the wake phrase. */
+        private const val HANDOFF_LEAD_MS = 400
         private const val REPAUSE_DELAY_MS = 300L
         private const val SAFETY_REOPEN_DELAY_MS = 180L
         private const val BARGE_IN_REOPEN_DELAY_MS = 120L
