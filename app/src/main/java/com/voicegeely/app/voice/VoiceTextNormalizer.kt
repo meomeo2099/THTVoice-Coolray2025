@@ -223,11 +223,6 @@ object VoiceTextNormalizer {
         // 09/10/2026: "go gồ ma", "gâu gồ mép", "gầu gồ mát" — the middle "gồ" is required here.
         Regex("${B}(?:go|gò|gó|gâu|gầu|gấu|gau|gao|gồ|gu|gú|goo|gô|gúc|gút) (?:gồ|gờ|gơ|gô|gố|gổ|go|gò|gồ) (?:ma|mà|má|mát|máp|mắp|mép|mẹp|mếp|mắt|mạp|map|maps|mấp)$E") to "google maps",
         Regex("${B}(?:việc ma lai|việc marbe|việc ma ray|viện mary|việc map|việt map|việt mắp|việt ma|viết map|viết mát|việt máp|việt mép|vi ét map)$E") to "vietmap",
-        // THTVoice 13/11/2026 (owner test): "viên map li", "việc map lie", "vietmap lie". "map" + a "live"
-        // sound only belongs to Vietmap Live, so it must never fall through to plain "map" (bản đồ).
-        Regex("${B}(?:viên|viện|việc|việt|viết|viêt|viet|vi ét)(?: |-)?(?:map|máp|mép|mắp|mát|mạp)$E") to "vietmap",
-        Regex("${B}vietmap (?:live|lai|lây|lie|li|lí|lại|lái|lay|lai vơ|lai phờ)$E") to "vietmap live",
-        Regex("${B}(?:map|máp|mép|mắp) (?:live|lai|lây|lie|li|lí|lai vơ)$E") to "vietmap live",
         Regex("^mở (?:map|maps|mát|máy|mắp|mắt|bản đồ)$") to "mở bản đồ",
         Regex("^(?:dẫn đường|chỉ đường)(?: bằng)? vietmap$") to "mở vietmap",
         Regex("^(?:nghe|xem) youtube$") to "mở youtube",
