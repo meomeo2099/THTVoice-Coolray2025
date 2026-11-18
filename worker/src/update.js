@@ -1,6 +1,7 @@
 // App update (GitHub Release proxy) and voice pack download (R2), both license-gated.
 // GITHUB_TOKEN stays a Worker secret; the app only ever talks to this Worker.
-import { json, requireLicense } from './license.js';
+import { json } from './license.js';
+import { updateAccessDenied } from './free-access.js';
 import { latestReleaseInfo } from './notice.js';
 
 const GH = 'https://api.github.com';
@@ -51,7 +52,8 @@ export async function fetchReleaseInfo(env) {
 
 // GET /api/update?current_code=N
 export async function handleUpdate(request, env, url, now) {
-  if (!(await requireLicense(request, env, now))) return json(401, { ok: false, code: 'unlicensed', message: 'License không hợp lệ.' });
+  const denied = await updateAccessDenied(request, env, now, 'check');
+  if (denied) return denied;
   const current = parseInt(url.searchParams.get('current_code') || '0', 10) || 0;
   // Cars checking for updates also keep the admin's "bản mới nhất" fresh (10-minute cache).
   try { await latestReleaseInfo(env, now, fetchReleaseInfo); } catch { /* admin info only */ }
@@ -87,7 +89,8 @@ export async function handleUpdate(request, env, url, now) {
 
 // GET /api/update/apk?asset_id=N — only assets of the latest release are served.
 export async function handleUpdateApk(request, env, url, now) {
-  if (!(await requireLicense(request, env, now))) return json(401, { ok: false, code: 'unlicensed', message: 'License không hợp lệ.' });
+  const denied = await updateAccessDenied(request, env, now, 'download');
+  if (denied) return denied;
   const id = url.searchParams.get('asset_id') || '';
   if (!/^[1-9][0-9]*$/.test(id)) return json(400, { ok: false, message: 'asset_id không hợp lệ.' });
   const release = await latestRelease(env);
@@ -195,7 +198,8 @@ async function findPack(env, url) {
 
 // GET /api/model?name=kokoro_vi&sha256=…
 export async function handleModel(request, env, url, now) {
-  if (!(await requireLicense(request, env, now))) return json(401, { ok: false, code: 'unlicensed', message: 'License không hợp lệ.' });
+  const denied = await updateAccessDenied(request, env, now, 'check');
+  if (denied) return denied;
   const pack = await findPack(env, url);
   if (pack?.error) return json(pack.error, { ok: false, code: 'github_unavailable', message: pack.message });
   if (!pack) {
@@ -212,7 +216,8 @@ export async function handleModel(request, env, url, now) {
 
 // GET /api/model/file?name=…&sha256=…
 export async function handleModelFile(request, env, url, now) {
-  if (!(await requireLicense(request, env, now))) return json(401, { ok: false, code: 'unlicensed', message: 'License không hợp lệ.' });
+  const denied = await updateAccessDenied(request, env, now, 'download');
+  if (denied) return denied;
   const pack = await findPack(env, url);
   if (pack?.error) return json(pack.error, { ok: false, code: 'github_unavailable', message: pack.message });
   if (!pack) return json(404, { ok: false, message: 'Không có gói này.' });
@@ -233,9 +238,8 @@ export async function handleModelFile(request, env, url, now) {
 
 // Media releases are separate from Coolray APK/Kokoro releases. M4A prefers its own token, else GITHUB_TOKEN (like THTVoice).
 export async function handleMp3Voice(request, env, url, now, voice, download) {
-  if (!(await requireLicense(request, env, now))) {
-    return json(401, { ok: false, code: 'unlicensed', message: 'License không hợp lệ.' });
-  }
+  const denied = await updateAccessDenied(request, env, now, download ? 'download' : 'check');
+  if (denied) return denied;
   const requestedSha = url.searchParams.get('sha256') || '';
   if (download && !/^[0-9a-f]{64}$/.test(requestedSha)) {
     return json(400, { ok: false, message: 'SHA-256 không hợp lệ.' });

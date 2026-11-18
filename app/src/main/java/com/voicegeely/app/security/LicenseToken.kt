@@ -23,6 +23,9 @@ data class LicenseTokenPayload(
     val issuedAt: Long
 )
 
+/** "Yêu cầu key" mode from /api/policy, signed for one device. */
+data class PolicyTokenPayload(val keyRequired: Boolean, val requestCode: String, val issuedAt: Long)
+
 object LicenseToken {
     /** "k1:BASE64SPKI,k2:BASE64SPKI" → key id → public key. Bad entries are skipped. */
     fun parseKeys(spec: String): Map<String, PublicKey> {
@@ -35,14 +38,14 @@ object LicenseToken {
         }.toMap()
     }
 
-    fun verify(token: String, keys: Map<String, PublicKey>): LicenseTokenPayload? {
+    /** Payload fields of a version-1 token signed by one of [keys], or null. */
+    private fun signedFields(token: String, keys: Map<String, PublicKey>): Map<String, Any?>? {
         val parts = token.trim().split('.')
         if (parts.size != 2 || parts.any { it.isEmpty() } || keys.isEmpty()) return null
         return try {
             val json = String(Base64.getUrlDecoder().decode(parts[0]), Charsets.UTF_8)
             val fields = parseFlatJson(json) ?: return null
-            val kid = fields["kid"] as? String ?: return null
-            val key = keys[kid] ?: return null
+            val key = keys[fields["kid"] as? String ?: return null] ?: return null
             val raw = Base64.getUrlDecoder().decode(parts[1])
             if (raw.size != 64) return null
             val verifier = Signature.getInstance("SHA256withECDSA")
@@ -50,17 +53,40 @@ object LicenseToken {
             verifier.update(parts[0].toByteArray(Charsets.US_ASCII))
             if (!verifier.verify(rawToDer(raw))) return null
             if ((fields["v"] as? Long) != 1L) return null
-            LicenseTokenPayload(
-                keyId = kid,
-                licenseId = fields["lid"] as? Long ?: return null,
-                requestCode = fields["req"] as? String ?: return null,
-                licenseType = LicenseType.fromWire(fields["typ"] as? String),
-                expiresAt = fields["exp"] as? Long ?: return null,
-                issuedAt = fields["iat"] as? Long ?: 0L
-            )
+            fields
         } catch (_: Throwable) {
             null
         }
+    }
+
+    /** Signed /api/policy reply ({kind:"policy"}); a license token never passes as one. */
+    fun verifyPolicy(token: String, keys: Map<String, PublicKey>): PolicyTokenPayload? {
+        val fields = signedFields(token, keys) ?: return null
+        if (fields["kind"] != "policy" || fields.containsKey("lid")) return null
+        val required = when (fields["mode"]) {
+            "required" -> true
+            "free" -> false
+            else -> return null
+        }
+        return PolicyTokenPayload(
+            keyRequired = required,
+            requestCode = fields["req"] as? String ?: return null,
+            issuedAt = fields["iat"] as? Long ?: return null
+        )
+    }
+
+    fun verify(token: String, keys: Map<String, PublicKey>): LicenseTokenPayload? {
+        val fields = signedFields(token, keys) ?: return null
+        // Policy replies are signed with the same key; they never count as a license.
+        if (fields.containsKey("kind")) return null
+        return LicenseTokenPayload(
+            keyId = fields["kid"] as String,
+            licenseId = fields["lid"] as? Long ?: return null,
+            requestCode = fields["req"] as? String ?: return null,
+            licenseType = LicenseType.fromWire(fields["typ"] as? String),
+            expiresAt = fields["exp"] as? Long ?: return null,
+            issuedAt = fields["iat"] as? Long ?: 0L
+        )
     }
 
     /** WebCrypto signs as raw r||s; Java verifies ASN.1 DER SEQUENCE { INTEGER r, INTEGER s }. */

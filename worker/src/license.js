@@ -1,8 +1,8 @@
 // App-facing license endpoints: verify (activate), status (renew/block sync), restore, unlock.
 import { codeHint, formatCode, normalizeLicenseCode, normalizeRequestCode } from './codes.js';
 import { protectVin, sha256Hex, signLicenseToken } from './crypto.js';
-import { clearKeys, describeWait, DAY, lockedFor, recordFailure } from './lockout.js';
-import { getVinMode } from './settings.js';
+import { clearKeys, describeWait, DAY, HOUR, lockedFor, recordFailure } from './lockout.js';
+import { getLicenseMode, getVinMode } from './settings.js';
 import { noticeFor, recordDelivered, recordSeen } from './notice.js';
 
 export const json = (status, body, extraHeaders = {}) =>
@@ -243,7 +243,12 @@ export async function handleVerify(request, env, now) {
   const mine = await db.prepare('SELECT id FROM activations WHERE license_id = ? AND request_code = ? AND status = \'active\'')
     .bind(license.id, requestCode).first();
   if (!mine) {
-    const used = await db.prepare('SELECT COUNT(*) AS n FROM activations WHERE license_id = ? AND status = \'active\'').bind(license.id).first();
+    let used = await db.prepare('SELECT COUNT(*) AS n FROM activations WHERE license_id = ? AND status = \'active\'').bind(license.id).first();
+    if ((used?.n || 0) >= license.max_devices && await releaseSameCar(env, now, license, requestCode, body?.vin)) {
+      // Owner 18/10/2026: the same car (same VIN) after a reinstall gets a new device code; typing
+      // the old code moves it here instead of "in use on another device".
+      used = await db.prepare('SELECT COUNT(*) AS n FROM activations WHERE license_id = ? AND status = \'active\'').bind(license.id).first();
+    }
     if ((used?.n || 0) >= license.max_devices) {
       await logAttempt(db, now, 'verify', requestCode, ip, parsed.code, false, 'license_in_use');
       return json(409, { ok: false, code: 'license_in_use', message: 'Mã đã được kích hoạt trên thiết bị khác. Liên hệ người bán để chuyển thiết bị.' });
@@ -263,11 +268,106 @@ export async function handleVerify(request, env, now) {
   return json(200, await successBody(env, now, license, requestCode, base));
 }
 
+/**
+ * The active license of the car with this VIN, moved from its old device code to [requestCode].
+ * Found through the license's own VIN, else through an older device that reported the same VIN.
+ * Never moves from a blocked device; only the car's own old code(s) are released.
+ */
+/** The car's own older device codes for [license] (same VIN), never blocked ones. */
+async function sameCarActivations(env, license, requestCode, vinHash) {
+  const acts = (await env.DB.prepare(
+    'SELECT a.request_code, d.vin_hash, d.status FROM activations a LEFT JOIN devices d ON d.request_code = a.request_code ' +
+    'WHERE a.license_id = ? AND a.status = \'active\' AND a.request_code != ?'
+  ).bind(license.id, requestCode).all()).results;
+  const car = acts.filter((a) => a.vin_hash === vinHash || (!a.vin_hash && license.vin_hash === vinHash && (license.max_devices || 1) <= 1));
+  return { all: acts, car, blocked: car.some((a) => a.status === 'blocked') };
+}
+
+/** Releases the same car's old device code(s) of [license]; true when something was released. */
+async function releaseSameCar(env, now, license, requestCode, vinRaw) {
+  const vin = await protectVin(env, vinRaw || '');
+  if (!vin) return false;
+  const { car, blocked } = await sameCarActivations(env, license, requestCode, vin.vin_hash);
+  if (blocked || !car.length) return false;
+  for (const a of car) {
+    await env.DB.prepare('UPDATE activations SET status = \'released\', released_at = ?, released_reason = ? WHERE license_id = ? AND request_code = ? AND status = \'active\'')
+      .bind(now, `vin_restore:${requestCode}`, license.id, a.request_code).run();
+  }
+  return true;
+}
+
+async function moveLicenseByVin(env, now, requestCode, vinRaw) {
+  const db = env.DB;
+  const vin = await protectVin(env, vinRaw || '');
+  if (!vin) return null;
+  const h = vin.vin_hash;
+  let license = await db.prepare(
+    'SELECT * FROM licenses WHERE vin_hash = ? AND status = \'active\' ORDER BY updated_at DESC LIMIT 1'
+  ).bind(h).first();
+  if (!license) {
+    license = await db.prepare(
+      'SELECT l.* FROM devices d JOIN activations a ON a.request_code = d.request_code AND a.status = \'active\' ' +
+      'JOIN licenses l ON l.id = a.license_id WHERE d.vin_hash = ? AND d.request_code != ? AND l.status = \'active\' ' +
+      'ORDER BY a.activated_at DESC LIMIT 1'
+    ).bind(h, requestCode).first();
+  }
+  if (!license) return null;
+  const acts = (await db.prepare(
+    'SELECT a.request_code, d.vin_hash, d.status FROM activations a LEFT JOIN devices d ON d.request_code = a.request_code ' +
+    'WHERE a.license_id = ? AND a.status = \'active\''
+  ).bind(license.id).all()).results;
+  if (acts.some((a) => a.request_code === requestCode)) return license;
+  if (acts.some((a) => a.status === 'blocked' && (a.vin_hash === h || license.vin_hash === h))) return null;
+  // Release the car's old code(s): same VIN on the device, or a one-car license bound to this VIN.
+  const old = acts.filter((a) => a.vin_hash === h || (!a.vin_hash && license.vin_hash === h && (license.max_devices || 1) <= 1));
+  // Only move a license this car is using now. A code the admin released (no active device) or an
+  // unused code is never activated by VIN alone: the customer types it, or the admin moves it.
+  if (!old.length) return null;
+  for (const a of old) {
+    await db.prepare('UPDATE activations SET status = \'released\', released_at = ?, released_reason = ? WHERE license_id = ? AND request_code = ? AND status = \'active\'')
+      .bind(now, `vin_restore:${requestCode}`, license.id, a.request_code).run();
+  }
+  await db.prepare('INSERT INTO activations (license_id, request_code, status, activated_at) VALUES (?, ?, \'active\', ?)')
+    .bind(license.id, requestCode, now).run();
+  return license;
+}
+
 async function activeLicenseForDevice(db, requestCode) {
   return db.prepare(
     'SELECT l.* FROM activations a JOIN licenses l ON l.id = a.license_id ' +
     'WHERE a.request_code = ? AND a.status = \'active\' ORDER BY (l.status = \'active\') DESC, a.activated_at DESC LIMIT 1'
   ).bind(requestCode).first();
+}
+
+// New devices one IP may add through /api/policy per hour (keeps spam out of the device list).
+const POLICY_NEW_DEVICES_PER_IP_HOUR = 20;
+
+/**
+ * "Yêu cầu key" mode. With a device code the mode comes back signed for that device
+ * ({kind:"policy"}), so the app does not trust an edited or replayed reply. Every device that asks
+ * is recorded (admin: "Chưa có key" until it activates), and a device the admin blocked always gets
+ * "required", so blocking also stops free-mode installs.
+ */
+export async function handlePolicy(request, env, now) {
+  const mode = await getLicenseMode(env);
+  const req = normalizeRequestCode(header(request, 'request') || new URL(request.url).searchParams.get('req') || '');
+  const out = { ok: true, license_mode: mode, server_time: now };
+  if (!req) return json(200, out);
+  let blocked = false;
+  try {
+    const ip = clientIp(request);
+    const device = await env.DB.prepare('SELECT status FROM devices WHERE request_code = ?').bind(req).first();
+    blocked = device?.status === 'blocked';
+    const recent = device ? null : await env.DB.prepare(
+      'SELECT COUNT(*) AS n FROM devices WHERE last_ip = ? AND first_seen > ? AND request_code NOT IN (SELECT request_code FROM activations)'
+    ).bind(ip, now - HOUR).first();
+    if (device || (recent?.n ?? 0) < POLICY_NEW_DEVICES_PER_IP_HOUR) {
+      await upsertDevice(env, now, req, ip, header(request, 'app-version'), header(request, 'vin'), header(request, 'vin-status'));
+    }
+  } catch { /* recording is best effort; the mode reply still goes out */ }
+  if (blocked) out.device_blocked = true;
+  try { out.token = await signLicenseToken(env, { kind: 'policy', mode: blocked ? 'required' : mode, req, iat: now }); } catch { /* signing key missing: unsigned reply */ }
+  return json(200, out);
 }
 
 // GET /api/status (headers X-THT-Request, X-THT-License, optional X-THT-Vin, X-THT-App-Version)
@@ -338,7 +438,10 @@ export async function handleRestore(request, env, now) {
   const device = await db.prepare('SELECT status FROM devices WHERE request_code = ?').bind(requestCode).first();
   if (device?.status === 'blocked') return json(403, { ok: false, code: 'device_blocked', message: 'Thiết bị này đã bị khóa. Liên hệ người bán.' });
 
-  const license = await activeLicenseForDevice(db, requestCode);
+  let license = await activeLicenseForDevice(db, requestCode);
+  // Owner 18/10/2026: reinstall with a new signing key (or a factory reset) gives a new device
+  // code. The same car (same VIN) gets its license moved to the new code automatically.
+  if (!license) license = await moveLicenseByVin(env, now, requestCode, body?.vin);
   if (!license) {
     return failure(db, now, 'restore', requestCode, ip, null, 'no_license', 'Không tìm thấy bản quyền cho thiết bị này. Nếu đã cài lại hệ thống (khôi phục cài đặt gốc), mã thiết bị đã đổi — gửi mã mới cho người bán.');
   }

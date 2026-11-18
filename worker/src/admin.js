@@ -1,6 +1,6 @@
 // Admin JSON API under /admin/api/*. Auth: "Authorization: Bearer <ADMIN_PASSWORD>".
 import { formatCode, generateNumericCode, generateUnlockCode, normalizeLicenseCode, normalizeRequestCode } from './codes.js';
-import { DEFAULT_COPY_FOOTER, DEFAULT_REMINDER, getCopyFooter, getReminderTemplate, getVinMode, setCopyFooter, setReminderTemplate, setVinMode } from './settings.js';
+import { DEFAULT_COPY_FOOTER, DEFAULT_REMINDER, getCopyFooter, getFreeUpdates, getLicenseMode, getReminderTemplate, getVinMode, setCopyFooter, setFreeUpdates, setLicenseMode, setReminderTemplate, setVinMode } from './settings.js';
 import { decryptVin, normalizeVin, protectVin, safeEqual, sha256Hex, vinHash } from './crypto.js';
 import { clearKeys, DAY, HOUR, lockedFor, recordFailure } from './lockout.js';
 import { clientIp, ensureVinStatColumns, json } from './license.js';
@@ -317,6 +317,9 @@ async function listLicenses(env, url, now = Date.now()) {
   return paged(env, url, 'licenses', where, args, order, (r) => licenseView(env, r));
 }
 
+// Seen in the last 30 days without an active key (free-mode cars, or waiting for a key).
+const NO_KEY = 'last_seen > ? AND request_code NOT IN (SELECT request_code FROM activations WHERE status = \'active\')';
+
 export async function listDevices(env, url, now = Date.now()) {
   await ensureVinStatColumns(env);
   const q = (url.searchParams.get('q') || '').trim();
@@ -333,6 +336,10 @@ export async function listDevices(env, url, now = Date.now()) {
   if (version !== null && url.searchParams.has('version')) {
     where.push('COALESCE(app_version, \'\') = ?', 'last_seen > ?');
     args.push(version, now - 30 * DAY);
+  }
+  if (url.searchParams.get('filter') === 'nokey') {
+    where.push(NO_KEY);
+    args.push(now - 30 * DAY);
   }
   if (url.searchParams.get('filter') === 'vin') {
     where.push(VIN_ANOMALY);
@@ -390,6 +397,7 @@ export async function handleAdminApi(request, env, url, now) {
         unused: await one('SELECT COUNT(*) AS n FROM licenses WHERE expires_at IS NULL AND status = \'active\''),
         active_devices: await one('SELECT COUNT(DISTINCT request_code) AS n FROM activations WHERE status = \'active\''),
         blocked_devices: await one('SELECT COUNT(*) AS n FROM devices WHERE status = \'blocked\''),
+        nokey_devices: await one(`SELECT COUNT(*) AS n FROM devices WHERE ${NO_KEY}`, now - 30 * DAY),
         expiring_7d: await one('SELECT COUNT(*) AS n FROM licenses WHERE expires_at > ? AND expires_at < ?', now, now + 7 * DAY),
         expiring_30d: await one('SELECT COUNT(*) AS n FROM licenses WHERE status = \'active\' AND expires_at > ? AND expires_at < ?', now, now + 30 * DAY),
         vin_anomalies: await one(`SELECT COUNT(*) AS n FROM devices WHERE ${VIN_ANOMALY}`, now - 7 * DAY),
@@ -403,6 +411,8 @@ export async function handleAdminApi(request, env, url, now) {
       ok: true, copy_footer: await getCopyFooter(env), default_copy_footer: DEFAULT_COPY_FOOTER,
       reminder_template: await getReminderTemplate(env), default_reminder_template: DEFAULT_REMINDER,
       vin_mode: await getVinMode(env),
+      license_mode: await getLicenseMode(env),
+      free_updates: await getFreeUpdates(env),
     });
     if (request.method === 'GET' && path === 'licenses') return json(200, { ok: true, ...(await listLicenses(env, url, now)) });
     if (request.method === 'GET' && path === 'devices') return json(200, { ok: true, ...(await listDevices(env, url, now)) });
@@ -453,6 +463,8 @@ export async function handleAdminApi(request, env, url, now) {
       case 'notice': result = { notice: await setNotice(env, now, input) }; break;
       case 'restore': result = await restoreBackup(env, input.backup, input.mode); break;
       case 'settings/copy-footer': result = { copy_footer: await setCopyFooter(env, now, input.copy_footer) }; break;
+      case 'settings/license-mode': result = { license_mode: await setLicenseMode(env, now, input.license_mode) }; break;
+      case 'settings/free-updates': result = { free_updates: await setFreeUpdates(env, now, input.free_updates) }; break;
       case 'settings/vin-mode': result = { vin_mode: await setVinMode(env, now, input.vin_mode) }; break;
       case 'settings/reminder': result = { reminder_template: await setReminderTemplate(env, now, input.reminder_template) }; break;
       case 'voice-packs': {

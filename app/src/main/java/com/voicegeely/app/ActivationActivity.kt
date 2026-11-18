@@ -28,6 +28,10 @@ class ActivationActivity : AppCompatActivity() {
         if (forVoiceDownload && licenseManager.authHeaders().isEmpty()) LicenseGateState.UNLICENSED
         else licenseManager.gateState()
 
+    /** Active key, or free mode on the license server ("Yêu cầu key" off). Voice-pack download still needs a key. */
+    private fun unlocked(): Boolean =
+        if (forVoiceDownload) activationState() == LicenseGateState.ACTIVE else licenseManager.isLicensed()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         licenseManager = LicenseManager(this)
@@ -37,7 +41,7 @@ class ActivationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (::licenseManager.isInitialized && activationState() == LicenseGateState.ACTIVE) {
+        if (::licenseManager.isInitialized && unlocked()) {
             Log.i(TAG, "activation_resume_license_active")
             openMainUi()
         }
@@ -46,7 +50,7 @@ class ActivationActivity : AppCompatActivity() {
     private fun enforceGate() {
         val gateState = activationState()
         Log.i(TAG, "gate_state=$gateState")
-        if (gateState == LicenseGateState.ACTIVE) {
+        if (unlocked()) {
             openMainUi()
             return
         }
@@ -85,6 +89,14 @@ class ActivationActivity : AppCompatActivity() {
         )
         binding = screen
         setContentView(screen.root)
+        // The server may be in free mode ("Yêu cầu key" off): ask once, quietly, and open if so.
+        if (!forVoiceDownload && (gateState == LicenseGateState.UNLICENSED || gateState == LicenseGateState.EXPIRED)) {
+            Thread {
+                val checked = licenseManager.refreshLicenseMode()
+                Log.i(TAG, "activation_license_mode_checked ok=$checked")
+                if (checked && licenseManager.isLicensed()) runOnUiThread { openMainUi() }
+            }.start()
+        }
     }
 
     private fun verifyActivation(rawCode: String) {

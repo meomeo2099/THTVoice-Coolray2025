@@ -20,6 +20,7 @@ class LicenseManager(
     private val appContext = context.applicationContext
     private val store = LicenseStore(appContext)
     private val noticeStore = CustomerNoticeStore(appContext)
+    private val modeStore = LicenseModeStore(appContext)
 
     fun requestCode(): String = DeviceIdentity.compactRequestCode(appContext)
     fun formattedRequestCode(): String = DeviceIdentity.formattedRequestCode(appContext)
@@ -76,7 +77,40 @@ class LicenseManager(
 
     fun licenseType(): LicenseType = store.load()?.licenseType ?: LicenseType.STANDARD
 
-    fun isLicensed(): Boolean = gateState() == LicenseGateState.ACTIVE
+    /** True when the voice core may run: an active key, or no key needed while the server is in free mode. */
+    fun isLicensed(): Boolean = LicenseAccessPolicy.allows(gateState(), keyRequired())
+
+    /** True when the server's signed policy for this device requires a key. */
+    fun keyRequired(now: Long = System.currentTimeMillis()): Boolean = LicenseAccessPolicy.keyRequired(
+        modeStore.token?.let { LicenseToken.verifyPolicy(it, LicenseConfig.PUBLIC_KEYS) }, requestCode(), now
+    )
+
+    /** Running without a key because the server does not require one. */
+    fun usingFreeMode(): Boolean = gateState() != LicenseGateState.ACTIVE && isLicensed()
+
+    /** Reads free / key-required from the server; false when the server could not be read. */
+    fun refreshLicenseMode(now: Long = System.currentTimeMillis()): Boolean {
+        if (!LicenseConfig.isConfigured()) return false
+        return try {
+            // The server also records this car (admin: "Chưa có key"), with VIN when readable.
+            val (vin, vinStatus) = vinReport()
+            val headers = mapOf("X-THT-Request" to requestCode(), "X-THT-App-Version" to BuildConfig.VERSION_NAME, "X-THT-Vin-Status" to vinStatus) +
+                (vin?.let { mapOf("X-THT-Vin" to it) } ?: emptyMap())
+            val reply = call("GET", "api/policy", null, headers)
+            val token = reply.json.optString("token", "")
+            val policy = LicenseToken.verifyPolicy(token, LicenseConfig.PUBLIC_KEYS)
+            if (reply.status != 200 || policy == null || policy.requestCode != requestCode()) {
+                Log.w(TAG, "license_mode_rejected status=${reply.status} signed=${policy != null}")
+                return false
+            }
+            modeStore.save(token, now)
+            Log.i(TAG, "license_mode required=${policy.keyRequired}")
+            true
+        } catch (t: Throwable) {
+            Log.w(TAG, "license_mode_failed type=${t.javaClass.simpleName}")
+            false
+        }
+    }
 
     /** Release builds tell the server which certificate signed them; it refuses re-signed copies. */
     private fun certHeader(): Map<String, String> =
@@ -85,6 +119,7 @@ class LicenseManager(
     fun hasStoredLicense(): Boolean = store.load()?.let { it.requestCode == requestCode() && it.activationCode.isNotBlank() } == true
 
     fun remoteRefreshDue(now: Long = System.currentTimeMillis()): Boolean {
+        if (LicenseAccessPolicy.refreshDue(modeStore.checkedAt, now)) return true
         val record = store.load() ?: return false
         if (LicenseConfig.signedLicenses && record.token.isBlank()) {
             // Old-server record on a new-server build: fetch the signed license soon, but not on every trigger.
@@ -115,10 +150,10 @@ class LicenseManager(
         val state = gateState()
         val record = store.load()
         return when (state) {
-            LicenseGateState.UNLICENSED -> "Chưa kích hoạt"
+            LicenseGateState.UNLICENSED -> if (isLicensed()) "Đang dùng miễn phí" else "Chưa kích hoạt"
             LicenseGateState.BINDING_MISMATCH -> "License không thuộc thiết bị này"
             LicenseGateState.REMOTE_BLOCKED -> "License đã bị khóa từ xa"
-            LicenseGateState.EXPIRED -> "License đã hết hạn"
+            LicenseGateState.EXPIRED -> if (isLicensed()) "Key đã hết hạn • đang dùng miễn phí" else "License đã hết hạn"
             LicenseGateState.CLOCK_INVALID -> "Thời gian thiết bị không hợp lệ"
             LicenseGateState.TAMPERED -> "Bản cài không phải bản chính thức"
             LicenseGateState.ACTIVE -> {
@@ -134,11 +169,13 @@ class LicenseManager(
         }
     }
 
-    /** Headers for normal cloud calls require a currently valid local license. */
+    /** Headers for update / voice pack calls: a valid local license, or the car code in free mode. */
     fun authHeaders(): Map<String, String> {
-        val record = localRecordValid(ignoreRemoteBlocked = true) ?: return emptyMap()
-        if (record.activationCode.isBlank()) return emptyMap()
-        return storedAuthHeaders(record)
+        val record = localRecordValid(ignoreRemoteBlocked = true)?.takeIf { it.activationCode.isNotBlank() }
+        if (record != null) return storedAuthHeaders(record)
+        // Free mode without a key: car code only; the server allows a few downloads a day (admin can turn it off).
+        if (!usingFreeMode()) return emptyMap()
+        return mapOf("X-THT-Request" to requestCode(), "X-THT-App-Version" to BuildConfig.VERSION_NAME) + certHeader()
     }
 
     /** New header names plus the old ones, so the same build works against both servers. */
@@ -221,8 +258,10 @@ class LicenseManager(
 
     fun refreshRemoteStatus(): RemoteStatus {
         if (!LicenseConfig.isConfigured()) return RemoteStatus(false, isLicensed(), false, "Chưa cấu hình máy chủ license")
+        val modeChecked = refreshLicenseMode()
         val record = store.load()?.takeIf { it.requestCode == requestCode() && it.activationCode.isNotBlank() }
-            ?: return RemoteStatus(false, false, false, "Chưa có license cục bộ")
+            ?: return RemoteStatus(modeChecked, isLicensed(), false,
+                if (isLicensed()) "Đang dùng miễn phí, chưa cần key" else "Cần nhập key để dùng THT Voice")
         if (record.token.isBlank()) lastUnsignedRefreshAttempt = System.currentTimeMillis()
         return try {
             val (vin, vinStatus) = vinReport()

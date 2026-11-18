@@ -869,3 +869,93 @@ test('M4A R6 uses shared source separately from Coolray OTA and require a licens
   assert.equal(fetchMock.mock.callCount(), calls + 2); // API metadata + API asset; no hostile request.
 
 });
+
+test('license mode: key required by default, admin can switch to free, /api/policy signs it', async () => {
+  const env = await makeEnv();
+  const c = client(env);
+  assert.equal((await c.call('GET', '/api/policy')).json.license_mode, 'required');
+  assert.equal((await c.admin('settings')).json.license_mode, 'required');
+  assert.equal((await c.admin('settings/license-mode', { license_mode: 'free' })).json.result.license_mode, 'free');
+  assert.equal((await c.call('GET', '/api/policy')).json.license_mode, 'free');
+  await c.admin('settings/license-mode', { license_mode: 'required' });
+  assert.equal((await c.call('GET', '/api/policy')).json.license_mode, 'required');
+  assert.equal((await c.admin('settings/license-mode', { license_mode: 'nope' })).status, 400);
+  await c.admin('settings/license-mode', { license_mode: 'free' });
+  assert.equal((await c.call('GET', '/api/policy')).json.license_mode, 'free');
+  // Signed per device, so an edited or another car's reply is useless to the app.
+  assert.equal((await c.call('GET', '/api/policy')).json.token, undefined);
+  const signed = await c.call('GET', '/api/policy', { headers: { 'x-tht-request': DEVICE } });
+  const p = await verifyLicenseToken(env.PUBLIC_KEY, signed.json.token);
+  assert.equal(p.kind, 'policy');
+  assert.equal(p.mode, 'free');
+  assert.equal(p.req, DEVICE);
+  assert.equal(p.lid, undefined);
+  const [body, sig] = signed.json.token.split('.');
+  const edited = Buffer.from(JSON.stringify({ ...p, mode: 'required' })).toString('base64url');
+  assert.equal(await verifyLicenseToken(env.PUBLIC_KEY, `${edited}.${sig}`), null);
+  assert.ok(body);
+});
+
+test('policy records keyless cars for admin, and a blocked car gets "required" even in free mode', async () => {
+  const env = await makeEnv();
+  const c = client(env);
+  await c.admin('settings/license-mode', { license_mode: 'free' });
+  const ask = async (req, ip) => (await c.call('GET', '/api/policy', { ip, headers: { 'x-tht-request': req, 'x-tht-app-version': '1.0.11' } })).json;
+  assert.equal((await verifyLicenseToken(env.PUBLIC_KEY, (await ask(DEVICE)).token)).mode, 'free');
+
+  const list = (await c.admin('devices?filter=nokey')).json;
+  assert.equal(list.items.length, 1);
+  assert.equal(list.items[0].request_code, DEVICE);
+  assert.equal(list.items[0].app_version, '1.0.11');
+  assert.equal((await c.admin('overview')).json.nokey_devices, 1);
+
+  await c.admin('devices/action', { request_code: DEVICE, action: 'block', value: 'test' });
+  const blocked = await ask(DEVICE);
+  assert.equal(blocked.device_blocked, true);
+  assert.equal((await verifyLicenseToken(env.PUBLIC_KEY, blocked.token)).mode, 'required');
+  await c.admin('devices/action', { request_code: DEVICE, action: 'unblock' });
+  assert.equal((await verifyLicenseToken(env.PUBLIC_KEY, (await ask(DEVICE)).token)).mode, 'free');
+
+  // One IP cannot flood the device list; the reply still comes back signed.
+  for (let i = 0; i < 25; i++) assert.ok((await ask(`AAAAAAAAAAAA${String(i).padStart(4, '0')}`, '198.51.100.9')).token);
+  assert.equal((await c.admin('devices?filter=nokey&size=100')).json.total, 21);
+});
+
+test('free mode: keyless cars get updates and voice packs within a daily quota; never when blocked or required', async () => {
+  const env = await makeEnv();
+  const c = client(env);
+  const sha = 'b'.repeat(64);
+  await c.admin('voice-packs', { name: 'kokoro_vi', sha256: sha, size_bytes: 3, r2_key: 'packs/x.zip' });
+  env.MODELS = { get: async () => ({ body: new Uint8Array([1, 2, 3]), size: 3 }) };
+  const headers = { 'x-tht-request': DEVICE };
+  const file = async (h = headers, ip) => (await c.call('GET', `/api/model/file?name=kokoro_vi&sha256=${sha}`, { headers: h, ip })).status;
+
+  await c.call('GET', '/api/policy', { headers });
+  assert.equal(await file(), 401, 'key required by default');
+  await c.admin('settings/license-mode', { license_mode: 'free' });
+  assert.equal(await file({ 'x-tht-request': OTHER }), 401, 'a device the server never saw');
+  assert.equal((await c.call('GET', `/api/model?name=kokoro_vi&sha256=${sha}`, { headers })).status, 200);
+  for (let i = 0; i < 5; i++) assert.equal(await file(), 200);
+  const over = await c.call('GET', `/api/model/file?name=kokoro_vi&sha256=${sha}`, { headers });
+  assert.equal(over.status, 429);
+  assert.equal(over.json.code, 'rate_limited');
+  c.clock.now += DAY;
+  assert.equal(await file(), 200, 'quota resets the next day');
+  assert.equal((await c.admin('settings')).json.free_updates, true);
+  assert.equal((await c.admin('settings/free-updates', { free_updates: false })).json.result.free_updates, false);
+  assert.equal(await file(), 401, 'admin turned keyless updates off');
+  assert.equal((await c.admin('settings/free-updates', { free_updates: 'x' })).status, 400);
+  await c.admin('settings/free-updates', { free_updates: true });
+  assert.equal(await file(), 200);
+
+  await c.admin('devices/action', { request_code: DEVICE, action: 'block', value: 'x' });
+  assert.equal(await file(), 401);
+  await c.admin('devices/action', { request_code: DEVICE, action: 'unblock' });
+  await c.admin('settings/license-mode', { license_mode: 'required' });
+  assert.equal(await file(), 401);
+
+  // A valid key is never limited.
+  const r = await verify(c, await newCode(c));
+  const keyed = { 'x-tht-request': DEVICE, 'x-tht-license': r.json.activation_code };
+  for (let i = 0; i < 12; i++) assert.equal(await file(keyed), 200);
+});
