@@ -818,3 +818,54 @@ test('version table and customer notice (all cars, only older versions, expiry, 
   const d = (await c.admin(`devices?q=${OTHER}`)).json.items[0];
   assert.equal(d.licenses[0].customer, 'Anh B');
 });
+
+test('M4A R6 uses shared source separately from Coolray OTA and require a license on both routes', async (t) => {
+  const env = await makeEnv();
+  const c = client(env);
+  const r = await verify(c, await newCode(c));
+  const headers = { 'x-tht-request': DEVICE, 'x-tht-license': r.json.activation_code };
+  env.GITHUB_REPO = 'owner/ota';
+  env.MP3_GITHUB_REPO = 'owner/coolray';
+  env.MP3_GITHUB_TOKEN = 'test-contents-token';
+  env.GITHUB_TOKEN = 'ota-secret';
+  const sha = 'a'.repeat(64);
+  let cdn = 'https://release-assets.githubusercontent.com/signed/test';
+  const fetchMock = t.mock.method(globalThis, 'fetch', async (input, init) => {
+    const url = String(input);
+    if (url === cdn) {
+      assert.equal(new Headers(init.headers).get('authorization'), null);
+      return new Response('zip');
+    }
+    // No M4A_GITHUB_TOKEN: M4A falls back to GITHUB_TOKEN (same as THTVoice).
+    assert.equal(new Headers(init.headers).get('authorization'), 'Bearer ota-secret');
+    if (url.endsWith('/repos/meomeo2099/THTVoice-Coolray2025/releases/tags/voice-mp3-packs')) {
+      return Response.json({ assets: [
+        { id: 5, name: 'THTVoice-M4A-ngoc-huyen-r6.zip', state: 'uploaded', size: 3, digest: 'sha256:' + sha },
+        { id: 7, name: 'THTVoice-M4A-diem-trinh-r6.zip', state: 'uploaded', size: 3, digest: 'sha256:' + 'b'.repeat(64) },
+      ] });
+    }
+    assert.ok(url.endsWith('/repos/meomeo2099/THTVoice-Coolray2025/releases/assets/5'));
+    assert.equal(init.redirect, 'manual');
+    return new Response(null, { status: 302, headers: { location: cdn } });
+  });
+  const path = '/api/voice/ngoc-huyen';
+  assert.equal((await c.call('GET', path + '?format=m4a')).status, 401);
+  assert.equal((await c.call('GET', path + '/file?format=m4a&sha256=' + sha)).status, 401);
+  assert.equal(fetchMock.mock.callCount(), 0);
+  const meta = await c.call('GET', path + '?format=m4a', { headers });
+  assert.deepEqual(meta.json, {
+    schema: 1, format: 'm4a', version: 'r6', sha256: sha, size: 3,
+    url: 'https://lic.example.dev' + path + '/file?format=m4a&sha256=' + sha,
+  });
+  assert.equal((await c.call('GET', path + '/file?format=m4a&sha256=' + 'b'.repeat(64), { headers })).status, 404);
+  assert.equal((await c.call('GET', path + '/file?format=m4a&sha256=bad', { headers })).status, 400);
+  const file = await c.call('GET', path + '/file?format=m4a&sha256=' + sha, { headers });
+  assert.equal(file.status, 200);
+  assert.equal(file.text, 'zip');
+  assert.equal(file.headers.get('cache-control'), 'no-store');
+  cdn = 'https://attacker.example/steal';
+  const calls = fetchMock.mock.callCount();
+  assert.equal((await c.call('GET', path + '/file?format=m4a&sha256=' + sha, { headers })).status, 502);
+  assert.equal(fetchMock.mock.callCount(), calls + 2); // API metadata + API asset; no hostile request.
+
+});

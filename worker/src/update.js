@@ -231,7 +231,7 @@ export async function handleModelFile(request, env, url, now) {
   });
 }
 
-// MP3 packs have their own release. APK and Kokoro continue to use GITHUB_REPO.
+// Media releases are separate from Coolray APK/Kokoro releases. M4A prefers its own token, else GITHUB_TOKEN (like THTVoice).
 export async function handleMp3Voice(request, env, url, now, voice, download) {
   if (!(await requireLicense(request, env, now))) {
     return json(401, { ok: false, code: 'unlicensed', message: 'License không hợp lệ.' });
@@ -240,9 +240,10 @@ export async function handleMp3Voice(request, env, url, now, voice, download) {
   if (download && !/^[0-9a-f]{64}$/.test(requestedSha)) {
     return json(400, { ok: false, message: 'SHA-256 không hợp lệ.' });
   }
-  const repo = env.MP3_GITHUB_REPO || 'meomeo2099/THTVoice-Coolray2025';
-  const tag = env.MP3_RELEASE_TAG || 'voice-mp3-packs';
-  const credentials = { GITHUB_TOKEN: env.MP3_GITHUB_TOKEN || env.GITHUB_TOKEN };
+  const m4a = url.searchParams.get('format') === 'm4a';
+  const repo = m4a ? (env.M4A_GITHUB_REPO || 'meomeo2099/THTVoice-Coolray2025') : env.MP3_GITHUB_REPO || 'meomeo2099/THTVoice-Coolray2025';
+  const tag = m4a ? (env.M4A_RELEASE_TAG || 'voice-mp3-packs') : (env.MP3_RELEASE_TAG || 'voice-mp3-packs');
+  const credentials = { GITHUB_TOKEN: m4a ? (env.M4A_GITHUB_TOKEN || env.GITHUB_TOKEN) : (env.MP3_GITHUB_TOKEN || env.GITHUB_TOKEN) };
   const github = `${GH}/repos/${repo}/releases`;
   const unavailable = () => json(502, { ok: false, message: 'Máy chủ không tải được gói giọng MP3.' });
 
@@ -252,14 +253,14 @@ export async function handleMp3Voice(request, env, url, now, voice, download) {
     });
     if (release.status === 404) return json(404, { ok: false, message: 'Chưa tìm thấy bản phát hành MP3.' });
     if (!release.ok) return unavailable();
-    const name = new RegExp(`^THTVoice-MP3-${voice}-r([1-9][0-9]{0,8})\\.zip$`);
+    const name = new RegExp(`^THTVoice-${m4a ? 'M4A' : 'MP3'}-${voice}-r([1-9][0-9]{0,8})\\.zip$`);
     const { assets = [] } = await release.json();
     const packs = [];
     for (const asset of assets) {
       const version = name.exec(asset.name)?.[1];
       const sha = /^sha256:([0-9a-f]{64})$/i.exec(asset.digest || '')?.[1]?.toLowerCase();
       if (version && sha && asset.state === 'uploaded' && Number.isSafeInteger(asset.id) && asset.id > 0 &&
-          Number.isInteger(asset.size) && asset.size > 0 && asset.size <= MP3_MAX_BYTES) {
+          Number.isInteger(asset.size) && asset.size > 0 && asset.size <= (m4a ? 24 * 1024 * 1024 : MP3_MAX_BYTES)) {
         packs.push({ asset, version: Number(version), sha });
       }
     }
@@ -268,8 +269,8 @@ export async function handleMp3Voice(request, env, url, now, voice, download) {
     if (!pack) return json(404, { ok: false, message: 'Chưa có gói MP3 phù hợp.' });
     if (!download) {
       return json(200, {
-        schema: 1, version: `r${pack.version}`, sha256: pack.sha, size: pack.asset.size,
-        url: `${url.origin}/api/voice/${voice}/file?sha256=${pack.sha}`,
+        schema: 1, ...(m4a ? { format: 'm4a' } : {}), version: `r${pack.version}`, sha256: pack.sha, size: pack.asset.size,
+        url: `${url.origin}/api/voice/${voice}/file?${m4a ? 'format=m4a&' : ''}sha256=${pack.sha}`,
       });
     }
 

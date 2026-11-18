@@ -211,3 +211,14 @@ Trong app, bản release cũng tự so chữ ký lúc chạy (`AppSignature`); s
 khóa cũ, đặt `RELEASE_CERT_SHA256` = `<sha256 khóa mới>,<sha256 khóa cũ>` để bản cũ vẫn kích hoạt / kiểm tra key
 được. Khi mọi xe đã cài lại bản khóa mới thì bỏ giá trị cũ. Xe bản khóa cũ không tự cập nhật sang bản khóa mới
 được (Android từ chối APK khác chữ ký): phải gỡ app rồi cài bản mới một lần.
+
+### M4A R6 replies (Coolray 2025)
+
+`/api/voice/:voice?format=m4a` and its `/file` route select M4A packs from
+`meomeo2099/THTVoice-Coolray2025`, tag `voice-mp3-packs`, independently of APK releases.
+Optional `M4A_GITHUB_REPO` / `M4A_RELEASE_TAG` override that source; a private custom
+source uses `M4A_GITHUB_TOKEN` if set, otherwise `GITHUB_TOKEN` (same as THTVoice).
+Both routes remain license-gated and select assets with GitHub SHA-256 digests.
+The Android compatibility path pins the same owner-repository R6 URLs, sizes and
+hashes after authorized legacy metadata; failed downloads preserve installed MP3 packs.
+The original THTVoice repository does not need to be made public.
