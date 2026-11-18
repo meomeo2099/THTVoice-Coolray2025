@@ -8,6 +8,7 @@ data class HistoryDiagnostic(val id: String, val message: String, val timestampM
 data class HistorySnapshot(val commands: List<HistoryCommand>, val diagnostics: List<HistoryDiagnostic>)
 
 interface HistoryStorage {
+    fun browse(): HistorySnapshot = load()
     fun load(): HistorySnapshot
     fun saveCommand(command: HistoryCommand)
     fun completeCommand(id: String, outcome: String, result: String)
@@ -35,6 +36,25 @@ class HistoryJournal(
         }
         if (storageStatus == "LOADING") storageStatus = "READY"
         notifyChanged()
+    }
+
+    /** Read retained rows on the existing serial worker, never the UI thread. */
+    fun browse(callback: (HistorySnapshot) -> Unit) {
+        val accepted = runCatching { enqueue {
+            val disk = runCatching { storage.browse() }.getOrElse {
+                storageStatus = "ERROR:${it.javaClass.simpleName}"
+                HistorySnapshot(emptyList(), emptyList())
+            }
+            val merged = synchronized(this) {
+                HistorySnapshot((recentCommands + disk.commands).distinctBy { it.id }.sortedByDescending { it.timestampMs }.take(1000),
+                    (recentDiagnostics + disk.diagnostics).distinctBy { it.id }.sortedByDescending { it.timestampMs }.take(2000))
+            }
+            callback(merged)
+        } }.getOrDefault(false)
+        if (!accepted) {
+            storageStatus = "QUEUE_FULL"
+            callback(HistorySnapshot(commands(), diagnostics()))
+        }
     }
 
     @Synchronized fun commands(): List<HistoryCommand> = recentCommands.toList()

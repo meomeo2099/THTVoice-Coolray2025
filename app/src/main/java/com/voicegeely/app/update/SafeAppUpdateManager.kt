@@ -59,7 +59,7 @@ class SafeAppUpdateManager(
 
     /** Server check only (no download), for the automatic check. Null while not parked. */
     fun checkOnly(): UpdateCheckResult? {
-        if (otaPolicy.blockedResult() != null) return null
+        if (otaPolicy.blockedResult(record = false) != null) return null
         return api.check(currentVersionCode())
     }
 

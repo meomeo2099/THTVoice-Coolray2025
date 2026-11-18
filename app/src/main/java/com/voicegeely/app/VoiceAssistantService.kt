@@ -24,7 +24,7 @@ import com.voicegeely.app.asr.SherpaStreamingAsrEngine
 import com.voicegeely.app.car.AndroidCarVehiclePropertyAccess
 import com.voicegeely.app.car.CoolrayHeadUnit
 import com.voicegeely.app.car.VehiclePropertyAccess
-import com.voicegeely.app.kws.SherpaWakeWordEngine
+import com.voicegeely.app.kws.*
 import com.voicegeely.app.kws.VoiceMicStateMachine
 import com.voicegeely.app.overlay.VoiceOverlayController
 import com.voicegeely.app.security.LicenseManager
@@ -93,6 +93,11 @@ class VoiceAssistantService : Service() {
     private val pendingSafetyCommands = PendingCommandStore()
     private val micState = VoiceMicStateMachine()
 
+    private val training = WakeTrainingControl()
+    @Volatile private var trainingRecorder: AudioRecord? = null
+    @Volatile private var trainingThread: Thread? = null
+    @Volatile private var wakeRejectUntil = 0L
+    @Volatile private var activeSessionEffects: WakeSessionEffects? = null
     private val recognitionRunning = AtomicBoolean(false)
     private val voiceTestRunning = AtomicBoolean(false)
     private val wakeWordRunning = AtomicBoolean(false)
@@ -264,6 +269,8 @@ class VoiceAssistantService : Service() {
         startForeground(NOTIFICATION_ID, buildNotification("Voice core đang chạy"))
         refreshRemoteLicenseIfDue()
         when (intent?.action) {
+            ACTION_WAKE_TRAIN -> startWakeTraining(intent.getStringExtra(EXTRA_WAKE_TRAIN_NAME).orEmpty(), intent.getBooleanExtra(EXTRA_WAKE_TRAIN_MUSIC, false))
+            ACTION_WAKE_TRAIN_CANCEL -> cancelWakeTraining()
             ACTION_TRIGGER_RECOGNITION -> handleRecognitionTrigger()
             ACTION_ECARX_KEY, VoiceKeyActions.ECARX_CASE_VARIANT ->
                 VoiceKeyLauncher.handle(this, intent.action, source = "service_start")
@@ -298,7 +305,147 @@ class VoiceAssistantService : Service() {
         return START_STICKY
     }
 
+    private fun trainingStatus(state: String, text: String) {
+        if (destroyed) return
+        VoiceServiceEventBus.sendBroadcast(this, Intent(ACTION_WAKE_TRAIN_STATUS).apply {
+            putExtra(EXTRA_WAKE_TRAIN_STATE, state)
+            putExtra(EXTRA_WAKE_TRAIN_TEXT, text)
+        })
+    }
+
+    private fun cancelWakeTraining() {
+        training.cancel()
+        trainingThread?.interrupt()
+        // AudioRecord.stop unblocks a pending read; only the worker releases its recorder/native objects.
+        runCatching { trainingRecorder?.stop() }
+    }
+
+    private fun startWakeTraining(name: String, music: Boolean) {
+        if (training.busy) { trainingStatus("failed", "Đang dừng học giọng trước đó. Hãy thử lại."); return }
+        if (!serviceReady || !wakeReady || !asrReady() || recognitionRunning.get() || recognitionThread?.isAlive == true || replySpeaking ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+            com.voicegeely.app.kws.KwsMicPolicy.callActive(currentAudioMode())) {
+            trainingStatus("failed", "Micrô chưa sẵn sàng hoặc đang bận. Hãy thử lại khi xe đỗ.")
+            return
+        }
+        val parked = runCatching { safetyGate.evaluateParkedOnly("Dạy từ gọi").type == com.voicegeely.app.voice.safety.SafetyDecisionType.ALLOW }.getOrDefault(false)
+        if (!parked) { trainingStatus("failed", "Chỉ dạy từ gọi khi xe đang đỗ và ở số P."); return }
+        val profile = voicePreferences.wakePhrase
+        if (profile == WakePhrase.HEY_THT) {
+            trainingStatus("failed", "Chọn Hey Ge-ly hoặc Hello Ge-ly và bấm Lưu trước khi dạy.")
+            return
+        }
+        if (WakeVoices(this).all().size >= WakeVoices.MAX) {
+            trainingStatus("failed", "Đã đủ giọng. Hãy quên một giọng trước khi dạy thêm.")
+            return
+        }
+        val token = training.begin() ?: return
+        stopWakeWordListening(waitForRelease = true)
+        if (wakeWordThread?.isAlive == true || !micState.beginAsr()) {
+            training.finish(token)
+            trainingStatus("failed", "Micrô đang được giải phóng, hãy thử lại.")
+            ensureWakeWordListening()
+            return
+        }
+        val deadline = android.os.SystemClock.elapsedRealtime() + 55_000L
+        val timeout = Runnable { if (training.active(token)) cancelWakeTraining() }
+        mainHandler.postDelayed(timeout, 55_000L)
+        trainingStatus("started", "Chuẩn bị học giọng…")
+        trainingThread = thread(name = "THTVoice-WakeTraining", start = false) {
+            var decoder: KwsPhoneDecoder? = null
+            var checker: SherpaWakeWordEngine? = null
+            var recorder: AudioRecord? = null
+            fun active(): Boolean = !destroyed && training.active(token) &&
+                android.os.SystemClock.elapsedRealtime() < deadline && voicePreferences.wakePhrase == profile
+            fun checkActive() { if (!active()) throw InterruptedException("cancelled") }
+            try {
+                checkActive()
+                val phoneDecoder = KwsPhoneDecoder(this)
+                decoder = phoneDecoder
+                val crossChecker = SherpaWakeWordEngine(this, profile)
+                checker = crossChecker
+                check(crossChecker.initialize().ready) { "Không mở được bộ học giọng offline." }
+                checkActive()
+                recorder = openMicrophone(forWakeWord = true)
+                trainingRecorder = recorder
+                val mic = recorder ?: error("Không mở được micrô.")
+                val takes = mutableListOf<ShortArray>()
+                val pcm = ShortArray(CHUNK_SAMPLES)
+                repeat(WakeEnrollment.TAKES) { take ->
+                    checkActive()
+                    check(safetyGate.evaluateParkedOnly("Dạy từ gọi", record = false).type == com.voicegeely.app.voice.safety.SafetyDecisionType.ALLOW) {
+                        "Chỉ dạy từ gọi khi xe đang đỗ và ở số P."
+                    }
+                    val segmenter = WakeTakeSegmenter()
+                    // Measure cabin noise before cueing the speaker, never after the first syllable.
+                    val calibrationDeadline = android.os.SystemClock.elapsedRealtime() + 2_000L
+                    var calibrationSamples = 0
+                    while (calibrationSamples < 16_000 / 3 && android.os.SystemClock.elapsedRealtime() < calibrationDeadline) {
+                        checkActive()
+                        val count = mic.read(pcm, 0, pcm.size, AudioRecord.READ_NON_BLOCKING)
+                        if (count < 0) error("Micrô bị gián đoạn.")
+                        if (count > 0) { segmenter.feed(pcm, count); calibrationSamples += count } else Thread.sleep(10)
+                    }
+                    check(segmenter.finishCalibration()) { "Không đo được âm thanh nền." }
+                    // Stop capture only while the audible cue plays; restarting discards the cue buffer,
+                    // and the first captured frame goes straight to the already-calibrated segmenter.
+                    mic.stop()
+                    trainingStatus("recording", "Lần ${take + 1}/${WakeEnrollment.TAKES}: ${profile.displayLabel}")
+                    feedbackAudio.play(VoiceFeedbackCue.LISTENING)
+                    feedbackAudio.awaitIdle(2_000)
+                    checkActive()
+                    mic.startRecording()
+                    val takeDeadline = android.os.SystemClock.elapsedRealtime() + 8_000L
+                    while (!segmenter.done && android.os.SystemClock.elapsedRealtime() < takeDeadline) {
+                        checkActive()
+                        if (com.voicegeely.app.kws.KwsMicPolicy.callActive(currentAudioMode())) error("Micrô đang dùng cho cuộc gọi.")
+                        val count = mic.read(pcm, 0, pcm.size, AudioRecord.READ_NON_BLOCKING)
+                        if (count < 0) error("Micrô bị gián đoạn.")
+                        if (count > 0) segmenter.feed(pcm, count) else Thread.sleep(20)
+                    }
+                    takes += segmenter.take()
+                }
+                closeRecorder(recorder); recorder = null; trainingRecorder = null
+                checkActive()
+                trainingStatus("processing", "Đang kiểm tra 5 lần gọi…")
+                val phones = takes.map { checkActive(); phoneDecoder.decode(it) { !active() } }
+                val result = WakeEnrollment.learn(phones, SherpaWakeWordEngine.learnedLabel(profile)) { line, take ->
+                    checkActive()
+                    crossChecker.hears(takes[take], listOf(line), line.label) { !active() }
+                }
+                checkActive()
+                when (result) {
+                    is WakeEnrollment.Result.Failed -> trainingStatus("failed", result.reason)
+                    is WakeEnrollment.Result.Learned -> {
+                        val saved = training.ifActive(token) {
+                            WakeVoices(this).save(WakeVoices.Voice(java.util.UUID.randomUUID().toString(), name.trim().take(48), profile,
+                                result.lines.map { it.format() }, System.currentTimeMillis(), music))
+                        }
+                        if (saved) trainingStatus("done", "Đã học giọng ${name.trim().take(48).ifBlank { "chính" }}")
+                        else trainingStatus("failed", "Chưa lưu được giọng. Hãy thử lại.")
+                    }
+                }
+            } catch (_: InterruptedException) {
+                trainingStatus("failed", "Đã hủy học giọng.")
+            } catch (t: Throwable) {
+                Log.w(TAG, "wake_training_failed", t)
+                trainingStatus("failed", t.message ?: "Chưa học được giọng, hãy thử lại.")
+            } finally {
+                closeRecorder(recorder)
+                trainingRecorder = null
+                runCatching { decoder?.close() }
+                runCatching { checker?.close() }
+                mainHandler.removeCallbacks(timeout)
+                micState.endProcessing()
+                training.finish(token)
+                trainingThread = null
+                mainHandler.post { if (!destroyed) refreshWakeWordState() }
+            }
+        }.also { it.start() }
+    }
+
     private fun refreshWakeWordState() {
+        if (training.busy) { cancelWakeTraining(); return }
         if (!voicePreferences.wakeWordEnabled) {
             stopWakeWordListening(waitForRelease = true)
             return
@@ -306,6 +453,7 @@ class VoiceAssistantService : Service() {
 
         if (wakeWordEngine.wakePhrase != voicePreferences.wakePhrase) {
             stopWakeWordListening(waitForRelease = true)
+            if (wakeWordThread?.isAlive == true) return
             try { wakeWordEngine.close() } catch (_: Throwable) {}
             wakeWordEngine = SherpaWakeWordEngine(this, voicePreferences.wakePhrase)
             wakeReady = false
@@ -317,10 +465,20 @@ class VoiceAssistantService : Service() {
             wakeReady = init.ready
             if (!init.ready) Log.w(TAG, "Wake word remains unavailable: ${init.detail.orEmpty()}")
         }
+        wakeWordEngine.learnedLines = WakeVoices(this).lines(voicePreferences.wakePhrase)
         ensureWakeWordListening()
     }
 
-    private fun handleRecognitionTrigger() {
+    private fun handleRecognitionTrigger(wakeVerification: FloatArray? = null, mediaAtTrigger: Boolean = false) {
+        // An unsolicited provisional hit must not interrupt training or publish readiness errors.
+        if (wakeVerification != null && (training.busy || !licenseManager.isLicensed() ||
+                !asrReady() || recognitionThread?.isAlive == true || requiredUpdateHoldsAssistant() ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)) return
+        if (training.busy) {
+            cancelWakeTraining()
+            broadcastStatus("Đang dừng học giọng, vui lòng bấm Voice lại.", sherpaReady = asrReady())
+            return
+        }
         // Re-check on every trigger (wake word, voice key, mic button, safety re-open): a license
         // that expired or was blocked while the Voice core runs must stop it now, not at restart.
         if (!licenseManager.isLicensed()) {
@@ -377,6 +535,7 @@ class VoiceAssistantService : Service() {
         }
 
         if (!recognitionRunning.compareAndSet(false, true)) {
+            if (wakeVerification != null) return
             if (com.voicegeely.app.voice.BargeInPolicy.shouldBargeIn(micState.state)) {
                 // Owner decision 01/10/2026: pressing again while the assistant answers stops the
                 // reply and opens the mic for a new command (the running command still finishes).
@@ -392,38 +551,31 @@ class VoiceAssistantService : Service() {
             return
         }
 
-        mp3Reply.interrupt()
+        if (wakeVerification == null) mp3Reply.interrupt()
         stopWakeWordListening(waitForRelease = true)
         if (!micState.beginAsr()) {
             recognitionRunning.set(false)
             Log.w(TAG, "ASR microphone acquire rejected; state=${micState.state}")
-            voiceOverlay.showError("Micrô đang bận, vui lòng thử lại")
+            if (wakeVerification == null) voiceOverlay.showError("Micrô đang bận, vui lòng thử lại")
             ensureWakeWordListening()
             return
         }
 
-        voiceOverlay.showListening()
-        // Music goes down (or pauses, per Settings) from the start sound until the reply is done.
-        sessionPausesMusic = com.voicegeely.app.tts.MusicFocusPolicy.pauseMusic(
-            voicePreferences.musicWhileListening == com.voicegeely.app.settings.MusicWhileListening.PAUSE
-        )
-        lastCommand = null
-        lastCommandSucceeded = false
-        audioDucker.acquire(sessionPausesMusic)
-        // Start cue: the mic is open (always, also with spoken replies).
-        feedbackAudio.play(VoiceFeedbackCue.LISTENING)
+        val effects = WakeSessionEffects(mediaAtTrigger)
+        activeSessionEffects = effects
         val generation = ++sessionGeneration
         sessionStartedAt = android.os.SystemClock.elapsedRealtime()
         sessionPhase = "ASR_CAPTURE"
         sessionDeadline.start(generation, com.voicegeely.app.voice.SessionWatchdogPolicy.STUCK_AFTER_MS)
         recognitionThread = thread(name = "THTVoice-Sherpa", start = true) {
-            runRecognitionSession(generation)
+            runRecognitionSession(generation, wakeVerification, effects)
         }
     }
 
     private fun ensureWakeWordListening() {
-        if (!serviceReady || !wakeReady || !voicePreferences.wakeWordEnabled) return
+        if (destroyed || training.busy || !serviceReady || !wakeReady || !voicePreferences.wakeWordEnabled) return
         if (recognitionRunning.get() || recognitionThread?.isAlive == true) return
+        if (wakeWordEngine.wakePhrase != voicePreferences.wakePhrase) return
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) return
         if (com.voicegeely.app.kws.KwsMicPolicy.callActive(currentAudioMode())) {
             // Phone call (also via CarPlay / Android Auto): leave the mic to it, check again later.
@@ -478,8 +630,11 @@ class VoiceAssistantService : Service() {
                 Thread.currentThread().interrupt()
             }
         }
-        try { wakeWordEngine.reset() } catch (_: Throwable) {}
-        micState.endKws()
+        // A native decode owns the engine until the worker exits. Never wait on its lock here.
+        if (worker?.isAlive != true) {
+            try { wakeWordEngine.reset() } catch (_: Throwable) {}
+            micState.endKws()
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -488,9 +643,15 @@ class VoiceAssistantService : Service() {
         var triggerAsr = false
         var failed = false
         var yielded = false
+        var verification: FloatArray? = null
+        var mediaAtTrigger = false
+        val recent = WakePcmBuffer(16_000 * 3)
+        val gate = WakeAudioGate()
+        val secondChance = WakeSecondChance { android.os.SystemClock.elapsedRealtime() }
         val activeWakePhrase = wakeWordEngine.wakePhrase
         val listenStartedAt = android.os.SystemClock.elapsedRealtime()
         try {
+            wakeWordEngine.learnedLines = WakeVoices(this).lines(activeWakePhrase)
             if (!wakeWordEngine.startStream()) {
                 Log.w(TAG, "Unable to create Sherpa KWS stream for ${activeWakePhrase.name}")
                 failed = true
@@ -536,13 +697,24 @@ class VoiceAssistantService : Service() {
                 }
 
                 val samples = FloatArray(count) { index -> pcm[index] / 32768.0f }
-                val detection = wakeWordEngine.acceptWaveform(samples)
+                val media = runCatching { (getSystemService(AUDIO_SERVICE) as android.media.AudioManager).isMusicActive }.getOrDefault(false)
+                val now = android.os.SystemClock.elapsedRealtime()
+                recent.add(samples)
+                gate.marginDb = MediaWakeGate.gateMarginDb(WakeSensitivity.LOW, media)
+                val frame = gate.accept(samples, now, gateEnabled = media)
+                if (media) secondChance.close()
+                if (wakeWordEngine.lenientActive && !secondChance.active) wakeWordEngine.startStream(false)
+                if (frame.resetDecoder) wakeWordEngine.startStream(secondChance.active && !media)
+                val detection = if (now >= wakeRejectUntil) wakeWordEngine.acceptWaveform(frame.samples) else null
+                if (secondChance.onChunk(gate.lastSpeech, detection != null, !media)) wakeWordEngine.startStream(true)
                 if (detection != null) {
                     Log.i(
                         TAG,
                         "Wake word detected profile=${activeWakePhrase.name} keyword=${detection.keyword}"
                     )
-                    broadcastStatus("Đã nghe ${activeWakePhrase.displayLabel}", sherpaReady = asrReady())
+                    mediaAtTrigger = media
+                    if (media || wakeWordEngine.lenientActive) verification = recent.snapshot()
+                    else broadcastStatus("Đã nghe ${activeWakePhrase.displayLabel}", sherpaReady = asrReady())
                     triggerAsr = true
                     wakeWordRunning.set(false)
                     break
@@ -557,6 +729,9 @@ class VoiceAssistantService : Service() {
             try { wakeWordEngine.reset() } catch (_: Throwable) {}
             wakeWordThread = null
             micState.endKws()
+            if (!triggerAsr && !failed && !yielded) mainHandler.post {
+                if (!destroyed && !training.busy) refreshWakeWordState()
+            }
         }
 
         // Mic lost or given up: come back on our own instead of staying deaf until the voice key.
@@ -576,7 +751,7 @@ class VoiceAssistantService : Service() {
             voicePreferences.wakeWordEnabled &&
             voicePreferences.wakePhrase == activeWakePhrase
         ) {
-            handleRecognitionTrigger()
+            handleRecognitionTrigger(verification, mediaAtTrigger)
         }
     }
 
@@ -662,18 +837,22 @@ class VoiceAssistantService : Service() {
         sessionGeneration++
         recognitionRunning.set(false)
         recognitionThread?.interrupt()
-        val message = "Xử lý quá lâu, phiên nghe đã dừng. Vui lòng thử lại."
-        voiceOverlay.showError(message)
-        broadcastStatus(message, sherpaReady = asrReady())
-        mp3Reply.interrupt()
-        offlineTts.interrupt()
-        systemTts.interrupt()
+        val effects = activeSessionEffects
+        if (effects?.active == true) {
+            val message = "Xử lý quá lâu, phiên nghe đã dừng. Vui lòng thử lại."
+            voiceOverlay.showError(message)
+            broadcastStatus(message, sherpaReady = asrReady())
+            mp3Reply.interrupt()
+            offlineTts.interrupt()
+            systemTts.interrupt()
+        }
         closeRecorder(audioRecord)
         bargeInRequested = false
         reopenForSafetyConfirmation = false
         reopenForWakeEcho = false
         micState.forceIdle()
-        audioDucker.release()
+        effects?.finish(ui = {}, media = { audioDucker.release() })
+        activeSessionEffects = null
         // Keep the reference until the worker exits: reset/startStream would otherwise wait
         // forever on the same native recognizer lock, blocking the service's main thread.
     }
@@ -686,10 +865,39 @@ class VoiceAssistantService : Service() {
         return sessionActive(generation)
     }
 
-    private fun runRecognitionSession(generation: Long) {
+    private fun runRecognitionSession(generation: Long, wakeVerification: FloatArray? = null, effects: WakeSessionEffects) {
         sessionThreadGeneration.set(generation)
         var recorder: AudioRecord? = null
         try {
+            // Confirmation shares the normal ASR ownership and watchdog, before opening the mic.
+            if (wakeVerification != null) {
+                if (!asrEngine.startStream()) return
+                for (offset in wakeVerification.indices step CHUNK_SAMPLES) {
+                    if (!sessionActive(generation)) return
+                    if (!asrEngine.acceptWaveform(wakeVerification.copyOfRange(offset, minOf(offset + CHUNK_SAMPLES, wakeVerification.size)))) return
+                }
+                val heard = asrEngine.finishStream().text
+                asrEngine.reset()
+                if (!sessionActive(generation)) return
+                if (WakeVerifier.verify(voicePreferences.wakePhrase, heard, acceptBlank = false) == WakeVerifier.Verdict.REJECT) {
+                    wakeRejectUntil = android.os.SystemClock.elapsedRealtime() + effects.rejectionCooldownMs
+                    Log.i(TAG, "wake_confirmation_rejected")
+                    return
+                }
+            }
+            if (!sessionActive(generation)) return
+            effects.activate(
+                show = { mp3Reply.interrupt(); voiceOverlay.showListening() },
+                acquire = {
+                    sessionPausesMusic = com.voicegeely.app.tts.MusicFocusPolicy.pauseMusic(
+                        voicePreferences.musicWhileListening == com.voicegeely.app.settings.MusicWhileListening.PAUSE)
+                    lastCommand = null
+                    lastCommandSucceeded = false
+                    audioDucker.acquire(sessionPausesMusic)
+                },
+                cue = { feedbackAudio.play(VoiceFeedbackCue.LISTENING) }
+            )
+            if (!sessionActive(generation)) return
             if (!asrEngine.startStream()) {
                 val detail = "Không mở được bộ nhận giọng nói"
                 voiceOverlay.showError(detail)
@@ -822,6 +1030,7 @@ class VoiceAssistantService : Service() {
         } catch (t: Throwable) {
             if (!sessionActive(generation)) return
             Log.e(TAG, "Offline recognition failed", t)
+            if (!effects.active) return
             val detail = "Lỗi nhận dạng offline: ${t.message.orEmpty()}"
             voiceOverlay.showError(detail)
             broadcastStatus(detail, sherpaReady = asrReady())
@@ -844,8 +1053,6 @@ class VoiceAssistantService : Service() {
                 mainHandler.post { if (!destroyed) ensureWakeWordListening() }
                 return
             }
-            voiceOverlay.finishProcessing()
-
             val bargeIn = bargeInRequested
             bargeInRequested = false
             val wakeEcho = reopenForWakeEcho
@@ -853,7 +1060,8 @@ class VoiceAssistantService : Service() {
             val shouldReopen = reopenForSafetyConfirmation || bargeIn || wakeEcho
             reopenForSafetyConfirmation = false
             if (!wakeEcho) wakeEchoReopenUsed = false
-            if (!(shouldReopen && serviceReady)) {
+            effects.finish(ui = { voiceOverlay.finishProcessing() }, media = {
+              if (!(shouldReopen && serviceReady)) {
                 // Let the last sound finish, then bring the music back up.
                 sessionPhase = "FEEDBACK_CLEANUP"
                 feedbackAudio.awaitIdle()
@@ -864,7 +1072,9 @@ class VoiceAssistantService : Service() {
                     try { Thread.sleep(REPAUSE_DELAY_MS) } catch (_: InterruptedException) { Thread.currentThread().interrupt() }
                     audioDucker.sendPauseKey()
                 }
-            }
+              }
+            })
+            if (activeSessionEffects === effects) activeSessionEffects = null
             if (shouldReopen && serviceReady) {
                 try { Thread.sleep(if (bargeIn) BARGE_IN_REOPEN_DELAY_MS else SAFETY_REOPEN_DELAY_MS) } catch (_: InterruptedException) {
                     Thread.currentThread().interrupt()
@@ -1625,6 +1835,7 @@ class VoiceAssistantService : Service() {
         sessionGeneration++
         recognitionThread?.interrupt()
         destroyed = true
+        cancelWakeTraining()
         com.voicegeely.app.voice.AirflowDirectionCycler.stop()
         if (instance === this) instance = null
         stopVehicleVoiceKeyWatch()
@@ -1644,7 +1855,10 @@ class VoiceAssistantService : Service() {
         closeRecorder(wakeAudioRecord)
         micState.close()
         voiceOverlay.close()
-        try { wakeWordEngine.close() } catch (_: Throwable) {}
+        val closingWake = wakeWordEngine
+        if (wakeWordThread?.isAlive == true) {
+            thread(name = "THTVoice-KWS-Close", isDaemon = true) { runCatching { closingWake.close() } }
+        } else runCatching { closingWake.close() }
         if (::asrEngine.isInitialized) try { asrEngine.close() } catch (_: Throwable) {}
         if (::mp3Reply.isInitialized) mp3Reply.interrupt()
         boundedReply.close()
@@ -1661,6 +1875,13 @@ class VoiceAssistantService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     companion object {
+        const val ACTION_WAKE_TRAIN = "com.tht.voice.WAKE_TRAIN"
+        const val ACTION_WAKE_TRAIN_CANCEL = "com.tht.voice.WAKE_TRAIN_CANCEL"
+        const val ACTION_WAKE_TRAIN_STATUS = "com.tht.voice.WAKE_TRAIN_STATUS"
+        const val EXTRA_WAKE_TRAIN_STATE = "wake_train_state"
+        const val EXTRA_WAKE_TRAIN_TEXT = "wake_train_text"
+        const val EXTRA_WAKE_TRAIN_NAME = "wake_train_name"
+        const val EXTRA_WAKE_TRAIN_MUSIC = "wake_train_music"
         const val ACTION_SERVICE_READY = "com.tht.voice.SERVICE_READY"
         const val ACTION_ENGINE_STATUS = "com.tht.voice.ENGINE_STATUS"
         const val ACTION_RECOGNITION_TEXT = "com.tht.voice.RECOGNITION_TEXT"

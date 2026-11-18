@@ -85,7 +85,7 @@ class VehicleSafetyGate(
     }
 
     /** Reusable gate for OTA/install/dev actions that are not VoiceCommand yet. */
-    fun evaluateParkedOnly(actionName: String): SafetyDecision {
+    fun evaluateParkedOnly(actionName: String, record: Boolean = true): SafetyDecision {
         val motion = readMotionState()
         val decision = if (!motion.telemetryAvailable) {
             SafetyDecision(
@@ -104,7 +104,7 @@ class VehicleSafetyGate(
                 "$actionName chỉ được thực hiện khi xe ở số P và tốc độ dưới 1 km/h."
             )
         }
-        eventLogger.recordParkedAction(actionName, decision)
+        if (record) eventLogger.recordParkedAction(actionName, decision)
         return decision
     }
 

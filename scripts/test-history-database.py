@@ -39,6 +39,13 @@ class HistoryDatabaseTest(unittest.TestCase):
                 self.assertEqual(2000, db.execute('SELECT COUNT(*) FROM api_diagnostics').fetchone()[0])
                 self.assertEqual('2099', db.execute(SQL['RECENT_COMMANDS']).fetchone()[0])
                 self.assertEqual(16, len(db.execute(SQL['RECENT_DIAGNOSTICS']).fetchall()))
+                self.assertEqual(6, len(db.execute(SQL['RECENT_COMMANDS']).fetchall()))
+                self.assertEqual(1000, len(db.execute(SQL['BROWSE_COMMANDS']).fetchall()))
+                self.assertEqual(2000, len(db.execute(SQL['BROWSE_DIAGNOSTICS']).fetchall()))
+                # Browsing retained rows never reruns the startup PENDING -> INTERRUPTED update.
+                db.execute(SQL['SAVE_COMMAND'], ('live', 'in progress', 'waiting', 'PENDING', 9999))
+                self.assertEqual('PENDING', db.execute(SQL['BROWSE_COMMANDS']).fetchone()[3])
+                self.assertEqual('PENDING', db.execute(SQL['RECENT_COMMANDS']).fetchone()[3])
             db.close()
 
 

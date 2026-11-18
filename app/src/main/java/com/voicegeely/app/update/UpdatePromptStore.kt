@@ -10,6 +10,11 @@ class UpdatePromptStore(context: Context) {
         get() = prefs.getLong(KEY_LAST_CHECK, 0L)
         set(value) = prefs.edit().putLong(KEY_LAST_CHECK, value).apply()
 
+    /** Last blocked or failed automatic attempt; manual checks bypass this retry timestamp. */
+    var lastAutoBlockedAt: Long
+        get() = prefs.getLong(KEY_LAST_BLOCKED, 0L)
+        set(value) = prefs.edit().putLong(KEY_LAST_BLOCKED, value).apply()
+
     var requiredVersionCode: Long
         get() = prefs.getLong(KEY_REQUIRED_CODE, 0L)
         set(value) = prefs.edit().putLong(KEY_REQUIRED_CODE, value).apply()
@@ -20,6 +25,7 @@ class UpdatePromptStore(context: Context) {
 
     private companion object {
         const val KEY_LAST_CHECK = "last_auto_check_at"
+        const val KEY_LAST_BLOCKED = "last_auto_blocked_at"
         const val KEY_REQUIRED_CODE = "required_version_code"
         const val KEY_REQUIRED_NAME = "required_version_name"
     }

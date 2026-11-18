@@ -8,6 +8,14 @@ class UpdatePromptPolicyTest {
     private val h = 60L * 60 * 1000
 
     @Test
+    fun blockedOrFailedAutomaticCheckWaitsThirtyMinutes() {
+        assertFalse(UpdatePromptPolicy.shouldAutoCheck(10 * h, 0, 10 * h - 29 * 60_000L))
+        assertTrue(UpdatePromptPolicy.shouldAutoCheck(10 * h, 0, 10 * h - 30 * 60_000L))
+        assertFalse(UpdatePromptPolicy.shouldAutoCheck(10 * h, 7 * h, 0))
+        assertTrue(UpdatePromptPolicy.shouldAutoCheck(10 * h, 0, 11 * h))
+    }
+
+    @Test
     fun autoCheckAtMostEverySixHours() {
         assertTrue(UpdatePromptPolicy.shouldAutoCheck(now = 10 * h, lastCheckAt = 0))
         assertFalse(UpdatePromptPolicy.shouldAutoCheck(now = 10 * h, lastCheckAt = 7 * h))

@@ -12,6 +12,8 @@ internal object HistorySql {
     const val SAVE_DIAGNOSTIC = """INSERT INTO api_diagnostics(id,message,timestamp_ms) VALUES(?,?,?)"""
     const val RECENT_COMMANDS = """SELECT id,command,result,outcome,timestamp_ms FROM command_history ORDER BY timestamp_ms DESC,rowid DESC LIMIT 6"""
     const val RECENT_DIAGNOSTICS = """SELECT id,message,timestamp_ms FROM api_diagnostics ORDER BY timestamp_ms DESC,rowid DESC LIMIT 16"""
+    const val BROWSE_COMMANDS = """SELECT id,command,result,outcome,timestamp_ms FROM command_history ORDER BY timestamp_ms DESC,rowid DESC LIMIT 1000"""
+    const val BROWSE_DIAGNOSTICS = """SELECT id,message,timestamp_ms FROM api_diagnostics ORDER BY timestamp_ms DESC,rowid DESC LIMIT 2000"""
     const val TRIM_COMMANDS = """DELETE FROM command_history WHERE id NOT IN (SELECT id FROM command_history ORDER BY timestamp_ms DESC,rowid DESC LIMIT 1000)"""
     const val TRIM_DIAGNOSTICS = """DELETE FROM api_diagnostics WHERE id NOT IN (SELECT id FROM api_diagnostics ORDER BY timestamp_ms DESC,rowid DESC LIMIT 2000)"""
 }

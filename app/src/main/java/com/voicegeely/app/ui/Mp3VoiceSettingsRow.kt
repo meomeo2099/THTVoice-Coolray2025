@@ -38,7 +38,7 @@ internal object Mp3VoiceSettingsRow {
         val root = ThtUi.vertical(context)
         root.setPadding(dp(context, 14), dp(context, 12), dp(context, 14), dp(context, 14))
         root.background = ThtUi.panel(context, ThtUi.PANEL_2, ThtUi.BORDER, 14f)
-        root.addView(ThtUi.sectionTitle(context, R.drawable.ic_ui_headphones, "Giọng phản hồi MP3", 17f))
+        root.addView(ThtUi.sectionTitle(context, R.drawable.ic_ui_headphones, "Giọng phản hồi thu sẵn", 17f))
         root.addView(ThtUi.segmented(context, listOf("Ngọc Huyền", "Diễm Trinh"), voices.indexOf(selected).coerceAtLeast(0), 108) { index ->
             selected = voices[index]
             onSelect(selected)

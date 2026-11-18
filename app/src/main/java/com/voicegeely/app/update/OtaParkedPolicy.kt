@@ -11,8 +11,8 @@ import com.voicegeely.app.voice.safety.SafetyDecisionType
  */
 class OtaParkedPolicy(private val parkedGate: ParkedActionGate) {
     /** Null when OTA may proceed; otherwise the result to show. */
-    fun blockedResult(): AppUpdateFlowResult? {
-        val decision = parkedGate.evaluate(ParkedAction.OTA_INSTALL)
+    fun blockedResult(record: Boolean = true): AppUpdateFlowResult? {
+        val decision = parkedGate.evaluate(ParkedAction.OTA_INSTALL, record)
         if (decision.type == SafetyDecisionType.ALLOW) return null
         val reason = decision.reason?.let { " ($it)" }.orEmpty()
         return AppUpdateFlowResult(AppUpdateFlowStatus.WAITING_FOR_PARK, "$BLOCKED_MESSAGE$reason")

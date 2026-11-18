@@ -18,23 +18,97 @@ internal class Mp3ReplyPlayer(private val context: Context) {
     // Player ownership and release are confined to main. The recognition worker waits off-main.
     private var player: MediaPlayer? = null
     private var waiting: CountDownLatch? = null
+    private val playerCleanup = java.util.concurrent.atomic.AtomicInteger()
 
+    private val playbackLock = Any()
     fun speak(text: String, voice: TtsVoice, cancelled: () -> Boolean): Boolean {
         if (Looper.myLooper() == Looper.getMainLooper()) return false
+        return synchronized(playbackLock) { speakLocked(text, voice, cancelled) }
+    }
+
+    private fun speakLocked(text: String, voice: TtsVoice, cancelled: () -> Boolean): Boolean {
+        // A cancelled async MediaPlayer may still be retiring on main. Consume this request
+        // until release completes, so neither a new PCM reply nor caller fallback overlaps it.
+        if (playerCleanup.get() != 0) return true
+        val generation = interrupted.get()
+        val externalCancelled = cancelled
+        val speechDeadline = android.os.SystemClock.elapsedRealtime() + 30_000
+        val cancelled = { externalCancelled() || interrupted.get() != generation ||
+            android.os.SystemClock.elapsedRealtime() >= speechDeadline }
         if (cancelled()) return true
         val pack = Mp3VoicePacks.load(context, voice) ?: return false
         val ids = Mp3ReplyText.select(text, pack.index)
             ?: return false
         if (cancelled()) return true
+        // One continuous buffer (no gap between clips); per-clip players only if decoding fails.
+        val joined = if (ids.size > 1) runCatching { joinClips(pack, ids, cancelled) }.getOrNull() else null
+        if (cancelled()) return true
+        if (joined != null) return mutedSpeechGuard.speak { playPcm(joined, cancelled) }
         return mutedSpeechGuard.speak {
             Mp3PlaybackSequence.play(ids, cancelled) { id ->
                 val data = pack.clips[id]
-                data != null && play(data, cancelled)
+                data != null && play(data, cancelled, pack.extension(id))
             }
         }
     }
 
+    private val interrupted = java.util.concurrent.atomic.AtomicLong()
+    private fun joinClips(pack: Mp3VoicePacks.Pack, ids: List<String>, cancelled: () -> Boolean): ClipDecoder.Pcm? {
+        if (ids.size > 32) return null
+        val pcms = mutableListOf<ClipDecoder.Pcm>()
+        var total = 0
+        val deadline = android.os.SystemClock.elapsedRealtime() + 8_000
+        val stopped = { cancelled() || android.os.SystemClock.elapsedRealtime() >= deadline }
+        for (id in ids) {
+            if (stopped()) return null
+            val pcm = pack.clips[id]?.let { ClipDecoder.decode(it, stopped) } ?: return null
+            total += pcm.samples.size
+            if (total > 2_000_000) return null
+            pcms.add(pcm)
+        }
+        val rate = pcms.first().sampleRate
+        if (pcms.any { it.sampleRate != rate }) return null
+        val ends = ids.map { pack.isSentence(it) }
+        return ClipDecoder.Pcm(PcmJoin.join(pcms.map { it.samples }, ends, rate), rate)
+    }
+
+    @Volatile private var track: android.media.AudioTrack? = null
+
+    private fun playPcm(pcm: ClipDecoder.Pcm, cancelled: () -> Boolean): Boolean {
+        val t = runCatching {
+            android.media.AudioTrack.Builder()
+                .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build())
+                .setAudioFormat(android.media.AudioFormat.Builder().setEncoding(android.media.AudioFormat.ENCODING_PCM_16BIT)
+                    .setSampleRate(pcm.sampleRate).setChannelMask(android.media.AudioFormat.CHANNEL_OUT_MONO).build())
+                .setTransferMode(android.media.AudioTrack.MODE_STATIC)
+                .setBufferSizeInBytes(pcm.samples.size * 2)
+                .build()
+        }.getOrNull() ?: return false
+        track = t
+        try {
+            if (cancelled()) return true
+            if (t.write(pcm.samples, 0, pcm.samples.size) != pcm.samples.size) return false
+            if (cancelled()) return true
+            t.play()
+            val end = android.os.SystemClock.elapsedRealtime() + pcm.samples.size * 1000L / pcm.sampleRate + 1_500
+            while (android.os.SystemClock.elapsedRealtime() < end) {
+                if (cancelled() || Thread.currentThread().isInterrupted) return true
+                if ((t.playbackHeadPosition.toLong() and 0xFFFFFFFFL) >= pcm.samples.size) return true
+                Thread.sleep(25)
+            }
+            return false
+        } catch (_: Throwable) {
+            return false
+        } finally {
+            runCatching { t.stop() }; runCatching { t.release() }
+            if (track === t) track = null
+        }
+    }
+
     fun interrupt() {
+        interrupted.incrementAndGet()
+        runCatching { track?.pause(); track?.flush() }
         if (Looper.myLooper() == Looper.getMainLooper()) finish()
         else main.post { finish() }
     }
@@ -46,11 +120,12 @@ internal class Mp3ReplyPlayer(private val context: Context) {
         waiting = null
     }
 
-    private fun play(data: ByteArray, cancelled: () -> Boolean): Boolean {
-        val file = File.createTempFile("reply-", ".mp3", context.cacheDir)
+    private fun play(data: ByteArray, cancelled: () -> Boolean, extension: String = "mp3"): Boolean {
+        val file = File.createTempFile("reply-", ".$extension", context.cacheDir)
         val done = CountDownLatch(1)
         val success = AtomicBoolean(false)
         val aborted = AtomicBoolean(false)
+        playerCleanup.incrementAndGet()
         try {
             file.writeBytes(data)
             main.post {
@@ -78,13 +153,21 @@ internal class Mp3ReplyPlayer(private val context: Context) {
                     finish()
                 }
             }
-            return done.await(8, TimeUnit.SECONDS) && (success.get() || cancelled())
+            val deadline = android.os.SystemClock.elapsedRealtime() + 8_000
+            while (!done.await(25, TimeUnit.MILLISECONDS)) {
+                if (cancelled()) return true
+                if (android.os.SystemClock.elapsedRealtime() >= deadline) return false
+            }
+            return success.get() || cancelled()
         } catch (_: InterruptedException) {
             Thread.currentThread().interrupt()
             return true
         } finally {
             aborted.set(true)
-            main.post { if (waiting === done) finish() }
+            main.post {
+                if (waiting === done) finish()
+                playerCleanup.decrementAndGet()
+            }
             file.delete()
         }
     }
