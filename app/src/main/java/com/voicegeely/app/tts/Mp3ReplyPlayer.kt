@@ -53,6 +53,9 @@ internal class Mp3ReplyPlayer(private val context: Context) {
     }
 
     private val interrupted = java.util.concurrent.atomic.AtomicLong()
+    private val decoded = object : LinkedHashMap<String, ClipDecoder.Pcm>(64, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, ClipDecoder.Pcm>?): Boolean = size > 120
+    }
     private fun joinClips(pack: Mp3VoicePacks.Pack, ids: List<String>, cancelled: () -> Boolean): ClipDecoder.Pcm? {
         if (ids.size > 32) return null
         val pcms = mutableListOf<ClipDecoder.Pcm>()
@@ -61,7 +64,11 @@ internal class Mp3ReplyPlayer(private val context: Context) {
         val stopped = { cancelled() || android.os.SystemClock.elapsedRealtime() >= deadline }
         for (id in ids) {
             if (stopped()) return null
-            val pcm = pack.clips[id]?.let { ClipDecoder.decode(it, stopped) } ?: return null
+            // THTVoice: keep recently decoded clips, so common replies do not decode again (faster reply).
+            val key = "${pack.version}/$id"
+            val pcm = synchronized(decoded) { decoded[key] }
+                ?: (pack.clips[id]?.let { ClipDecoder.decode(it, stopped) } ?: return null)
+                    .also { synchronized(decoded) { decoded[key] = it } }
             total += pcm.samples.size
             if (total > 2_000_000) return null
             pcms.add(pcm)

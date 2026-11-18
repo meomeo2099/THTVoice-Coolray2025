@@ -125,6 +125,15 @@ object SettingsScreenView {
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Lọc tiếng nhạc khi nghe lệnh",
             "Chỉ bật khi đang phát nhạc hoặc đang đọc phản hồi, không dùng cho từ đánh thức. Tắt nếu micrô nghe kém.",
             ThtUi.switch(context, echoCancel) { echoCancel = it }))
+        val wakeLevels = com.voicegeely.app.kws.WakeSensitivity.values().toList()
+        voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Độ nhạy từ gọi",
+            "Cao: gọi nhỏ vẫn nhận, nhưng dễ bật nhầm hơn khi mở nhạc.",
+            ThtUi.segmented(context, listOf("Thấp", "Bình thường", "Cao"),
+                wakeLevels.indexOf(voicePreferences.wakeSensitivity).coerceAtLeast(0), 100) {
+                voicePreferences.wakeSensitivity = wakeLevels[it]
+                context.startService(android.content.Intent(context, com.voicegeely.app.VoiceAssistantService::class.java)
+                    .setAction(com.voicegeely.app.VoiceAssistantService.ACTION_SETTINGS_CHANGED))
+            }))
         // Coolray 2025 quiet mic: try these off if commands are often misheard (applies from the next command).
         voice.row(ThtUi.settingRow(context, R.drawable.ic_ui_mic, "Khuếch đại micrô",
             "Tăng âm lượng micrô gấp đôi trước khi nhận giọng. Tắt nếu bị rè hoặc nhận sai khi nói to.",

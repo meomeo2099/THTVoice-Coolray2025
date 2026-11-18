@@ -10,9 +10,11 @@ internal object Mp3ReplyText {
     private val token = Regex("-?\\d+(?:[.,]\\d+)?|[\\p{L}\\p{M}]+(?:[-/][\\p{L}\\p{M}]+)*|[^\\s]")
     private val punctuation = setOf(".", ",", "!", "?", ":", ";", "…")
     private val numeric = Regex("-?(?:0|[1-9]\\d{0,8})(?:[.,]\\d{1,3})?")
+    // "22.5" and "22,5" are the same number: full-sentence clips are written with a comma.
     private fun words(text: String): List<String> = token.findAll(key(text)
         .replace("°c", " độ").replace("%", " phần trăm"))
-        .map { it.value }.filter { it !in punctuation }.toList()
+        .map { if (it.value.first().isDigit() || it.value.first() == '-') it.value.replace('.', ',') else it.value }
+        .filter { it !in punctuation }.toList()
 
     /** No partial reading: every word and every number must be covered before audio starts. */
     fun select(text: String, clips: Map<String, String>): List<String>? {

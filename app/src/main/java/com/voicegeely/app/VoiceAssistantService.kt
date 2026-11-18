@@ -132,6 +132,9 @@ class VoiceAssistantService : Service() {
     /** Wake-word mic failures in a row (bounded retry, see KwsMicPolicy). */
     @Volatile private var kwsFailures = 0
     @Volatile private var kwsRetryScheduled = false
+    private var pendingKwsRetry: Runnable? = null
+    /** Last audio frame the wake-word loop read (THTVoice): a loop with no audio after the car wakes is restarted. */
+    @Volatile private var lastKwsFrameAt = 0L
     private val remoteLicenseCheckRunning = java.util.concurrent.atomic.AtomicBoolean(false)
 
     private var voiceKeyReceiver: VoiceKeyReceiver? = null
@@ -177,7 +180,7 @@ class VoiceAssistantService : Service() {
         systemTts = com.voicegeely.app.tts.SystemTtsFallback(
             this, com.voicegeely.app.tts.MutedSpeechGuard(com.voicegeely.app.tts.AndroidMutedSpeechAudio(this))
         )
-        wakeWordEngine = SherpaWakeWordEngine(this, voicePreferences.wakePhrase)
+        wakeWordEngine = SherpaWakeWordEngine(this, voicePreferences.wakePhrase, voicePreferences.wakeSensitivity)
         voiceOverlay = VoiceOverlayController(this)
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, buildNotification("Voice core đang chạy"))
@@ -313,7 +316,7 @@ class VoiceAssistantService : Service() {
                     mainHandler.post { if (!destroyed) broadcastStatus("Đã cập nhật cài đặt • $detail", sherpaReady = asrReady()) }
                 }.apply { name = "THTVoice-Settings"; isDaemon = true }.start()
             }
-            null -> ensureWakeWordListening()
+            null -> recoverWakeAfterSleep("start")
             else -> {
                 Log.d(TAG, "Ignoring action=${intent.action}")
                 ensureWakeWordListening()
@@ -468,11 +471,12 @@ class VoiceAssistantService : Service() {
             return
         }
 
-        if (wakeWordEngine.wakePhrase != voicePreferences.wakePhrase) {
+        if (wakeWordEngine.wakePhrase != voicePreferences.wakePhrase ||
+            wakeWordEngine.sensitivity != voicePreferences.wakeSensitivity) {
             stopWakeWordListening(waitForRelease = true)
             if (wakeWordThread?.isAlive == true) return
             try { wakeWordEngine.close() } catch (_: Throwable) {}
-            wakeWordEngine = SherpaWakeWordEngine(this, voicePreferences.wakePhrase)
+            wakeWordEngine = SherpaWakeWordEngine(this, voicePreferences.wakePhrase, voicePreferences.wakeSensitivity)
             wakeReady = false
             Log.i(TAG, "Wake profile changed to ${voicePreferences.wakePhrase.name}")
         }
@@ -628,10 +632,35 @@ class VoiceAssistantService : Service() {
         if (kwsRetryScheduled || destroyed) return
         kwsRetryScheduled = true
         Log.i(TAG, "kws_retry in=${delayMs}ms reason=$reason failures=$kwsFailures")
-        mainHandler.postDelayed({
+        val run = Runnable {
             kwsRetryScheduled = false
+            pendingKwsRetry = null
             if (!destroyed) ensureWakeWordListening()
-        }, delayMs)
+        }
+        pendingKwsRetry = run
+        mainHandler.postDelayed(run, delayMs)
+    }
+
+    /**
+     * THTVoice 1.0.18 (16/11/2026): after the car sleeps the wake word did not answer until THT Voice
+     * was opened. While the car is off the mic fails again and again, so the retry wait grows to a
+     * minute; and a loop left from before sleep can sit on a dead recorder. On wake (screen on, app
+     * start): forget the failures, drop the pending wait, restart a loop that gets no audio, and
+     * listen now. Main thread.
+     */
+    private fun recoverWakeAfterSleep(reason: String) {
+        if (destroyed) return
+        kwsFailures = 0
+        pendingKwsRetry?.let { mainHandler.removeCallbacks(it) }
+        pendingKwsRetry = null
+        kwsRetryScheduled = false
+        val running = wakeWordRunning.get()
+        val busy = recognitionRunning.get() || training.busy
+        val stale = running && !busy && com.voicegeely.app.kws.KwsMicPolicy.loopStale(
+            android.os.SystemClock.elapsedRealtime(), lastKwsFrameAt)
+        Log.i(TAG, "wake_after_sleep reason=$reason running=$running stale=$stale")
+        if (stale) stopWakeWordListening(waitForRelease = true)
+        ensureWakeWordListening()
     }
 
     private fun stopWakeWordListening(waitForRelease: Boolean) {
@@ -675,6 +704,7 @@ class VoiceAssistantService : Service() {
                 return
             }
 
+            lastKwsFrameAt = android.os.SystemClock.elapsedRealtime()
             recorder = openMicrophone(forWakeWord = true)
             wakeAudioRecord = recorder
             if (recorder == null) {
@@ -727,6 +757,7 @@ class VoiceAssistantService : Service() {
                     break
                 }
                 if (count == 0) continue
+                lastKwsFrameAt = nowSignal
 
                 if (++chunksSinceCheck >= KWS_YIELD_CHECK_CHUNKS) {
                     chunksSinceCheck = 0
@@ -745,7 +776,7 @@ class VoiceAssistantService : Service() {
                 val now = android.os.SystemClock.elapsedRealtime()
                 recent.add(samples)
                 preRoll.add(samples, now)
-                gate.marginDb = MediaWakeGate.gateMarginDb(WakeSensitivity.LOW, media)
+                gate.marginDb = MediaWakeGate.gateMarginDb(voicePreferences.wakeSensitivity, media)
                 val frame = gate.accept(samples, now, gateEnabled = media)
                 if (media) secondChance.close()
                 if (wakeWordEngine.lenientActive && !secondChance.active) wakeWordEngine.startStream(false)
@@ -1830,7 +1861,7 @@ class VoiceAssistantService : Service() {
                 registerVoiceKeyReceiver()
                 startVehicleVoiceKeyWatch()
                 checkVehicleConnection("screen_on", newChain = true)
-                ensureWakeWordListening()
+                recoverWakeAfterSleep(intent?.action ?: "screen_on")
             }
         }
         runCatching {

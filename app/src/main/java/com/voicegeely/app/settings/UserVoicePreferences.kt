@@ -45,6 +45,13 @@ class UserVoicePreferences(context: Context) {
         syncAsrEndpointRuntime()
     }
 
+    /** Wake-word sensitivity (THTVoice): Cao = a quiet call still wakes, but more false wakes with music. */
+    var wakeSensitivity: com.voicegeely.app.kws.WakeSensitivity
+        get() = prefs.getString(KEY_WAKE_SENSITIVITY, com.voicegeely.app.kws.WakeSensitivity.NORMAL.name)
+            ?.let { runCatching { com.voicegeely.app.kws.WakeSensitivity.valueOf(it) }.getOrNull() }
+            ?: com.voicegeely.app.kws.WakeSensitivity.NORMAL
+        set(value) = prefs.edit().putString(KEY_WAKE_SENSITIVITY, value.name).apply()
+
     /** Coolray 2025 quiet mic: amplify x2 before recognition (on by default, as before). */
     var micGainEnabled: Boolean
         get() = prefs.getBoolean(KEY_MIC_GAIN, true)
@@ -253,6 +260,7 @@ class UserVoicePreferences(context: Context) {
         private const val PREFS_NAME = "tht_voice_user_preferences"
         private const val KEY_VOICE_FEEDBACK = "voice_feedback_enabled"
         private const val KEY_MIC_GAIN = "mic_gain_enabled"
+        private const val KEY_WAKE_SENSITIVITY = "wake_sensitivity"
         private const val KEY_MIC_DENOISE = "mic_denoise_enabled"
         private const val KEY_MUSIC_WHILE_LISTENING = "music_while_listening"
         private const val KEY_VOICE_KEY_ALWAYS_THT = "voice_key_always_tht"

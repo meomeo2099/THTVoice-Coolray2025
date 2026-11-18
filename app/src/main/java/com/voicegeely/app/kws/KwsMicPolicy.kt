@@ -30,4 +30,9 @@ object KwsMicPolicy {
 
     fun retryDelayMs(failures: Int): Long =
         if (failures <= 0) RETRY_DELAYS_MS[0] else RETRY_DELAYS_MS.getOrElse(failures) { MAX_RETRY_DELAY_MS }
+
+    /** A running wake-word loop with no audio for this long after the car wakes is restarted. */
+    const val STALE_LOOP_MS = 3_000L
+
+    fun loopStale(now: Long, lastFrameAt: Long): Boolean = lastFrameAt > 0 && now - lastFrameAt > STALE_LOOP_MS
 }
