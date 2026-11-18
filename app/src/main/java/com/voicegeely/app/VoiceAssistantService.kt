@@ -240,6 +240,7 @@ class VoiceAssistantService : Service() {
                 runCatching { engine.warmUp() }
                 Log.i(TAG, "asr_warmup ms=${android.os.SystemClock.elapsedRealtime() - warmStart}")
             }
+            runCatching { commandSuggestion.warmUp() }
             if (destroyed) { runCatching { engine.close() }; return@Thread }
             val wakeInit = wakeWordEngine.initialize()
             mainHandler.post {

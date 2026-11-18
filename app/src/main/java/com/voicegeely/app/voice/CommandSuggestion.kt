@@ -49,6 +49,17 @@ class CommandSuggestion(
     @Synchronized
     fun clear() { pending = null }
 
+    /**
+     * Known phrases normalized once (THTVoice: normalizing every phrase on every miss left
+     * "Đang xử lý" on screen for seconds). Grows only with built-in and alias phrases.
+     */
+    private val plainCache = java.util.concurrent.ConcurrentHashMap<String, String>()
+    private fun plainPhrase(phrase: String): String =
+        plainCache.getOrPut(phrase) { plain(VoiceTextNormalizer.normalize(phrase)) }
+
+    /** Normalizes the built-in phrases now (start-up thread) instead of on the first missed command. */
+    fun warmUp() { CommandCatalog.PHRASES.forEach { plainPhrase(it) } }
+
     /** Closest known phrase that parses, or null. */
     fun best(text: String, phrases: List<String>, cancelled: () -> Boolean = { false }): String? {
         val started = System.nanoTime()
@@ -59,7 +70,7 @@ class CommandSuggestion(
         // Score cheaply before invoking the parse chain (which may load aliases/scenarios).
         val scored = phrases.distinct().map { p ->
             if (stopped()) return null
-            p to similarity(heard, plain(VoiceTextNormalizer.normalize(p)))
+            p to similarity(heard, plainPhrase(p))
         }.sortedByDescending { it.second }
         var top: Triple<String, VoiceCommand, Double>? = null
         for ((phrase, score) in scored) {

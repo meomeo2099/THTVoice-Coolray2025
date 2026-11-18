@@ -44,6 +44,13 @@ object VoiceCommandParser {
     private val followMeHomeContext = Regex("follow me home|đèn chờ về nhà|đèn dẫn đường về nhà|đèn về nhà")
     private val wirelessChargerContext = Regex("sạc không dây|sạc wireless|wireless charger|sạc qi")
     private val displayThemeContext = Regex("giao diện|chủ đề|theme")
+    /**
+     * THTVoice (owner 15/11/2026): "chế độ ban đêm", "màn hình ban ngày", "ngày đêm tự động": the head
+     * unit's day / night mode is the same display theme, so no new vehicle mapping.
+     */
+    private val dayNightContext = Regex(
+        "(?:chế độ|màn hình)(?: màn hình)? (?:ban )?(?:ngày|đêm)(?![\\p{L}\\p{N}])|ngày đêm tự động|tự động ngày đêm|(?:dark|night|day|light) mode"
+    )
     private val parkingWiperContext = Regex("tự giảm gạt mưa khi đỗ|gạt mưa tự giảm khi đỗ|parking wiper reduction")
     private val parkingModeContext = Regex("chế độ đỗ xe|parking mode")
     private val brakeFeelContext = Regex("cảm giác phanh|chế độ bàn đạp phanh|brake pedal feel")
@@ -262,11 +269,22 @@ object VoiceCommandParser {
             }
         }
 
-        if (displayThemeContext.containsMatchIn(text)) {
+        val dayNight = dayNightContext.containsMatchIn(text)
+        if (displayThemeContext.containsMatchIn(text) || dayNight) {
+            // "đang ở chế độ ngày hay đêm" is a question (status query), never a write.
+            if (dayNight && Regex("(?:^| )(?:hay|đang)(?: |$)").containsMatchIn(text)) return null
+            val mode = when {
+                Regex("tự động|auto").containsMatchIn(text) -> DisplayThemeMode.AUTO
+                Regex("tối|dark|đêm|night").containsMatchIn(text) -> DisplayThemeMode.DARK
+                Regex("sáng|light|ngày|day mode").containsMatchIn(text) -> DisplayThemeMode.LIGHT
+                else -> return null
+            }
+            // "tắt chế độ ban đêm" = back to day (and the reverse); "tắt ... tự động" is unclear.
+            val off = dayNight && Regex("^(?:tắt|bỏ|hủy|huỷ|thoát)(?: |$)").containsMatchIn(text)
             return when {
-                Regex("tự động|auto").containsMatchIn(text) -> VoiceCommand.SetDisplayTheme(DisplayThemeMode.AUTO)
-                Regex("tối|dark").containsMatchIn(text) -> VoiceCommand.SetDisplayTheme(DisplayThemeMode.DARK)
-                Regex("sáng|light").containsMatchIn(text) -> VoiceCommand.SetDisplayTheme(DisplayThemeMode.LIGHT)
+                !off -> VoiceCommand.SetDisplayTheme(mode)
+                mode == DisplayThemeMode.DARK -> VoiceCommand.SetDisplayTheme(DisplayThemeMode.LIGHT)
+                mode == DisplayThemeMode.LIGHT -> VoiceCommand.SetDisplayTheme(DisplayThemeMode.DARK)
                 else -> null
             }
         }
