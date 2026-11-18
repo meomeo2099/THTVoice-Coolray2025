@@ -17,6 +17,7 @@
         <permission name="android.car.permission.CAR_PROPERTY_READ_WRITE"/>
         <permission name="android.car.permission.CAR_SPEED"/>
         <permission name="com.tht.split.permission.CONTROL_SPLIT"/>
+        <permission name="com.tht.split.coolray.permission.CONTROL_SPLIT"/>
         <permission name="android.car.permission.CAR_VENDOR_EXTENSION"/>
         <permission name="android.car.permission.CONTROL_CAR_CLIMATE"/>
         <permission name="android.car.permission.CONTROL_CAR_DOORS"/>

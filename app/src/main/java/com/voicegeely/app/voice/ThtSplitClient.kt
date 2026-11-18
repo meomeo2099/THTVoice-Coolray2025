@@ -30,7 +30,10 @@ class ThtSplitClient(
     private val waitMs: Long = WAIT_MS
 ) : SplitScreenClient {
 
-    override fun isSplitInstalled(): Boolean = isPackageInstalled(SPLIT_PACKAGE)
+    override fun isSplitInstalled(): Boolean = splitPackage() != null
+
+    /** Coolray 2025 Split (`com.tht.split.coolray`) first, then the shared `com.tht.split`. */
+    private fun splitPackage(): String? = SPLIT_PACKAGES.firstOrNull { isPackageInstalled(it) }
 
     override fun isPackageInstalled(packageName: String): Boolean = try {
         @Suppress("DEPRECATION")
@@ -41,7 +44,8 @@ class ThtSplitClient(
     }
 
     override fun send(command: String, extras: Map<String, Any>): SplitReply {
-        val signature = context.packageManager.checkPermission(CONTROL_PERMISSION, context.packageName) ==
+        val splitPackage = splitPackage() ?: return SplitReply(SplitReply.SEND_FAILED, message = SplitScreenExecutor.NOT_INSTALLED)
+        val signature = context.packageManager.checkPermission("$splitPackage$PERMISSION_SUFFIX", context.packageName) ==
             PackageManager.PERMISSION_GRANTED
         val token = if (signature) null else tokenProvider()?.trim()?.takeIf { it.isNotEmpty() }
         if (!signature && token == null) return SplitReply(SplitReply.NO_AUTH)
@@ -57,7 +61,7 @@ class ThtSplitClient(
         val result = PendingIntent.getBroadcast(context, requestCodes.incrementAndGet(), resultIntent, flags)
 
         val request = Intent(COMMAND_ACTION)
-            .setComponent(ComponentName(SPLIT_PACKAGE, if (signature) SIGNATURE_RECEIVER else TOKEN_RECEIVER))
+            .setComponent(ComponentName(splitPackage, if (signature) SIGNATURE_RECEIVER else TOKEN_RECEIVER))
             .putExtra("requestId", requestId)
             .putExtra("result", result)
             .putExtra("command", command)
@@ -91,10 +95,13 @@ class ThtSplitClient(
     companion object {
         private const val TAG = "ThtSplitClient"
         const val SPLIT_PACKAGE = "com.tht.split"
+        const val SPLIT_COOLRAY_PACKAGE = "com.tht.split.coolray"
+        val SPLIT_PACKAGES = listOf(SPLIT_COOLRAY_PACKAGE, SPLIT_PACKAGE)
         const val COMMAND_ACTION = "com.tht.split.COMMAND"
         const val SIGNATURE_RECEIVER = "com.tht.split.SignatureVoiceReceiver"
         const val TOKEN_RECEIVER = "com.tht.split.VoiceReceiver"
-        const val CONTROL_PERMISSION = "com.tht.split.permission.CONTROL_SPLIT"
+        /** Split declares `${applicationId}.permission.CONTROL_SPLIT`. */
+        const val PERMISSION_SUFFIX = ".permission.CONTROL_SPLIT"
         const val RESULT_ACTION = "com.tht.voice.SPLIT_RESULT"
         /** Below the coordinator's 15 s command timeout; a slower first ADB link ends as TIMEOUT. */
         const val WAIT_MS = 12_000L

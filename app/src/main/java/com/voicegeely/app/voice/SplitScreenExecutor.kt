@@ -20,7 +20,7 @@ data class SplitReply(
     }
 }
 
-/** Transport boundary to com.tht.split; the Android implementation is [ThtSplitClient]. */
+/** Transport boundary to com.tht.split.coolray / com.tht.split; the Android implementation is [ThtSplitClient]. */
 interface SplitScreenClient {
     fun isSplitInstalled(): Boolean
     fun isPackageInstalled(packageName: String): Boolean
