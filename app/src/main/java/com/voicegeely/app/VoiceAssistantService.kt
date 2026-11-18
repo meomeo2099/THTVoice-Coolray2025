@@ -189,7 +189,9 @@ class VoiceAssistantService : Service() {
                 broadcastStatus(text, sherpaReady = asrReady())
                 voiceOverlay.showResult(text)
                 if (voicePreferences.voiceFeedbackEnabled) {
-                    if (!speakReply(text)) Log.w(TAG, "TTS unavailable: ${offlineTts.lastDetail.orEmpty()}")
+                    val spoken = speakReply(text)
+                    lastReplyUnspoken = !spoken
+                    if (!spoken) Log.w(TAG, "TTS unavailable: ${offlineTts.lastDetail.orEmpty()}")
                 }
             }
         )
@@ -1285,6 +1287,7 @@ class VoiceAssistantService : Service() {
     private fun executeParsedCommand(parsed: ParsedVoiceCommand) {
         if (!canPublishSessionResult()) return
         try {
+            lastReplyUnspoken = false
             val spokenFeedback = voicePreferences.voiceFeedbackEnabled
             // Bounded (owner report 03/10/2026): a car call or reply that never returns must not
             // leave the assistant deaf to the voice key.
@@ -1327,6 +1330,15 @@ class VoiceAssistantService : Service() {
             }
             if (!canPublishSessionResult()) return
             Log.i(TAG, "vehicle_command_result command=${parsed.command} result=$execution")
+            // Result sentence not in the voice pack (e.g. split screen) and no other voice: say a short
+            // reply the pack has, as THTVoice does, instead of staying silent.
+            if (spokenFeedback && lastReplyUnspoken) {
+                lastReplyUnspoken = false
+                com.voicegeely.app.tts.Mp3ReplyFallback.single(parsed.command, execution)?.let { fallback ->
+                    Log.i(TAG, "reply_fallback command=${parsed.command}")
+                    if (!speakReply(fallback)) feedbackAudio.play(VoiceFeedbackPolicy.forExecution(execution))
+                }
+            }
             lastCommand = parsed.command
             lastCommandSucceeded = execution is com.voicegeely.app.voice.CommandExecutionResult.Confirmed ||
                 execution is com.voicegeely.app.voice.CommandExecutionResult.AcceptedUnverified
@@ -1585,6 +1597,9 @@ class VoiceAssistantService : Service() {
             }
         }
     }
+
+    /** The coordinator's last reply could not be spoken by any voice. */
+    @Volatile private var lastReplyUnspoken = false
 
     /** True while a reply is being read; a mic opened then (barge-in) gets the echo canceller. */
     @Volatile private var replySpeaking = false
