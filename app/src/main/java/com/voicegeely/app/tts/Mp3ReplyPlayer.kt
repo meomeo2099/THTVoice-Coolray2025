@@ -60,6 +60,7 @@ internal class Mp3ReplyPlayer(private val context: Context) {
     }
 
     private val interrupted = java.util.concurrent.atomic.AtomicLong()
+    private companion object { const val FADE_LEAD_MS = 450 }
     private val decoded = object : LinkedHashMap<String, ClipDecoder.Pcm>(64, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, ClipDecoder.Pcm>?): Boolean = size > 120
     }
@@ -88,7 +89,20 @@ internal class Mp3ReplyPlayer(private val context: Context) {
 
     @Volatile private var track: android.media.AudioTrack? = null
 
-    private fun playPcm(pcm: ClipDecoder.Pcm, cancelled: () -> Boolean): Boolean {
+    /**
+     * Coolray 2025 (car log 18/11/2026): every new playback starts at volume 0 and the head unit
+     * fades it in over ~400 ms (AudioFlinger mDuckFadeTimes=400), so the first words were lost.
+     * Silence in front lets the fade finish before speech starts.
+     */
+    private fun withFadeLead(pcm: ClipDecoder.Pcm): ClipDecoder.Pcm {
+        val lead = pcm.sampleRate * FADE_LEAD_MS / 1000
+        val out = ShortArray(lead + pcm.samples.size)
+        System.arraycopy(pcm.samples, 0, out, lead, pcm.samples.size)
+        return ClipDecoder.Pcm(out, pcm.sampleRate)
+    }
+
+    private fun playPcm(input: ClipDecoder.Pcm, cancelled: () -> Boolean): Boolean {
+        val pcm = withFadeLead(input)
         val t = runCatching {
             android.media.AudioTrack.Builder()
                 .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
