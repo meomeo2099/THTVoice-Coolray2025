@@ -266,6 +266,7 @@ object VoiceResponseFormatter {
         SplitAction.HIDE -> "ẩn thanh chia màn hình"
         SplitAction.SHOW -> "hiện thanh chia màn hình"
         SplitAction.STOP -> "tắt chia màn hình"
+        SplitAction.RECOVER -> "gỡ kẹt màn hình"
     }
 
     private fun splitSideText(side: SplitSide?): String = when (side) {

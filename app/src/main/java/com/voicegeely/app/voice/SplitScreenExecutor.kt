@@ -75,6 +75,8 @@ class SplitScreenExecutor(
             SplitAction.HIDE -> send("hide", emptyMap())
             SplitAction.SHOW -> send("show", emptyMap())
             SplitAction.STOP -> send("stop", emptyMap())
+            // THT Split 0.3.23+: leave split, go home, redraw the car status bar (works with the status bar gone).
+            SplitAction.RECOVER -> send("recover", emptyMap())
         }
     }
 
@@ -115,7 +117,7 @@ class SplitScreenExecutor(
         return when (reply.status) {
             SplitReply.SUCCESS -> {
                 onLayoutSent()
-                if (command == "stop") memory.clear()
+                if (command == "stop" || command == "recover") memory.clear()
                 CommandExecutionResult.Confirmed(VerificationSource.ANDROID_STATE, reply.message)
             }
             SplitReply.REQUESTED -> {
@@ -154,7 +156,8 @@ class SplitScreenExecutor(
     companion object {
         const val NOT_INSTALLED = "Chưa cài THT Split nên chưa chia được màn hình."
         const val NO_AUTH = "Chưa có mã kết nối THT Split. Vào cài đặt THT Voice, mục chia màn hình, dán mã từ THT Split."
-        const val TIMEOUT = "THT Split chưa phản hồi. Kiểm tra mục cho phép nhận lệnh từ THT Voice và mã kết nối."
+        /** THT Split drops a wrong token silently, so a timeout is usually an old token after reinstalling it. */
+        const val TIMEOUT = "THT Split chưa phản hồi. Nếu vừa cài lại THT Split, hãy sao chép token mới và bấm Dán mã trong cài đặt THT Voice; kiểm tra đã bật cho phép nhận lệnh từ THT Voice."
         const val REQUESTED = "Đã gửi yêu cầu, THT Split chưa xác nhận bố cục."
         const val SEND_FAILED = "Không gửi được lệnh sang THT Split."
         const val RATIO_RANGE = "Tỷ lệ chia chỉ từ 30 đến 70 phần trăm."

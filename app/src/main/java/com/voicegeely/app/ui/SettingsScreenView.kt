@@ -222,11 +222,34 @@ object SettingsScreenView {
         val text = clipboard?.primaryClip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.coerceToText(context)?.toString()?.trim()
         val message = if (text != null && SPLIT_TOKEN.matches(text)) {
             voicePreferences.splitToken = text
-            "Đã lưu mã kết nối THT Split."
+            checkSplitConnection(context)
+            "Đã lưu mã kết nối THT Split. Đang kiểm tra kết nối…"
         } else {
             "Chưa có mã hợp lệ trong bộ nhớ tạm. Sao chép token trong THT Split trước."
         }
         android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()
+    }
+
+    /** Sends Split's `status` (no overlay needed) so a wrong token or disabled API shows now, not in the car. */
+    private fun checkSplitConnection(context: Context) {
+        val app = context.applicationContext
+        Thread {
+            val client = com.voicegeely.app.voice.ThtSplitClient(app, waitMs = 8_000L)
+            val message = if (!client.isSplitInstalled()) {
+                com.voicegeely.app.voice.SplitScreenExecutor.NOT_INSTALLED
+            } else {
+                val reply = client.send("status", emptyMap())
+                when (reply.status) {
+                    com.voicegeely.app.voice.SplitReply.SUCCESS -> "THT Split đã nhận mã: ${reply.message ?: "kết nối sẵn sàng"}."
+                    com.voicegeely.app.voice.SplitReply.TIMEOUT ->
+                        "THT Split không phản hồi: mã sai hoặc chưa bật cho phép nhận lệnh từ THT Voice."
+                    else -> "THT Split báo lỗi: ${reply.message ?: reply.code ?: reply.status}."
+                }
+            }
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                android.widget.Toast.makeText(app, message, android.widget.Toast.LENGTH_LONG).show()
+            }
+        }.apply { name = "THTVoice-SplitCheck"; isDaemon = true }.start()
     }
 
     private val SPLIT_TOKEN = Regex("[A-Za-z0-9_-]{64}")

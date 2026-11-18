@@ -24,6 +24,11 @@ object SplitScreenCommandParser {
     private val fullscreenApp = Regex("^(?:(?:mở|cho|phóng|để)\\s+)?(.+?)\\s+(?:ra\\s+)?(?:toàn|full) màn hình$")
     private val restore = Regex("^(?:khôi phục|trở lại|quay lại|quay về)\\s+$SPLIT$")
     private val hide = Regex("^(?:ẩn|giấu|tắt)\\s+thanh $SPLIT$")
+    /** "gỡ kẹt màn hình" (also "gở kẹt", "gỡ kẹp"): status bar / toolbar gone after a ROM divider crash. */
+    private val recover = Regex(
+        "^(?:gỡ|gở|gợ|sửa|chữa)\\s+(?:kẹt|kẹp|kẹc|treo)(?:\\s+(?:màn hình|giao diện|chia màn hình|thanh trạng thái))?(?:\\s+xe)?$" +
+            "|^khôi phục\\s+(?:giao diện|thanh trạng thái)(?:\\s+xe)?$|^(?:bị\\s+)?mất\\s+thanh trạng thái$"
+    )
     private val show = Regex("^(?:hiện|hiển thị|mở|bật)\\s+thanh $SPLIT$")
 
     fun parse(text: String): ParsedVoiceCommand? {
@@ -50,6 +55,7 @@ object SplitScreenCommandParser {
 
     private fun command(text: String): VoiceCommand.SplitScreen? {
         if (stop.matches(text)) return VoiceCommand.SplitScreen(SplitAction.STOP)
+        if (recover.matches(text)) return VoiceCommand.SplitScreen(SplitAction.RECOVER)
         if (hide.matches(text)) return VoiceCommand.SplitScreen(SplitAction.HIDE)
         if (show.matches(text)) return VoiceCommand.SplitScreen(SplitAction.SHOW)
         if (restore.matches(text)) return VoiceCommand.SplitScreen(SplitAction.RESTORE)

@@ -254,7 +254,7 @@ enum class VehicleStatusQuery {
 enum class SceneType { REST, CAMPING }
 enum class LocalInfoKind { TIME, DATE, ASSISTANT_STATUS }
 enum class WindowingMode { PIP, FREEFORM, SPLIT_SCREEN }
-enum class SplitAction { START, SWAP, RATIO, REPLACE, FULLSCREEN, RESTORE, HIDE, SHOW, STOP }
+enum class SplitAction { START, SWAP, RATIO, REPLACE, FULLSCREEN, RESTORE, HIDE, SHOW, STOP, RECOVER }
 enum class SplitSide { LEFT, RIGHT }
 
 enum class SunroofPart { GLASS, SHADE }
