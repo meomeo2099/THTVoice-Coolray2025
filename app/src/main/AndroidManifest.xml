@@ -19,7 +19,13 @@
     <uses-permission android:name="android.car.permission.CAR_VENDOR_EXTENSION" />
     <uses-permission android:name="android.car.permission.CAR_ENERGY_PORTS" />
     <uses-permission android:name="android.car.permission.CAR_SPEED" />
-    <!-- THT Split: granted by Android only when both APKs share the signing certificate. -->
+    <!-- THT Split: granted by Android only when both APKs share the signing certificate.
+         Like THTVoice, THT Voice also declares Coolray 2025 Split's signature permission so it is granted
+         whichever app is installed first. Android accepts the duplicate only from the same signer: a
+         com.tht.split.coolray signed with another key blocks this install (INSTALL_FAILED_DUPLICATE_PERMISSION). -->
+    <permission
+        android:name="com.tht.split.coolray.permission.CONTROL_SPLIT"
+        android:protectionLevel="signature" />
     <uses-permission android:name="com.tht.split.permission.CONTROL_SPLIT" />
     <uses-permission android:name="com.tht.split.coolray.permission.CONTROL_SPLIT" />
     <uses-permission android:name="android.car.permission.CAR_CONTROL_ACCESS" />
