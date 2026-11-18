@@ -45,7 +45,12 @@ internal class Mp3ReplyPlayer(private val context: Context) {
         // so even a single clip is decoded and played through AudioTrack; MediaPlayer is only the fallback.
         val joined = runCatching { joinClips(pack, ids, cancelled) }.getOrNull()
         if (cancelled()) return true
-        if (joined != null) return mutedSpeechGuard.speak { playPcm(joined, cancelled) }
+        if (joined != null) {
+            // AudioTrack refused (route busy, unsupported rate): fall back to per-clip players below.
+            if (mutedSpeechGuard.speak { playPcm(joined, cancelled) }) return true
+            android.util.Log.w("THTMp3Reply", "pcm_playback_failed clips=${ids.size} rate=${joined.sampleRate}")
+            if (cancelled()) return true
+        } else android.util.Log.w("THTMp3Reply", "decode_failed clips=${ids.size}")
         return mutedSpeechGuard.speak {
             Mp3PlaybackSequence.play(ids, cancelled) { id ->
                 val data = pack.clips[id]

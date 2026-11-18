@@ -222,6 +222,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <!-- As THTVoice: user ready after start, and the head unit waking from sleep. -->
+                <action android:name="android.intent.action.USER_UNLOCKED" />
+                <action android:name="android.intent.action.ACTION_BOOT_HU" />
+                <!-- Coolray 2025 (ECARX IHU730P): the head unit's own boot broadcast. -->
+                <action android:name="ecarx.intent.action.bt.boot.completed" />
             </intent-filter>
         </receiver>
 
