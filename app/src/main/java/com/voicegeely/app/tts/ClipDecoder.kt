@@ -76,20 +76,27 @@ internal object ClipDecoder {
                         if (info.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) outputDone = true
                     }
                     outIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
-                        if (out.size() > 0) return null
+                        // Coolray 2025 (MediaTek, 18/11/2026): the AAC decoder reports its output format
+                        // after the first buffer. Like THTVoice, take the new format and keep decoding;
+                        // only a real change of rate/channels after audio was written is refused.
                         if (c.outputFormat.containsKey(MediaFormat.KEY_PCM_ENCODING) && c.outputFormat.getInteger(MediaFormat.KEY_PCM_ENCODING) != 2) return null
-                        rate = c.outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-                        channels = c.outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
-                        if (rate !in 8000..96000 || channels !in 1..2) return null
+                        val newRate = c.outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                        val newChannels = c.outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+                        if (newRate !in 8000..96000 || newChannels !in 1..2) return null
+                        if (out.size() > 0 && (newRate != rate || newChannels != channels)) out.reset()
+                        rate = newRate
+                        channels = newChannels
                     }
                     else -> idle++
                 }
             }
-            if (!outputDone) return null
+            // No end-of-stream flag after a long idle: keep what was decoded (THTVoice), never an empty clip.
+            if (!outputDone && out.size() == 0) return null
             val bytes = out.toByteArray()
-            if (bytes.size % (2 * channels) != 0) return null
-            val shorts = ShortArray(bytes.size / 2)
-            java.nio.ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts)
+            val whole = bytes.size - bytes.size % (2 * channels)
+            if (whole <= 0) return null
+            val shorts = ShortArray(whole / 2)
+            java.nio.ByteBuffer.wrap(bytes, 0, whole).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts)
             val mono = if (channels <= 1) shorts else ShortArray(shorts.size / channels) { i ->
                 var s = 0; for (ch in 0 until channels) s += shorts[i * channels + ch]; (s / channels).toShort()
             }

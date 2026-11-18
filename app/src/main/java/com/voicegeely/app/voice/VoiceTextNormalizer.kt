@@ -223,7 +223,8 @@ object VoiceTextNormalizer {
         // 09/10/2026: "go gồ ma", "gâu gồ mép", "gầu gồ mát" — the middle "gồ" is required here.
         Regex("${B}(?:go|gò|gó|gâu|gầu|gấu|gau|gao|gồ|gu|gú|goo|gô|gúc|gút) (?:gồ|gờ|gơ|gô|gố|gổ|go|gò|gồ) (?:ma|mà|má|mát|máp|mắp|mép|mẹp|mếp|mắt|mạp|map|maps|mấp)$E") to "google maps",
         Regex("${B}(?:việc ma lai|việc marbe|việc ma ray|viện mary|việc map|việt map|việt mắp|việt ma|viết map|viết mát|việt máp|việt mép|vi ét map)$E") to "vietmap",
-        Regex("^mở (?:map|maps|mát|máy|mắp|mắt|bản đồ)$") to "mở bản đồ",
+        // Car log 18/11/2026: "mở bản đồ" heard as "mở bán đồ" (tone slip); only the whole command.
+        Regex("^(?:mở|bật|vào) (?:map|maps|mát|máy|mắp|mắt|bản đồ|bán đồ|bạn đồ|bàn đồ|bẩn đồ|bản đố|bán đố|bản độ|bản dồ|bán dồ)(?: (?:đi|lên|giúp|giùm|dùm|nha|nhé))?$") to "mở bản đồ",
         Regex("^(?:dẫn đường|chỉ đường)(?: bằng)? vietmap$") to "mở vietmap",
         Regex("^(?:nghe|xem) youtube$") to "mở youtube",
         // Drive modes (01/10/2026): English mode names heard as Vietnamese syllables. Only after

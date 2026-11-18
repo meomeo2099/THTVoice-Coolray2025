@@ -41,7 +41,9 @@ internal class Mp3ReplyPlayer(private val context: Context) {
             ?: return false
         if (cancelled()) return true
         // One continuous buffer (no gap between clips); per-clip players only if decoding fails.
-        val joined = if (ids.size > 1) runCatching { joinClips(pack, ids, cancelled) }.getOrNull() else null
+        // Coolray 2025 (18/11/2026): the head unit's MediaPlayer reports an M4A clip complete after ~130 ms,
+        // so even a single clip is decoded and played through AudioTrack; MediaPlayer is only the fallback.
+        val joined = runCatching { joinClips(pack, ids, cancelled) }.getOrNull()
         if (cancelled()) return true
         if (joined != null) return mutedSpeechGuard.speak { playPcm(joined, cancelled) }
         return mutedSpeechGuard.speak {
