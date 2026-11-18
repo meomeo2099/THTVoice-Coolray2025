@@ -47,6 +47,20 @@ internal object Mp3VoicePacks {
         return "Đã cài: $version · ${pack.format.uppercase(java.util.Locale.ROOT)} · ${pack.clips.size} đoạn · Dùng ngoại tuyến"
     }
 
+    /**
+     * THTVoice: background check by the service. Downloads the pack after install (release APKs carry
+     * none) and newer revisions once a day. Returns the update message, or null when it was not time.
+     */
+    fun autoUpdate(context: Context, voice: TtsVoice, licensed: Boolean, online: Boolean,
+                   now: Long = System.currentTimeMillis()): String? {
+        val preferences = context.getSharedPreferences("m4a-voice-auto", Context.MODE_PRIVATE)
+        val key = slug(voice) + "-checked"
+        val hasPack = load(context, voice) != null
+        if (!Mp3AutoUpdatePolicy.shouldCheck(licensed, online, hasPack, preferences.getLong(key, 0L), now)) return null
+        preferences.edit().putLong(key, now).apply()
+        return runCatching { update(context, voice) }.getOrElse { it.message ?: "Không tải được gói giọng." }
+    }
+
     fun update(context: Context, voice: TtsVoice): String = synchronized(downloadLock) {
         check(LicenseConfig.isConfigured()) { "Chưa cấu hình máy chủ tải giọng." }
         val headers = LicenseManager(context).authHeaders()

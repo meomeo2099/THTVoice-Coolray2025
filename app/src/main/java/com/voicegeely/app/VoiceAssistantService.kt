@@ -263,6 +263,7 @@ class VoiceAssistantService : Service() {
             // The voice is the heaviest model and is only needed for the first reply: load it last.
             if (destroyed) return@Thread
             Mp3VoicePacks.load(this, voicePreferences.ttsVoice)
+            autoUpdateMp3Pack()
             val ttsInit = offlineTts.initialize(voicePreferences.ttsVoice)
             Log.i(
                 TAG,
@@ -307,6 +308,7 @@ class VoiceAssistantService : Service() {
                     android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)
                     val ttsState = if (voicePreferences.voiceFeedbackEnabled) {
                         Mp3VoicePacks.load(this, voicePreferences.ttsVoice)
+                        autoUpdateMp3Pack()
                         offlineTts.initialize(voicePreferences.ttsVoice)
                     } else null
                     val detail = when {
@@ -662,6 +664,7 @@ class VoiceAssistantService : Service() {
         Log.i(TAG, "wake_after_sleep reason=$reason running=$running stale=$stale")
         if (stale) stopWakeWordListening(waitForRelease = true)
         ensureWakeWordListening()
+        Thread { autoUpdateMp3Pack() }.apply { name = "THTVoice-PackUpdate"; isDaemon = true }.start()
     }
 
     private fun stopWakeWordListening(waitForRelease: Boolean) {
@@ -1727,6 +1730,30 @@ class VoiceAssistantService : Service() {
 
     /** The coordinator's last reply could not be spoken by any voice. */
     @Volatile private var lastReplyUnspoken = false
+
+    private val mp3AutoUpdating = java.util.concurrent.atomic.AtomicBoolean(false)
+
+    /**
+     * THTVoice: release APKs carry no voice pack. Download the chosen voice after install (license
+     * active, network up) and look for a newer revision once a day. Background workers only.
+     */
+    private fun autoUpdateMp3Pack() {
+        if (destroyed || !voicePreferences.voiceFeedbackEnabled) return
+        // Never hold the pack lock while downloading: replies keep loading the current pack.
+        if (!mp3AutoUpdating.compareAndSet(false, true)) return
+        try {
+            val online = runCatching {
+                val cm = getSystemService(CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+                cm.getNetworkCapabilities(cm.activeNetwork)
+                    ?.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+            }.getOrDefault(false)
+            val message = Mp3VoicePacks.autoUpdate(this, voicePreferences.ttsVoice, licenseManager.isLicensed(), online)
+                ?: return
+            Log.i(TAG, "mp3_auto_update voice=${voicePreferences.ttsVoice} result=$message ready=${Mp3VoicePacks.isReady(voicePreferences.ttsVoice)}")
+        } finally {
+            mp3AutoUpdating.set(false)
+        }
+    }
 
     /** True while a reply is being read; a mic opened then (barge-in) gets the echo canceller. */
     @Volatile private var replySpeaking = false
