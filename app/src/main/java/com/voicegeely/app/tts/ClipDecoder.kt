@@ -83,7 +83,6 @@ internal object ClipDecoder {
                         val newRate = c.outputFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
                         val newChannels = c.outputFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
                         if (newRate !in 8000..96000 || newChannels !in 1..2) return null
-                        if (out.size() > 0 && (newRate != rate || newChannels != channels)) out.reset()
                         rate = newRate
                         channels = newChannels
                     }
