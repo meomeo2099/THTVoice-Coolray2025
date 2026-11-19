@@ -38,12 +38,17 @@ class SunroofVoiceCommandExecutor(
                 WindowOperation.STOP -> return if (command.part == SunroofPart.GLASS) stop()
                     else CommandExecutionResult.Rejected("Chưa hỗ trợ dừng rèm che nắng.")
             }
-            if (command.part == SunroofPart.GLASS && target == 0 && tiltState() == F.ON) {
+            // Car log 19/11/2026: the tilt reading said ON, but the separate tilt function (0x21030400)
+            // is INACTIVE on this head unit, so "đóng cửa sổ trời" was rejected and nothing was sent.
+            // Lower the tilt first only where that function exists; otherwise the window-group close
+            // (the same MCU path that opens it) closes the glass, tilted or not.
+            val tilted = command.part == SunroofPart.GLASS && target == 0 && tiltState() == F.ON
+            if (tilted && port.isSupported(F.BCM_FUNC_SUNROOF_TILT, F.GLOBAL) == true) {
                 val closed = setTilt(false)
-                if (closed !is CommandExecutionResult.Confirmed) return closed
+                if (closed is CommandExecutionResult.Failed) return closed
             }
             when (command.part) {
-                SunroofPart.GLASS -> moveTo(F.GROUP_SUNROOF, target, "cửa sổ trời", glassFallback = true)
+                SunroofPart.GLASS -> moveTo(F.GROUP_SUNROOF, target, "cửa sổ trời", glassFallback = true, force = tilted)
                 SunroofPart.SHADE -> moveTo(F.GROUP_SUNSHADE, target, "rèm che nắng", glassFallback = false)
             }
         } catch (t: Throwable) {
@@ -53,11 +58,12 @@ class SunroofVoiceCommandExecutor(
         }
     }
 
-    private fun moveTo(group: Int, target: Int, name: String, glassFallback: Boolean): CommandExecutionResult {
+    /** [force]: send even when the glass already reads [target] (a tilted roof reads 0 % but is open). */
+    private fun moveTo(group: Int, target: Int, name: String, glassFallback: Boolean, force: Boolean = false): CommandExecutionResult {
         val before = position(group, glassFallback)
         // Real owner report: shade telemetry can remain zero while the shade is open.
         // Never suppress an explicit shade request using that pre-read alone.
-        if (glassFallback && before != null && abs(before - target) <= TOLERANCE) return support.confirmed("$target phần trăm")
+        if (!force && glassFallback && before != null && abs(before - target) <= TOLERANCE) return support.confirmed("$target phần trăm")
         var accepted = try { port.sendBytesToMcu(F.INFO_ID_WINDOW_GROUP, F.windowGroupPayload(group, target)) } catch (_: Throwable) { false }
         if (!accepted && glassFallback) {
             accepted = try { port.setFloat(F.BCM_FUNC_WINDOW_POS, ZONE, target.toFloat()) } catch (_: Throwable) { false }

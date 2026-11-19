@@ -52,6 +52,20 @@ class SunroofVoiceCommandExecutorTest {
         assertTrue(port.floatWrites.isEmpty())
     }
 
+    /** Car log 19/11/2026: tilt reads ON, the tilt function is INACTIVE; "đóng cửa sổ trời" must still close. */
+    @Test fun tiltedRoofClosesThroughMcuWhenTiltFunctionIsInactive() = runBlocking {
+        val port = FakeEcarxPort().apply {
+            mcuAccepts = true
+            props[F.INFO_ID_WINDOW_SUNROOF_TILT] = F.ON
+            props[F.INFO_ID_WINDOW_SUNROOF] = 0 // a tilted roof reads 0 % open
+            unsupported += F.BCM_FUNC_SUNROOF_TILT
+        }
+        val result = exec(port).execute(VoiceCommand.Sunroof(SunroofPart.GLASS, WindowOperation.CLOSE))
+        assertTrue(result.toString(), result !is CommandExecutionResult.Rejected)
+        assertEquals(0.toByte(), port.mcuWrites.single().second[F.GROUP_SUNROOF])
+        assertTrue(port.intWrites.none { it.first == F.BCM_FUNC_SUNROOF_TILT })
+    }
+
     @Test fun noReadBackIsNotSuccess() = runBlocking {
         val port = FakeEcarxPort().apply { unreadable += F.BCM_FUNC_WINDOW_POS; unreadable += F.BCM_FUNC_WINDOW_CURRENT_POS }
         val result = exec(port).execute(VoiceCommand.Sunroof(SunroofPart.GLASS, WindowOperation.OPEN))
