@@ -26,6 +26,16 @@ object KwsMicPolicy {
         audioMode == MODE_IN_CALL || audioMode == MODE_IN_COMMUNICATION ||
             audioMode == MODE_CALL_SCREENING || audioMode == MODE_RINGTONE
 
+    // android.media.AudioAttributes.USAGE_* values for call audio (unit-testable).
+    const val USAGE_VOICE_COMMUNICATION = 2
+    const val USAGE_VOICE_COMMUNICATION_SIGNALLING = 3
+    const val USAGE_NOTIFICATION_RINGTONE = 6
+
+    /** Playback that means a phone call is ringing or in progress (Bluetooth phone, CarPlay). */
+    fun callUsage(usage: Int): Boolean =
+        usage == USAGE_VOICE_COMMUNICATION || usage == USAGE_VOICE_COMMUNICATION_SIGNALLING ||
+            usage == USAGE_NOTIFICATION_RINGTONE
+
     fun shouldYield(audioMode: Int, selfSilenced: Boolean): Boolean = callActive(audioMode) || selfSilenced
 
     fun retryDelayMs(failures: Int): Long =

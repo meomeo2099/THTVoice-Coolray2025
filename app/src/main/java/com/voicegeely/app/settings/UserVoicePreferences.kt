@@ -45,11 +45,14 @@ class UserVoicePreferences(context: Context) {
         syncAsrEndpointRuntime()
     }
 
-    /** Wake-word sensitivity (THTVoice): Cao = a quiet call still wakes, but more false wakes with music. */
+    /**
+     * Wake-word sensitivity (THTVoice): Cao = a quiet call still wakes, but more false wakes.
+     * Coolray 2025 defaults to Thấp, its tuning before 1.0.20: Bình thường woke on ordinary talk.
+     */
     var wakeSensitivity: com.voicegeely.app.kws.WakeSensitivity
-        get() = prefs.getString(KEY_WAKE_SENSITIVITY, com.voicegeely.app.kws.WakeSensitivity.NORMAL.name)
+        get() = prefs.getString(KEY_WAKE_SENSITIVITY, com.voicegeely.app.kws.WakeSensitivity.LOW.name)
             ?.let { runCatching { com.voicegeely.app.kws.WakeSensitivity.valueOf(it) }.getOrNull() }
-            ?: com.voicegeely.app.kws.WakeSensitivity.NORMAL
+            ?: com.voicegeely.app.kws.WakeSensitivity.LOW
         set(value) = prefs.edit().putString(KEY_WAKE_SENSITIVITY, value.name).apply()
 
     /** Coolray 2025 quiet mic: amplify x2 before recognition (on by default, as before). */
