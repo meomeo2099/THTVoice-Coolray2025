@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.SystemClock
+import android.os.UserManager
 import android.util.Log
 import com.voicegeely.app.security.LicenseManager
 
@@ -37,7 +38,17 @@ object BootTriggers {
         ACTION_ECARX_BOOT,
     )
 
-    fun startsService(action: String?): Boolean = action != null && action in ACTIONS
+    /**
+     * Coolray 2025 (car check 19/11/2026): the head unit is so busy at start-up that BOOT_COMPLETED
+     * reached THT Voice ~1 min 40 s after power-on, and the voice key did nothing until the app was
+     * opened. LOCKED_BOOT_COMPLETED arrives first (THT StatusBar starts on it). The receiver then waits
+     * for the user's storage to unlock (no PIN on the car: seconds) before reading the license.
+     */
+    const val ACTION_LOCKED_BOOT = Intent.ACTION_LOCKED_BOOT_COMPLETED
+    /** Longest wait for user storage after LOCKED_BOOT_COMPLETED; BOOT_COMPLETED still follows. */
+    const val UNLOCK_WAIT_MS = 30_000L
+
+    fun startsService(action: String?): Boolean = action != null && (action in ACTIONS || action == ACTION_LOCKED_BOOT)
 
     /** True when this trigger should start the service (not within [DEBOUNCE_MS] of the last one). */
     fun accept(nowMs: Long, lastMs: Long): Boolean = lastMs <= 0L || nowMs < lastMs || nowMs - lastMs >= DEBOUNCE_MS
@@ -60,6 +71,33 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
         lastStartMs = now
+        val users = context.getSystemService(UserManager::class.java)
+        if (users != null && !users.isUserUnlocked) {
+            // Early boot: wait for user storage on a worker thread, then start (license is in it).
+            val pending = goAsync()
+            val app = context.applicationContext
+            Thread {
+                try {
+                    val until = SystemClock.elapsedRealtime() + BootTriggers.UNLOCK_WAIT_MS
+                    while (!users.isUserUnlocked && SystemClock.elapsedRealtime() < until) Thread.sleep(250)
+                    if (users.isUserUnlocked) start(app, action) else {
+                        Log.i(TAG, "action=$action storage still locked; BOOT_COMPLETED will start it")
+                        lastStartMs = 0L
+                    }
+                } catch (_: InterruptedException) {
+                    Thread.currentThread().interrupt()
+                } finally {
+                    pending.finish()
+                }
+            }.apply { name = "THTVoice-BootWait"; isDaemon = true }.start()
+            return
+        }
+        start(context, action)
+    }
+
+    private fun start(context: Context, action: String?) {
+        // Storage is unlocked here; the Application may have deferred the history database (no-op if open).
+        com.voicegeely.app.history.VoiceHistory.install(context.applicationContext)
         if (!LicenseManager(context).isLicensed()) {
             Log.i(TAG, "action=$action nhưng app chưa có license hợp lệ")
             return

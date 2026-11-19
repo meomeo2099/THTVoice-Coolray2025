@@ -217,8 +217,12 @@
                 android:resource="@xml/voice_key_accessibility" />
         </service>
 
-        <receiver android:name="com.voicegeely.app.BootReceiver" android:exported="true">
+        <!-- directBootAware: LOCKED_BOOT_COMPLETED reaches it right after power-on (Coolray 2025 is
+             too busy for BOOT_COMPLETED to arrive quickly); it waits for user storage before starting. -->
+        <receiver android:name="com.voicegeely.app.BootReceiver" android:exported="true"
+            android:directBootAware="true">
             <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />

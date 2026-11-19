@@ -22,7 +22,11 @@ class BootTriggersTest {
     fun otherBroadcastsDoNot() {
         assertFalse(BootTriggers.startsService(null))
         assertFalse(BootTriggers.startsService("android.intent.action.SCREEN_OFF"))
-        assertFalse(BootTriggers.startsService("android.intent.action.LOCKED_BOOT_COMPLETED"))
+    }
+
+    @Test
+    fun earlyLockedBootStartsTheServiceOnCoolray2025() {
+        assertTrue(BootTriggers.startsService("android.intent.action.LOCKED_BOOT_COMPLETED"))
     }
 
     @Test
