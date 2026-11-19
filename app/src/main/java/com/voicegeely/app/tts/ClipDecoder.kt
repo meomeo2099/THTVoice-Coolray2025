@@ -24,7 +24,9 @@ internal object ClipDecoder {
         override fun close() = Unit
     }
 
-    fun decode(data: ByteArray, cancelled: () -> Boolean = { false }): Pcm? {
+    fun decode(input: ByteArray, cancelled: () -> Boolean = { false }): Pcm? {
+        // Coolray 2025: the MP4 reader fails on M4A replies; read the same AAC frames as ADTS instead.
+        val data = if (Mp4ToAdts.isMp4(input)) Mp4ToAdts.convert(input) ?: input else input
         val extractor = MediaExtractor()
         var codec: MediaCodec? = null
         return try {

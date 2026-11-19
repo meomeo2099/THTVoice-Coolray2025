@@ -148,7 +148,11 @@ internal class Mp3ReplyPlayer(private val context: Context) {
         waiting = null
     }
 
-    private fun play(data: ByteArray, cancelled: () -> Boolean, extension: String = "mp3"): Boolean {
+    private fun play(input: ByteArray, cancelled: () -> Boolean, inputExtension: String = "mp3"): Boolean {
+        // Coolray 2025: MediaPlayer stops M4A after 3 frames; the same AAC as ADTS plays through.
+        val adts = if (Mp4ToAdts.isMp4(input)) Mp4ToAdts.convert(input) else null
+        val data = adts ?: input
+        val extension = if (adts != null) "aac" else inputExtension
         val file = File.createTempFile("reply-", ".$extension", context.cacheDir)
         val done = CountDownLatch(1)
         val success = AtomicBoolean(false)
