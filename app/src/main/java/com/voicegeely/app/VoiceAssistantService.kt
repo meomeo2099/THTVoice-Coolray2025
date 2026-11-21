@@ -617,19 +617,11 @@ class VoiceAssistantService : Service() {
         }
     }
 
-    /**
-     * Android audio mode, but a call also counts when call audio is playing: on Coolray 2025 a
-     * Bluetooth / CarPlay call may keep MODE_NORMAL, and the wake word then woke on the driver's
-     * own phone conversation (owner report 19/11/2026).
-     */
+    // Car log 21/11/2026: counting call-type players as a call kept the wake word off for good — the
+    // head unit's Bluetooth phone app creates idle VOICE_COMMUNICATION / ringtone players at start-up.
+    // Only the Android audio mode decides.
     private fun currentAudioMode(): Int = runCatching {
-        val audio = getSystemService(AUDIO_SERVICE) as android.media.AudioManager
-        val mode = audio.mode
-        if (com.voicegeely.app.kws.KwsMicPolicy.callActive(mode)) return@runCatching mode
-        val callAudio = audio.activePlaybackConfigurations.any {
-            com.voicegeely.app.kws.KwsMicPolicy.callUsage(it.audioAttributes.usage)
-        }
-        if (callAudio) com.voicegeely.app.kws.KwsMicPolicy.MODE_IN_CALL else mode
+        (getSystemService(AUDIO_SERVICE) as android.media.AudioManager).mode
     }.getOrDefault(com.voicegeely.app.kws.KwsMicPolicy.MODE_NORMAL)
 
     /** Android 10+: true when the system mutes our wake-word recording for a higher-priority app. */

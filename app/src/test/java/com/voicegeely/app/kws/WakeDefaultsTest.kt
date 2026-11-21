@@ -14,11 +14,4 @@ class WakeDefaultsTest {
         assertEquals(0.25f, WakeSensitivity.LOW.keywordsThreshold, 0f)
         assertFalse(WakeSensitivity.LOW.acceptBlankConfirmation)
     }
-
-    @Test
-    fun callAudioCountsAsACall() {
-        assertTrue(KwsMicPolicy.callUsage(KwsMicPolicy.USAGE_VOICE_COMMUNICATION))
-        assertTrue(KwsMicPolicy.callUsage(KwsMicPolicy.USAGE_NOTIFICATION_RINGTONE))
-        assertFalse(KwsMicPolicy.callUsage(1)) // USAGE_MEDIA: music never pauses the wake word
-    }
 }
